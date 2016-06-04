@@ -13,6 +13,7 @@ app/scripts/config.js
 Icon?
 ehthumbs.db
 Thumbs.db
+npm-debug.log
 
 #IDE Files
 .idea/

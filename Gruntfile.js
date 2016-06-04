@@ -62,7 +62,7 @@ module.exports = function (grunt) {
       },
       jsTest: {
         files: ['test/spec/{,*/}*.js'],
-        tasks: ['newer:jshint:test', 'karma']
+        tasks: ['newer:jshint:test']
       },
       styles: {
         files: ['<%= yeoman.app %>/styles/{,*/}*.css'],
@@ -348,15 +348,8 @@ module.exports = function (grunt) {
       dist: [
         'copy:styles'
       ]
-    },
-
-    // Test settings
-    karma: {
-      unit: {
-        configFile: 'karma.conf.js',
-        singleRun: true
-      }
     }
+
   });
 
 
@@ -380,12 +373,19 @@ module.exports = function (grunt) {
     grunt.task.run(['serve:' + target]);
   });
 
+  grunt.registerTask('default', [
+    'clean:server',
+    'concurrent:test',
+    'autoprefixer',
+    'connect:test'
+  ]);
+
   grunt.registerTask('test', [
     'clean:server',
     'concurrent:test',
     'autoprefixer',
     'connect:test',
-    'karma'
+    'build'
   ]);
 
   grunt.registerTask('build', [
@@ -404,9 +404,9 @@ module.exports = function (grunt) {
     'htmlmin'
   ]);
 
-  grunt.registerTask('default', [
+  grunt.registerTask('jshint', [
     'newer:jshint',
-    'test',
+    'default',
     'build'
   ]);
 };
