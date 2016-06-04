@@ -1,0 +1,26 @@
+node_modules
+dist
+.tmp
+.sass-cache
+app/bower_components
+app/scripts/config.js
+
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+Icon?
+ehthumbs.db
+Thumbs.db
+
+#IDE Files
+.idea/
+.classpath
+.clover
+.project
+.settings/
+*.iml
+target/
+report/
+
