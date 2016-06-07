@@ -86,6 +86,7 @@ fdView.factory('QueryService', ['$http', 'configuration', function ($http, confi
     var cp = {};
     var cpGraph = {};
     var cpFortress, cpType;
+    var colDefs = [];
     return {
       getAll: function () {
         return $http.get(configuration.engineUrl() + '/api/v1/content/')
@@ -93,10 +94,18 @@ fdView.factory('QueryService', ['$http', 'configuration', function ($http, confi
             angular.copy(data, cplist);
           });
       },
+      getColDefs: function () {
+        return colDefs;
+      },
+      getCurrent: function () {
+        return cp;
+      },
       createEmpty: function (profile) {
-        this.cpFortress = profile.fortress;
-        this.cpType = profile.type;
-        this.cp = profile;
+        cpFortress = profile.fortress.name;
+        cpType = profile.type;
+        cp = profile;
+        cp.content = {};
+
       },
       createDefault: function (fortress, doctype) {
         angular.copy(fortress, cpFortress);
@@ -110,15 +119,14 @@ fdView.factory('QueryService', ['$http', 'configuration', function ($http, confi
         if (cpType) { return cpType; }
       },
       getProfile: function (profile) {
-        if ((profile.fortress===cpFortress && profile.documentType===cpType && cp!=={}) || (!profile.fortress && cp.length>0)) {
+        if (!profile || (profile.fortress===cpFortress && profile.documentType===cpType && cp!=={}) || (!profile.fortress && cp.length>0)) {
           var deferred = $q.defer();
           deferred.resolve(cp);
           return deferred.promise;
         } else {
-          if (profile.fortress!==cpFortress) angular.copy(profile.fortress, this.cpFortress);
-          if (profile.documentType!==cpType) angular.copy(profile.documentType, this.cpType);
-          // this.cpFortress = fortress;
-          // this.cpType = type;
+          if (profile.fortress!==cpFortress) cpFortress=profile.fortress;
+          if (profile.documentType!==cpType) cpType=profile.documentType;
+
           return $http.get(configuration.engineUrl() + '/api/v1/content/' + profile.key)
             .success(function (data) {
               console.log(data);
@@ -133,6 +141,7 @@ fdView.factory('QueryService', ['$http', 'configuration', function ($http, confi
         }
         else {
           var graph = {nodes: [], edges: []};
+          colDefs = [];
 
           var createEntity = function (name, data) {
             var entity = new Object({id: name, name: name, type: 'entity'});
@@ -193,6 +202,7 @@ fdView.factory('QueryService', ['$http', 'configuration', function ($http, confi
           }
           _.each(cp.content, function (obj, key) {
             if (isTag(obj)) {
+              colDefs.push({name: key, type: 'tag'});
               var tag = createTag(key, {label: (obj.label || key)});
               graph.nodes.push({data: tag});
               graph.edges.push({data: connect(root.id, tag.id, obj.relationship)});
@@ -206,6 +216,8 @@ fdView.factory('QueryService', ['$http', 'configuration', function ($http, confi
                   graph.edges.push({data: connect(tag.id, a.id)});
                 })
               }
+            } else {
+              colDefs.push({name: key, type: 'coldef'});
             }
             if (hasEntityLinks(obj)) {
               _.each(obj.entityLinks, function (entity) {
@@ -216,16 +228,18 @@ fdView.factory('QueryService', ['$http', 'configuration', function ($http, confi
             }
           });
           angular.copy(graph, cpGraph);
+          console.log(graph);
           return graph;
         }
       },
       updateProfile: function (profile) {
+        cp = {};
         angular.copy(profile, cp);
         this.graphProfile();
       },
       saveProfile: function () {
-        var fcode = this.cpFortress.toLowerCase().replace(/\s/g, '');
-        return $http.post(configuration.engineUrl() + '/api/v1/content/' + fcode +'/'+this.cpType+'/', cp);
+        var fcode = cpFortress.toLowerCase().replace(/\s/g, '');
+        return $http.post(configuration.engineUrl() + '/api/v1/content/' + fcode +'/'+cpType+'/', cp);
       }
   };
 }]);

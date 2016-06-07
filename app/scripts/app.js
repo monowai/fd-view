@@ -101,20 +101,12 @@ var fdView = angular.module('fdView', [
           authorizedRoles: [USER_ROLES.user]
         }
       })
-      .state('import.load', {
-        url: '/load',
-        templateUrl: 'load-profile.html',
-        controller: 'LoadProfileCtrl'
-      })
-      .state('import.edit', {
+      .state('contentProfile', {
         url: '/edit',
-        templateUrl: 'show-profile.html',
+        templateUrl: 'views/profileeditor.html',
         controller: 'EditProfileCtrl',
-        params: {keys: null},
-        resolve: {
-          keys: ['$stateParams', function ($stateParams) {
-            return $stateParams.keys;
-          }]
+        data: {
+          authorizedRoles: [USER_ROLES.user]
         }
       })
       .state('admin', {
@@ -207,6 +199,12 @@ var fdView = angular.module('fdView', [
         function () {
           $rootScope.errorMessage = 'errors.500';
           toastr.error('Server error!');
+        }
+      );
+      // Call when the 200 response is returned by the server
+      $rootScope.$on('event:status-ok',
+        function (event, data) {
+          toastr.success(data, 'Success');
         }
       );
       // Call when the user logs out

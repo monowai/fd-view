@@ -215,6 +215,7 @@ angular.module('fdView.directives', [])
         highlightByName: '=',
         onComplete: '=',
         onChange: '=',
+        nodeClick: '=',
         navigatorContainerId: '@',
         contextMenuCommands: '='
       },
@@ -299,7 +300,7 @@ angular.module('fdView.directives', [])
                   var addElements = data.elements;
                   var addedElements = cy.add(addElements);
                   runLayout(addedElements);
-                  scope.onChange(cy, data.forceApply);
+                  //scope.onChange(cy, data.forceApply);
                 });
                 // Delete elements
                 scope.$on('cytoscapeDeleteElements', function(event, data) {
@@ -367,122 +368,182 @@ angular.module('fdView.directives', [])
       }
     }
   }])
-  .directive('draggable',['$compile',function($compile){
+  .directive('draggable', function () {
+    return function (scope, element) {
+      // this gives us the native JS object
+      var el = element[0];
+      el.draggable = true;
+
+      el.addEventListener('dragstart', function (e) {
+        console.log(this);
+
+        e.dataTransfer.effectAllowed = 'move';
+        e.dataTransfer.setData('id', this.id);
+        this.classList.add('dragging');
+        return false;
+      }, false);
+
+      el.addEventListener('dragend', function () {
+        this.classList.remove('dragging');
+
+        return false;
+      }, false);
+    };
+  })
+  .directive('droppable', function () {
     return {
-      restrict: 'EA',
-      transclude: true,
-      replace: true,
-      scope: {},
-      template: '<div class="cursor" ng-transclude></div>',
-      link: function(scope,el,attrs,ctrlr,transFn){
-          // object properties, will be passed through jQuery UI events
-          scope.obj = {
-            id: null,
-            content: '',
-            group: null
-          };
+      scope: {
+        droppable: '='
+      },
+      link: function (scope, element) {
+        var el = element[0];
 
-          scope.placeholder = false;
+        el.addEventListener('dragover', function (e) {
+          e.dataTransfer.dropEffect = 'move';
 
-
-          // get the content from the transclusion function
-          transFn(scope,function(clone,innerScope){
-            // need to compile the content to make sure we get any HTML that was transcluded
-            var dummy = angular.element('<div></div>');
-            dummy.append($compile(clone)(innerScope));
-            scope.obj.content = dummy.html();
-            dummy = null;
-
-            // remove ng-scope spans/classes & empty class attributes added by angular to get true content
-            scope.obj.content = scope.obj.content.replace(/<span class="ng\-scope">([^<]+)<\/span>/gi,"$1");
-            scope.obj.content = scope.obj.content.replace(/\s*ng\-scope\s*/gi,'');
-            scope.obj.content = scope.obj.content.replace(/\s*class\=\"\"\s*/gi,'');
-          });
-
-          // save the object's id if there is one
-          if(angular.isDefined(attrs.id))
-            scope.obj.id = attrs.id;
-
-          if(angular.isDefined(attrs.placeholder))
-            scope.placeholder = scope.$eval(attrs.placeholder);
-
-          // setup the options object to pass to jQuery UI's draggable method
-          var opts = (angular.isDefined(attrs.options)) ? scope.$eval(attrs.options) : {};
-
-          // assign the object's group if any
-          if(angular.isDefined(attrs.group)){
-            scope.obj.group = attrs.group;
-            opts.stack = '.' + attrs.group;
+          if (e.preventDefault) {
+            e.preventDefault();
           }
 
-          var evts = {
-            start: function(evt,ui){
-              if(scope.placeholder)
-                ui.helper.wrap('<div class="dragging"></div>');
-              scope.$apply(function(){ scope.$emit('drag.started',{obj: scope.obj}); });
-            },
-            drag: function(evt){
-              scope.$apply(function(){ scope.$emit('drag.dragging',{obj: scope.obj}); });
-            },
-            stop: function(evt,ui){
-              if(scope.placeholder)
-                ui.helper.unwrap();
-              scope.$apply(function(){ scope.$emit('drag.stopped',{obj: scope.obj}); });
-            }
-          };
+          return false;
+        }, false);
 
-          // combine options passed through element attributes with events
-          var options = $.extend({},opts,evts);
-          el.draggable(options); // make element draggable
+        el.addEventListener('drop', function (e) {
+          // Stops some browsers from redirecting.
+          if (e.stopPropagation) {
+            e.stopPropagation();
+          }
+
+          var elementDropped = document.getElementById(e.dataTransfer.getData('id')),
+            dropMethod = scope.droppable;
+
+          // call the drop passed drop function
+          if (typeof dropMethod === 'function') {
+            scope.droppable(elementDropped, element[0], e);
+          }
+
+          return false;
+        }, false);
       }
     };
-  }])
-  .directive('droppable',['$compile',function($compile){
-    return {
-      restrict: 'AE',
-      replace: true,
-      // scope: {},
-      // templateUrl: function(el,attrs){
-      //   return (angular.isDefined(attrs.template)) ? attrs.template : '/tmpls/droppable-default';
-      // },
-      link: function(scope,el,attrs,ctrlr,transFn){
-        scope.obj = {
-          id: null,
-          dropped: []
-        };
+  })
 
-        // save the object's id if there is one
-        if(angular.isDefined(attrs.id))
-          scope.obj.id = attrs.id;
-
-        // setup the options object to pass to jQuery UI's draggable method
-        var opts = (angular.isDefined(attrs.options)) ? scope.$eval(attrs.options) : {};
-
-        var evts = {
-          drop: function(evt,ui){ // apply content
-            console.log('drop', evt, ui);
-            scope.$apply(function(){
-              scope.obj.dropped.push(angular.copy(scope.$parent.obj));
-              scope.$emit('data.clean');
-              scope.$broadcast('dropped',ui);
-            });
-          },
-          dragover: function(e) {
-            console.log('dragover', e);
-            e.preventDefault();
-            e.stopPropagation();
-            element.addClass('is-dragover');
-          },
-          dragleave: function() {
-            element.removeClass('is-dragover');
-          }
-        };
-
-        var options = angular.extend({},opts,evts);
-        el.droppable(options);
-      } // end link
-
-    }; // end return
-  }]); // end directive(droppable)
+  // .directive('draggable',['$compile',function($compile){
+  //   return {
+  //     restrict: 'EA',
+  //     transclude: true,
+  //     replace: true,
+  //     scope: {},
+  //     template: '<div class="cursor" ng-transclude></div>',
+  //     link: function(scope,el,attrs,ctrlr,transFn){
+  //         // object properties, will be passed through jQuery UI events
+  //         scope.obj = {
+  //           id: null,
+  //           content: '',
+  //           group: null
+  //         };
+  //
+  //         scope.placeholder = false;
+  //
+  //
+  //         // get the content from the transclusion function
+  //         transFn(scope,function(clone,innerScope){
+  //           // need to compile the content to make sure we get any HTML that was transcluded
+  //           var dummy = angular.element('<div></div>');
+  //           dummy.append($compile(clone)(innerScope));
+  //           scope.obj.content = dummy.html();
+  //           dummy = null;
+  //
+  //           // remove ng-scope spans/classes & empty class attributes added by angular to get true content
+  //           scope.obj.content = scope.obj.content.replace(/<span class="ng\-scope">([^<]+)<\/span>/gi,"$1");
+  //           scope.obj.content = scope.obj.content.replace(/\s*ng\-scope\s*/gi,'');
+  //           scope.obj.content = scope.obj.content.replace(/\s*class\=\"\"\s*/gi,'');
+  //         });
+  //
+  //         // save the object's id if there is one
+  //         if(angular.isDefined(attrs.id))
+  //           scope.obj.id = attrs.id;
+  //
+  //         if(angular.isDefined(attrs.placeholder))
+  //           scope.placeholder = scope.$eval(attrs.placeholder);
+  //
+  //         // setup the options object to pass to jQuery UI's draggable method
+  //         var opts = (angular.isDefined(attrs.options)) ? scope.$eval(attrs.options) : {};
+  //
+  //         // assign the object's group if any
+  //         if(angular.isDefined(attrs.group)){
+  //           scope.obj.group = attrs.group;
+  //           opts.stack = '.' + attrs.group;
+  //         }
+  //
+  //         var evts = {
+  //           start: function(evt,ui){
+  //             if(scope.placeholder)
+  //               ui.helper.wrap('<div class="dragging"></div>');
+  //             scope.$apply(function(){ scope.$emit('drag.started',{obj: scope.obj}); });
+  //           },
+  //           drag: function(evt){
+  //             scope.$apply(function(){ scope.$emit('drag.dragging',{obj: scope.obj}); });
+  //           },
+  //           stop: function(evt,ui){
+  //             if(scope.placeholder)
+  //               ui.helper.unwrap();
+  //             scope.$apply(function(){ scope.$emit('drag.stopped',{obj: scope.obj}); });
+  //           }
+  //         };
+  //
+  //         // combine options passed through element attributes with events
+  //         var options = $.extend({},opts,evts);
+  //         el.draggable(options); // make element draggable
+  //     }
+  //   };
+  // }])
+  // .directive('droppable',['$compile',function($compile){
+  //   return {
+  //     restrict: 'AE',
+  //     replace: true,
+  //     // scope: {},
+  //     // templateUrl: function(el,attrs){
+  //     //   return (angular.isDefined(attrs.template)) ? attrs.template : '/tmpls/droppable-default';
+  //     // },
+  //     link: function(scope,el,attrs,ctrlr,transFn){
+  //       scope.obj = {
+  //         id: null,
+  //         dropped: []
+  //       };
+  //
+  //       // save the object's id if there is one
+  //       if(angular.isDefined(attrs.id))
+  //         scope.obj.id = attrs.id;
+  //
+  //       // setup the options object to pass to jQuery UI's draggable method
+  //       var opts = (angular.isDefined(attrs.options)) ? scope.$eval(attrs.options) : {};
+  //
+  //       var evts = {
+  //         drop: function(evt,ui){ // apply content
+  //           console.log('drop', evt, ui);
+  //           scope.$apply(function(){
+  //             scope.obj.dropped.push(angular.copy(scope.$parent.obj));
+  //             scope.$emit('data.clean');
+  //             scope.$broadcast('dropped',ui);
+  //           });
+  //         },
+  //         dragover: function(e) {
+  //           console.log('dragover', e);
+  //           e.preventDefault();
+  //           e.stopPropagation();
+  //           element.addClass('is-dragover');
+  //         },
+  //         dragleave: function() {
+  //           element.removeClass('is-dragover');
+  //         }
+  //       };
+  //
+  //       var options = angular.extend({},opts,evts);
+  //       el.droppable(options);
+  //     } // end link
+  //
+  //   }; // end return
+  // }]); // end directive(droppable)
 
 // Directives

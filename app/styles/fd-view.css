@@ -223,6 +223,15 @@ h4.paragraph-header {
   z-index: 99;
 }
 
+.prop-col {
+  padding-left: 0;
+  padding-right: 0;
+}
+
+select:invalid {
+  color: gray;
+}
+
 .fader {
   transition: .5s linear all;
   -webkit-transition: .5s linear all;
