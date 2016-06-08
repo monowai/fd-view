@@ -228,51 +228,34 @@ var fdView = angular.module('fdView', [
     }]);
 
 
-fdView.provider('configuration', ['engineUrl','exploreUrl', function (engineUrl, exploreUrl) {
+fdView.provider('configuration', ['engineUrl', function ( engineUrl) {
   var config = {
-    'engineUrl': localStorage.getItem('engineUrl') || getDefaultEngineUrl() || engineUrl,
-    'exploreUrl': localStorage.getItem('exploreUrl') || getDefaultExploreUrl() || exploreUrl,
+    'engineUrl': localStorage.getItem('engineUrl') ||  engineUrl,
     'devMode': localStorage.getItem('devMode')
   };
 
-  function getDefaultEngineUrl() {
-    var _engineUrl;
-    if (window.location.href.indexOf('fd-view') > -1) {
-      _engineUrl = window.location.href.substring(0, window.location.href.indexOf('fd-view')) + 'fd-engine';
-
-    } else {
-      // _engineUrl = window.location.protocol + '//' + window.location.host;// + '/api';
-      var port = window.location.host.indexOf(':');
-      if (port > 0) {
-        _engineUrl = window.location.protocol + '//' + window.location.host.substr(0, port) + ':8080';
-      } else {
-        _engineUrl = window.location.protocol + '//' + window.location.host;
-      }
-
-    }
-    console.log('Calculated URL is ' + _engineUrl);
-
-    return _engineUrl;
-  }
-
-  function getDefaultExploreUrl() {
-    var _exploreUrl;
-    if (window.location.href.indexOf('fd-view') > -1) {
-      _exploreUrl = window.location.href.substring(0, window.location.href.indexOf('fd-view'));
-
-    } else {
-      var port = window.location.host.indexOf(':');
-      if (port > 0) {
-        _exploreUrl = window.location.protocol + '//' + window.location.host.substr(0, port) + ':8080';
-      } else {
-        _exploreUrl = window.location.protocol + '//' + window.location.host;
-      }
-
-    }
-    console.log('Calculated URL is ' + _exploreUrl);
-
-    return _exploreUrl;
-  }
+  // function getDefaultEngineUrl() {
+  //   return config.engineUrl;
+  // }
+  //
+  // function getDefaultExploreUrl() {
+  //   var _exploreUrl;
+  //   if (window.location.href.indexOf('fd-view') > -1) {
+  //     _exploreUrl = window.location.href.substring(0, window.location.href.indexOf('fd-view'));
+  //
+  //   } else {
+  //     var port = window.location.host.indexOf(':');
+  //     if (port > 0) {
+  //       _exploreUrl = window.location.protocol + '//' + window.location.host.substr(0, port) + ':8080';
+  //     } else {
+  //       _exploreUrl = window.location.protocol + '//' + window.location.host;
+  //     }
+  //
+  //   }
+  //   console.log('Calculated URL is ' + _exploreUrl);
+  //
+  //   return _exploreUrl;
+  // }
 
   return {
     $get: function () {

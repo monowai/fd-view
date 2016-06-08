@@ -36,14 +36,12 @@ module.exports = function (grunt) {
       },
       development: {
         constants: {
-          engineUrl: 'http://127.0.0.1:8080',
-          exploreUrl: 'not-used'
+          engineUrl: 'http://127.0.0.1:8080'
         }
       },
       production: {
         constants: {
-          engineUrl: 'https://demo.flockdata.com',
-          exploreUrl: 'https://demo.flockdata.com/'
+          engineUrl: '@FD-API@'
         }
       }
     },
@@ -88,7 +86,7 @@ module.exports = function (grunt) {
       options: {
         port: 9000,
         // Change this to '0.0.0.0' to access the server from outside.
-        hostname: 'localhost'
+        hostname: '0.0.0.0'
       },
       livereload: {
         options: {
@@ -184,7 +182,7 @@ module.exports = function (grunt) {
           src: [
             '<%= yeoman.dist %>/scripts/{,*/}*.js',
             '<%= yeoman.dist %>/styles/{,*/}*.css',
-            '<%= yeoman.dist %>/images/{,*/}*.{png,jpg,jpeg,gif,webp,svg}',
+            // '<%= yeoman.dist %>/images/{,*/}*.{png,jpg,jpeg,gif,webp,svg}',
             '<%= yeoman.dist %>/styles/fonts/*'
           ]
         }
@@ -317,8 +315,8 @@ module.exports = function (grunt) {
               '*.html',
               'styles/{,*/}*.css',
               'views/{,*/}*.html',
-              'images/{,*/}*.{webp}',
-              'fonts/*'
+              'images/*.*',
+              'fonts/*.*'
             ]
           },
           {
@@ -373,14 +371,14 @@ module.exports = function (grunt) {
     grunt.task.run(['serve:' + target]);
   });
 
-  grunt.registerTask('default', [
+  grunt.registerTask('test', [
     'clean:server',
     'concurrent:test',
     'autoprefixer',
     'connect:test'
   ]);
 
-  grunt.registerTask('test', [
+  grunt.registerTask('install', [
     'clean:server',
     'concurrent:test',
     'autoprefixer',
