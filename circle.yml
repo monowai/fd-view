@@ -5,14 +5,21 @@ machine:
 dependencies:
   pre:
     - bower install
+
+test:
   override:
-    - grunt dist:
+    - grunt default:
         timeout: 180 # fail if command has no output for 3 minutes
-  post:
+
+deployment:
+  pre:
+    - grunt install:
+        timeout: 180
+
+  override:
     - docker info
     - docker build -t flockdata/fd-view .
 
-deployment:
   hub:
     branch: master
     commands:
