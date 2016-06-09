@@ -42,14 +42,12 @@
         "dist/js/bootstrap.js",
         "dist/css/bootstrap.css",
         "less/bootstrap.less"
-
       ]
     },
-    "exportsOverride": {
-      "font-awesome": {
-        "fonts": "fonts/*",
-        "css": "css/font-awesome.css"
-      }
+    "font-awesome": {
+      "main": [
+        "css/font-awesome.min.css"
+      ]
     }
   }
 }
