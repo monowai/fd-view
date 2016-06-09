@@ -62,8 +62,9 @@ fdView.controller('ImportCtrl', ['$scope', '$window', '$rootScope', '$uibModal',
                 }
               },
               controller: ['$scope','$uibModalInstance','timezones',function($scope, $uibModalInstance, timezones) {
+                $scope.searchable = true;
                 $scope.timezones = timezones;
-                $scope.timezone = $scope.timezones[0];
+                $scope.timezone = moment.tz.guess();
                 $scope.close = $uibModalInstance.dismiss;
                 $scope.save = function() {
                   var newFortress = {
