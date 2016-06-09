@@ -10,11 +10,11 @@ test:
   override:
     - grunt default:
         timeout: 180 # fail if command has no output for 3 minutes
-
-deployment:
-  pre:
+  post:
     - grunt install:
         timeout: 180
+
+deployment:
 
   override:
     - docker info
