@@ -13,12 +13,10 @@ test:
   post:
     - grunt install:
         timeout: 180
-
-deployment:
-
-  override:
     - docker info
     - docker build -t flockdata/fd-view .
+
+deployment:
 
   hub:
     branch: master
