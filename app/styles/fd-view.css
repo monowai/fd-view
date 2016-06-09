@@ -26,10 +26,10 @@
     padding: 0px 0;
 }
 
-/*.fd-logs-selected {
+.fd-logs-selected {
     padding: 10px;
-    background-color: #ECF0F5;
-}*/
+    background-color: #72afd2;
+}
 
 .fd-entityKey-elements {
     margin-bottom: 0px;

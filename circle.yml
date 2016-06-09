@@ -6,7 +6,7 @@ dependencies:
   pre:
     - bower install
   override:
-    - grunt build:
+    - grunt dist:
         timeout: 180 # fail if command has no output for 3 minutes
   post:
     - docker info

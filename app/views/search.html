@@ -83,9 +83,9 @@
             <li ng-repeat="searchResult in searchResults">
               <i class="fa fa-file-text"></i>
               <div class="timeline-item">
-                <span class="time"><i class="fa fa-clock-o"></i> {{searchResult.whenCreated | amDateFormat:'ddd, MMM Do YYYY, hh:mm'}} </span>
+                <span class="time"><i class="fa fa-clock-o"></i>{{searchResult.lastUser}} - {{searchResult.lastUpdate | amDateFormat:'ddd, MMM Do YYYY, hh:mm'}} </span>
 
-                <h3 class="timeline-header">{{searchResult.description}} ({{searchResult.createdBy}})</h3>
+                <h3 class="timeline-header">{{searchResult.description}}</h3>
 
                 <div>
                   <small>
@@ -109,19 +109,16 @@
                           ng-if="searchResult.code != null">
                       {{searchResult.code}}</button>
                 </div>
-                <a ng-click="openGraphExplorer(searchResult.key)"
-                   class="btn btn-xs btn-primary"><i class="fa fa-empire"></i
-                        > Explore</a>
 
-                <a ng-click="findLogs(searchResult.key, $index)"
-                   ng-if="!searchResult.seeLogsAction" class="btn btn-xs btn-primary"><i class="fa fa-angle-double-down"></i> Changes</a>
+                <!--<a ng-click="findLogs(searchResult.key, $index)"-->
+                   <!--ng-if="!searchResult.seeLogsAction" class="btn btn-xs btn-primary"><i class="fa fa-angle-double-down"></i> Changes</a>-->
 
                 <a ng-click="findLogs(searchResult.key, $index)"
                    ng-if="searchResult.seeLogsAction" class="btn btn-xs btn-primary"><i class="fa fa-angle-double-down"></i> Changes</a>
 
-                <p ng-if="searchResult.lastUpdate != null">
+                <p ng-if="searchResult.whenCreated != null">
                     <!-- ToDo - format the date to the users Locale, not hard coded-->
-                    <small>Last update at <em>{{searchResult.lastUpdate |
+                    <small>Created on <em>{{searchResult.whenCreated |
                         amDateFormat:'dddd, MMMM Do YYYY, h:mm:ss a'}}</em> by <em>{{searchResult.lastUser}}</em>
                     </small>
                 </p>

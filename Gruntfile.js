@@ -182,8 +182,9 @@ module.exports = function (grunt) {
           src: [
             '<%= yeoman.dist %>/scripts/{,*/}*.js',
             '<%= yeoman.dist %>/styles/{,*/}*.css',
-            // '<%= yeoman.dist %>/images/{,*/}*.{png,jpg,jpeg,gif,webp,svg}',
             '<%= yeoman.dist %>/styles/fonts/*'
+            // '<%= yeoman.dist %>/images/{,*/}*.{png,jpg,jpeg,gif,webp,svg}',
+
           ]
         }
       }
@@ -311,12 +312,12 @@ module.exports = function (grunt) {
             dest: '<%= yeoman.dist %>',
             src: [
               '*.{ico,png,txt}',
-              '.htaccess',
+              // '.htaccess',
               '*.html',
               'styles/{,*/}*.css',
               'views/{,*/}*.html',
               'images/*.*',
-              'fonts/*.*'
+              'fonts/*'
             ]
           },
           {
@@ -371,7 +372,7 @@ module.exports = function (grunt) {
     grunt.task.run(['serve:' + target]);
   });
 
-  grunt.registerTask('test', [
+  grunt.registerTask('default', [
     'clean:server',
     'concurrent:test',
     'autoprefixer',
@@ -383,10 +384,10 @@ module.exports = function (grunt) {
     'concurrent:test',
     'autoprefixer',
     'connect:test',
-    'build'
+    'dist'
   ]);
 
-  grunt.registerTask('build', [
+  grunt.registerTask('dist', [
     'clean:dist',
     'ngconstant:production',
     'copy:dist',
