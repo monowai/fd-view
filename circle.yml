@@ -13,13 +13,12 @@ test:
   post:
     - grunt install:
         timeout: 180
-    - docker info
-    - docker build -t flockdata/fd-view .
 
 deployment:
 
   hub:
     branch: master
     commands:
+      - docker build -t flockdata/fd-view .
       - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
       - docker push flockdata/fd-view
