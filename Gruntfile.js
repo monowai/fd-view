@@ -15,6 +15,9 @@ module.exports = function (grunt) {
   // Time how long tasks take. Can help when optimizing build times
   require('time-grunt')(grunt);
 
+  // For html5mode
+  var modRewrite = require('connect-modrewrite');
+
   // Define the configuration for all the tasks
   grunt.initConfig({
     bower: grunt.file.readJSON('./.bowerrc'),
@@ -36,12 +39,14 @@ module.exports = function (grunt) {
       },
       development: {
         constants: {
-          engineUrl: 'http://127.0.0.1:8080'
+          engineUrl: 'http://127.0.0.1:8080',
+          exploreUrl: 'not-used'
         }
       },
       production: {
         constants: {
-          engineUrl: '@FD-API@'
+          engineUrl: 'https://demo.flockdata.com',
+          exploreUrl: 'https://demo.flockdata.com/'
         }
       }
     },
@@ -85,17 +90,26 @@ module.exports = function (grunt) {
     connect: {
       options: {
         port: 9000,
-        // Change this to '0.0.0.0' to access the server from outside.
-        hostname: '0.0.0.0'
+        livereload: 35729,
+        // change this to '0.0.0.0' to access the server from outside
+        hostname: 'localhost'
       },
       livereload: {
         options: {
-          open: 'http://localhost:9000',
-          livereload: 66771,
+          open: true,
           base: [
             '.tmp',
             '<%= yeoman.app %>'
-          ]
+          ],
+          middleware: function(connect, options) {
+            var middlewares = [];
+
+            middlewares.push(modRewrite(['^[^\\.]*$ /index.html [L]'])); //Matches everything that does not contain a '.' (period)
+            options.base.forEach(function(base) {
+              middlewares.push(connect.static(base));
+            });
+            return middlewares;
+          }
         }
       },
       test: {
@@ -182,9 +196,8 @@ module.exports = function (grunt) {
           src: [
             '<%= yeoman.dist %>/scripts/{,*/}*.js',
             '<%= yeoman.dist %>/styles/{,*/}*.css',
+            '<%= yeoman.dist %>/images/{,*/}*.{png,jpg,jpeg,gif,webp,svg}',
             '<%= yeoman.dist %>/styles/fonts/*'
-            // '<%= yeoman.dist %>/images/{,*/}*.{png,jpg,jpeg,gif,webp,svg}',
-
           ]
         }
       }
@@ -312,11 +325,11 @@ module.exports = function (grunt) {
             dest: '<%= yeoman.dist %>',
             src: [
               '*.{ico,png,txt}',
-              // '.htaccess',
+              '.htaccess',
               '*.html',
               'styles/{,*/}*.css',
               'views/{,*/}*.html',
-              'images/*.*',
+              'images/{,*/}*.{webp}',
               'fonts/*'
             ]
           },
@@ -379,15 +392,15 @@ module.exports = function (grunt) {
     'connect:test'
   ]);
 
-  grunt.registerTask('install', [
+  grunt.registerTask('test', [
     'clean:server',
     'concurrent:test',
     'autoprefixer',
     'connect:test',
-    'dist'
+    'build'
   ]);
 
-  grunt.registerTask('dist', [
+  grunt.registerTask('build', [
     'clean:dist',
     'ngconstant:production',
     'copy:dist',
