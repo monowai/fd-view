@@ -37,7 +37,7 @@ var fdView = angular.module('fdView', [
   'ab.graph.matrix.directives',
   'ng.jsoneditor'
 ])
-  .config(['$stateProvider','$urlRouterProvider','USER_ROLES', function ($stateProvider, $urlRouterProvider, USER_ROLES) {
+  .config(['$stateProvider','$urlRouterProvider','$locationProvider','USER_ROLES', function ($stateProvider, $urlRouterProvider, $locationProvider, USER_ROLES) {
     $stateProvider
       .state('welcome', {
         url: '/',
@@ -125,14 +125,15 @@ var fdView = angular.module('fdView', [
           authorizedRoles: [USER_ROLES.user]
         }
       });
-    $urlRouterProvider.otherwise('/welcome');
-    // $locationProvider.html5Mode(false);
+    $urlRouterProvider.otherwise('/');
+    $locationProvider.html5Mode(true);
   }])
   .config(['toastrConfig', function(toastrConfig) {
     angular.extend(toastrConfig, {
-      newestOnTop: true,
-      positionClass: 'toast-bottom-center',
+      newestOnTop: false,
+      positionClass: 'toast-top-center',
       preventDuplicates: true,
+      closeButton: true,
       target: 'body'
     });
   }])

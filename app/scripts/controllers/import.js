@@ -42,13 +42,11 @@ fdView.controller('ImportCtrl', ['$scope', '$window', '$rootScope', '$uibModal',
           $scope.cancel = $uibModalInstance.dismiss;
 
           $scope.selectFortress = function(fortress) {
-            console.log(fortress);
             var query = [fortress];
             QueryService.query('documents', query).then(function (data) {
               $scope.documents = data;
-              console.log(data);
               if(data.length>0) {
-                $scope.new.type = $scope.documents[0].name;
+                $scope.new.documentType = $scope.documents[0];
               }
             });
           };
@@ -75,13 +73,15 @@ fdView.controller('ImportCtrl', ['$scope', '$window', '$rootScope', '$uibModal',
                     timeZone: $scope.timezone
                   };
                   $http.post(configuration.engineUrl()+'/api/v1/fortress/', newFortress).then(function(response){
+                    $rootScope.$broadcast('event:status-ok', response.statusText);
                     $uibModalInstance.close(response.data);
                   });
                 };
               }]
             }).result.then(function(newDP){
               $scope.fortresses.push(newDP);
-              $scope.new.fortress = newDP.name;
+              $scope.new.fortress = newDP;
+              $scope.documents = [];
             });
           };
 
@@ -118,15 +118,14 @@ fdView.controller('ImportCtrl', ['$scope', '$window', '$rootScope', '$uibModal',
                     },
                     data: ''
                   }).then(function(response){
-                    // console.log(response);
+                    $rootScope.$broadcast('event:status-ok', response.statusText);
                     $uibModalInstance.close(response.data);
                   });
                 };
               }]
             }).result.then(function(newDocType){
-              // console.log($scope.documents);
               $scope.documents.push(newDocType);
-              $scope.new.type = newDocType.name;
+              $scope.new.documentType = newDocType;
             });
           };
 
