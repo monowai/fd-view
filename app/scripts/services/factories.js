@@ -102,7 +102,7 @@ fdView.factory('QueryService', ['$http', 'configuration', function ($http, confi
       },
       createEmpty: function (profile) {
         cpFortress = profile.fortress.name;
-        cpType = profile.type;
+        cpType = profile.documentType.name;
         cp = profile;
         cp.content = {};
 
@@ -235,7 +235,7 @@ fdView.factory('QueryService', ['$http', 'configuration', function ($http, confi
       updateProfile: function (profile) {
         cp = {};
         angular.copy(profile, cp);
-        this.graphProfile();
+        // this.graphProfile();
       },
       saveProfile: function () {
         var fcode = cpFortress.toLowerCase().replace(/\s/g, '');

@@ -75,7 +75,7 @@ fdView.controller('ImportCtrl', ['$scope', '$window', '$rootScope', '$uibModal',
                   };
                   $http.post(configuration.engineUrl()+'/api/v1/fortress/', newFortress).then(function(response){
                     $rootScope.$broadcast('event:status-ok', response.statusText);
-                    $uibModalInstance.close(response.data);
+                    $uibModalInstance.close(newFortress);
                   });
                 };
               }]

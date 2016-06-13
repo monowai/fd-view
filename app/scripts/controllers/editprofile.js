@@ -20,8 +20,8 @@
 
 'use strict';
 
-fdView.controller('EditProfileCtrl', ['$scope', '$window', '$rootScope', '$uibModal', 'QueryService', 'ContentProfile', '$state', '$http', '$timeout', '$compile', 'configuration',
-  function ($scope, $window, $rootScope, $uibModal, QueryService, ContentProfile, $state, $http, $timeout, $compile, configuration) {
+fdView.controller('EditProfileCtrl', ['$scope', '$window', 'toastr', '$uibModal', 'QueryService', 'ContentProfile', '$state', '$http', '$timeout', '$compile', 'configuration',
+  function ($scope, $window, toastr, $uibModal, QueryService, ContentProfile, $state, $http, $timeout, $compile, configuration) {
 
     // $scope.contentProfile
 
@@ -29,14 +29,12 @@ fdView.controller('EditProfileCtrl', ['$scope', '$window', '$rootScope', '$uibMo
       $scope.contentProfile = res;//.data.contentProfile;
       $scope.profileGraph = ContentProfile.graphProfile();
       $scope.colDefs = ContentProfile.getColDefs();
-      // console.log($scope.colDefs);
-    });
-
-    $scope.editProfile = function (profile) {
-      if (profile) {
-
+      if ($scope.profileGraph.nodes.length===1) {
+        $timeout(function () {
+          $scope.$broadcast('cytoscapeFitOne');
+        }, 10);
       }
-    };
+    });
 
     $scope.editorOptions = {
       tree: {mode: "tree", modes: ["tree", "code", "form"]},
@@ -49,9 +47,20 @@ fdView.controller('EditProfileCtrl', ['$scope', '$window', '$rootScope', '$uibMo
     $scope.save = function () {
       var profile = $scope.editor.get();
       ContentProfile.updateProfile(profile);
-      ContentProfile.saveProfile().then(function (response) {
-        $rootScope.$broadcast('event:status-ok', response.statusText);
-      });
+      ContentProfile.saveProfile()
+        .success(function (res) {
+          toastr.success(res.statusText, 'Success');
+          angular.element('[data-target="#structure"]').tab('show');
+          $scope.profileGraph = ContentProfile.graphProfile();
+          $scope.colDefs = ContentProfile.getColDefs();
+          $timeout(function () {
+            $scope.$broadcast('cytoscapeReset');
+          }, 500);
+
+        })
+        .error(function (res) {
+          toastr.error(res.message, 'Error');
+        });
     };
 
     $scope.styles = [

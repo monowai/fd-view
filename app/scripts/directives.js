@@ -316,8 +316,11 @@ angular.module('fdView.directives', [])
                   scope.onChange(cy, data.forceApply);
                 });
                 scope.$on('cytoscapeReset', function (event) {
-                  console.log(event);
                   cy.resize();
+                  cy.fit();
+                });
+                scope.$on('cytoscapeFitOne', function () {
+                  cy.fit(elements, cy.width()/4);
                 });
                 scope.$on('dropped', function (event, data) {
                   console.log('dropped', event);

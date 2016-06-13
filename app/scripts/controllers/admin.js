@@ -20,8 +20,8 @@
 
 'use strict';
 
-fdView.controller('AdminCtrl', ['$scope', '$uibModal', 'QueryService', 'AuthenticationSharedService', '$state', '$http', '$timeout', 'configuration', 'USER_ROLES',
-  function ($scope, $uibModal, QueryService, AuthenticationSharedService, $state, $http, $timeout, configuration, USER_ROLES) {
+fdView.controller('AdminCtrl', ['$scope', '$rootScope', '$uibModal', 'QueryService', 'AuthenticationSharedService', '$state', '$http', '$timeout', 'configuration', 'USER_ROLES',
+  function ($scope, $rootScope, $uibModal, QueryService, AuthenticationSharedService, $state, $http, $timeout, configuration, USER_ROLES) {
 
     QueryService.general('fortress').then(function (data) {
       $scope.fortresses = data;
@@ -82,20 +82,20 @@ fdView.controller('AdminCtrl', ['$scope', '$uibModal', 'QueryService', 'Authenti
           $scope.type = 'Data Provider';
           $scope.name = f.name;
           $scope.delete = function () {
-            $http.delete(configuration.engineUrl()+'/api/v1/admin/'+f.code).then(function () {
-              $uibModalInstance.close();
+            $http.delete(configuration.engineUrl()+'/api/v1/admin/'+f.code).then(function (res) {
+              $rootScope.$broadcast('event:status-ok', res.statusText);
+              $uibModalInstance.close(res);
             });
           }
         }]
-      }).result.then(function (res) {
-        console.log(res);
+      }).result.then(function () {
         $scope.fortresses.splice($scope.fortresses.indexOf(f), 1);
       });
     };
 
     $scope.rebuildFortress = function (f) {
       $http.post(configuration.engineUrl()+'/api/v1/admin/'+f.code+'/rebuild').then(function (res) {
-        console.log(res);
+        $rootScope.$broadcast('event:status-ok', res.statusText);
       });
     };
 

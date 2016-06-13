@@ -60,7 +60,6 @@
               <ul class="nav nav-pills">
                 <li class="active"><a data-target="#structure" data-toggle="tab"><i class="fa fa-sitemap"></i>Structure</a></li>
                 <li><a data-target="#json" data-toggle="tab"><i class="fa fa-edit"></i>Edit JSON</a></li>
-                <!--<li><a data-target="upload" href="">Analyze CSV</a></li>-->
               </ul>
             </div>
           </div>
@@ -78,11 +77,11 @@
                 </div>
               </div>
               <div class="col-md-10" droppable="handleDrop">
-                <cytoscape elements="profileGraph" layout="layout" styles="styles" selected-nodes="nodes" ng-height="200"></cytoscape>
+                <cytoscape elements="profileGraph" layout="layout" styles="styles" selected-nodes="nodes" ng-height="280"></cytoscape>
               </div>
             </div>
             <div id="json" class="tab-pane fade">
-              <div ng-jsoneditor="onEditorLoad" ng-model="contentProfile" options="editorOptions.tree" ng-height="200"></div>
+              <div ng-jsoneditor="onEditorLoad" ng-model="contentProfile" options="editorOptions.tree" ng-height="280"></div>
             </div>
             <div id="upload" class="tab-pane fade"></div>
           </div>
