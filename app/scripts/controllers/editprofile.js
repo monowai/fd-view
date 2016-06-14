@@ -137,31 +137,33 @@ fdView.controller('EditProfileCtrl', ['$scope', '$window', 'toastr', '$uibModal'
       {name: 'grid'}, {name: 'concentric'},
       {name: 'random'}, {name: 'breadthfirst'}];
     $scope.layout = $scope.layouts[0];
+    $scope.nodes = [];
 
     $scope.processDrop = function () {
       console.log('Element Dropped..');
     };
 
     $scope.createNew = function (event) {
-      var creating = event.target.id;
-      var selected = 'root';//$scope.profileGraph.nodes[0].data;// $scope.contentProfile;
-      if(!!$scope.nodes && $scope.nodes[0]._private.group==='nodes' && $scope.nodes[0]._private.data.type!=='entity') {
-        var findObj = function (o, id) {
-          if (id in o) {
-            return o[id];
+      var creating = event.id || event.target.id;
+
+      var selected = 'root';
+      var findObj = function (o, id) {
+        if (id in o) {
+          return o[id];
+        }
+        if (o.code === id) {
+          return o;
+        }
+        var res, p;
+        for (p in o) {
+          if (o.hasOwnProperty(p) && !!o[p] && typeof o[p] === 'object') {
+            res = findObj(o[p], id);
+            if (res) return res;
           }
-          if (o.code === id) {
-            return o;
-          }
-          var res, p;
-          for (p in o) {
-            if (o.hasOwnProperty(p) && !!o[p] && typeof o[p] === 'object') {
-              res = findObj(o[p], id);
-              if (res) return res;
-            }
-          }
-          return res;
-        };
+        }
+        return res;
+      };
+      if($scope.nodes.length>0 && $scope.nodes[0]._private.group==='nodes' && $scope.nodes[0]._private.data.type!=='entity') {
         selected = findObj($scope.contentProfile.content, $scope.nodes[0]._private.data.id);
       }
 
@@ -169,6 +171,7 @@ fdView.controller('EditProfileCtrl', ['$scope', '$window', 'toastr', '$uibModal'
         templateUrl: 'edit-element.html',
         controller: ['$scope','$uibModalInstance','active','creating', function ($scope,$uibModalInstance,active,creating) {
           $scope.elem = {};
+          $scope.elem.name = creating;
           if (creating==='tag') $scope.elem.tag = true;
           if (active !== 'root' && (active.tag || !active.tag)) {
             // console.log(active);
@@ -182,11 +185,14 @@ fdView.controller('EditProfileCtrl', ['$scope', '$window', 'toastr', '$uibModal'
             if (isValid) {
               $scope.elem.properties = $scope.elem.properties.filter(function (o) {return Object.keys(o).length > 1;})
               $scope.elem.rlxProperties = $scope.elem.rlxProperties.filter(function (o) {return Object.keys(o).length > 1;})
-              $uibModalInstance.close($scope.elem);
+              $uibModalInstance.close($scope.elem, $scope.active);
             }
           };
 
           $scope.coldefs = ContentProfile.getColDefs();
+          $scope.canConnect = [{name: 'root'}];
+          _.extend($scope.canConnect, $scope.coldefs);
+          console.log($scope.canConnect);
           $scope.elem.properties = [];
           $scope.elem.properties.push({});
           $scope.elem.rlxProperties = [];
@@ -202,7 +208,6 @@ fdView.controller('EditProfileCtrl', ['$scope', '$window', 'toastr', '$uibModal'
           }
         }
       }).result.then(function (res) {
-        // console.log(res);
         if(selected!=='root') {
           if(!selected.targets) {
             selected.targets = [];
@@ -214,6 +219,7 @@ fdView.controller('EditProfileCtrl', ['$scope', '$window', 'toastr', '$uibModal'
           $scope.contentProfile.content[res.name] = res;
           $scope.colDefs.push({name: res.name, type: creating});
         }
+        if ($scope.externalKeys.indexOf(creating)>-1) $scope.externalKeys.splice($scope.externalKeys.indexOf(creating),1);
         ContentProfile.updateProfile($scope.contentProfile);
         $scope.profileGraph = ContentProfile.graphProfile();
 
@@ -256,18 +262,10 @@ fdView.controller('EditProfileCtrl', ['$scope', '$window', 'toastr', '$uibModal'
       // isBinary = component.attributes['data-binary'].value === 'true',
         rect;
 
-      console.log(component, board, event);
-      $scope.$broadcast('cytoscapeAddElements', {
-        elements: [{
-          data: {
-            group: 'nodes',
-            id: 'node',
-            name: 'New Node',
-            type: name,
-            position: {x: left, y: top}
-          }
-        }]
-      });
+      console.log(event);
+
+      $scope.createNew(component);
+
 
       // $uibModal.open({
       //   templateUrl: 'edit-element.html',
@@ -317,9 +315,44 @@ fdView.controller('EditProfileCtrl', ['$scope', '$window', 'toastr', '$uibModal'
       //   //$scope.components[name] = angular.copy(componentInstance);
       //   $scope.components[name].name = name;
 
-      $scope.$apply();
+      // $scope.$apply();
     };
 
+    $scope.uploadFile = function () {
+      $uibModal.open({
+        templateUrl: 'upload-file.html',
+        controller: ['$scope', '$uibModalInstance', 'toastr', function ($scope,$uibModalInstance, toastr) {
+          $scope.delim=',';
+          $scope.hasHeader=true;
+
+          $scope.cancel = $uibModalInstance.dismiss;
+
+          $scope.loadFile = function(fileContent, fileName){
+            $scope.fileName = fileName;
+            $scope.csvContent = fileContent;
+          };
+
+          $scope.getCols = function () {
+            var data, keys;
+            if ($scope.csvContent) {
+              var csvParser = d3.dsv($scope.delim, 'text/plain');
+              csvParser.parse($scope.csvContent, function (d) {
+                data = d;
+                keys = d3.keys(d);
+              });
+            } else {
+              toastr.warning('File is not loaded', 'Warning');
+            }
+            $uibModalInstance.close({keys: keys, data: data});
+          };
+        }]
+      }).result.then(function (res) {
+        console.log(res);
+        $scope.externalData = res.data;
+        $scope.externalKeys = res.keys;
+      });
+
+    };
 
     $scope.validate = function(){
       // $http.put(configuration.engineUrl() + '/api/v1/fortress/' + someProfile.fortressName+'/'+someProfile.documentType.name).then(function (response) {

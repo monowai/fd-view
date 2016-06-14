@@ -26,7 +26,7 @@
     <small>new data into your Fortress</small>
   </h1>
   <ol class="breadcrumb">
-    <li><a ui-shref="welcome"><i class="fa fa-home"></i> Home</a></li>
+    <li><a ui-sref="welcome"><i class="fa fa-home"></i> Home</a></li>
     <li class="active">Import</li>
   </ol>
 </section>
@@ -120,49 +120,12 @@
               </div>
           </div>
         </div>
-        <!--<div class="col-md-4"></div>-->
         <div class="col-md-12">
           <div class="form-group">
             <label for="description"> Description</label>
             <input type="text" id="description" class="form-control" ng-model="new.name" />
           </div>
           <div class="clearfix"></div>
-          <div class="well well-sm" ng-hide="true">
-            <h4>Upload</h4>
-            <div class="row">
-              <div class="col-sm-4">
-                <div class="form-group">
-                  <label for="delimiter" class="col-xs-4 control-label">Delimiter</label>
-                  <div class="col-xs-8">
-                    <input type="text" class="form-control" id="delimiter" ng-model="delim">
-                  </div>
-                </div>
-              </div>
-              <div class="col-sm-4">
-                <div class="form-group">
-                  <div class="checkbox">
-                    <label>
-                      <input type="checkbox" ng-model="ignoreEmpty"> Ignore empty Cols
-                    </label>
-                  </div>
-                </div>
-              </div>
-              <div class="col-sm-4">
-                <div class="form-group">
-                  <div class="checkbox">
-                    <label>
-                      <input type="checkbox" ng-model="hasHeader"> Has Header
-                    </label>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-md-12">
-                <div class="file-box" file-box="loadFile($fileContent, $fileName)"></div>
-              </div>
-            </div>
-          </div>
         </div>
       </form>
     </div>

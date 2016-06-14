@@ -26,7 +26,7 @@
     <small>new data into your Fortress</small>
   </h1>
   <ol class="breadcrumb">
-    <li><a ui-shref="welcome"><i class="fa fa-home"></i> Home</a></li>
+    <li><a ui-sref="welcome"><i class="fa fa-home"></i> Home</a></li>
     <li class="active">Import</li>
   </ol>
 </section>
@@ -65,7 +65,7 @@
           </div>
           <div class="tab-content">
             <div id="structure" class="tab-pane fade active in">
-              <div class="col-md-2">
+              <div class="col-md-2 col-xs-6">
                 <label class="control-label">Create</label>
                 <button id="coldef" class="btn btn-sm btn-block btn-default" ng-click="createNew($event)">Column Definition</button>
                 <button id="tag" class="btn btn-sm btn-block btn-warning" draggable options="{opacity: .5,revert: true}" ng-click="createNew($event)">Tag</button>
@@ -74,6 +74,12 @@
                 <label class="control-label">Columns</label>
                 <div class="btn-toolbar" id="Columns">
                   <button id="{{key.name}}" class="btn btn-xs " ng-class="key.type==='tag' ? 'btn-warning' : 'btn-primary'" draggable options="{opacity: .5,revert: true}" style="margin: 2px;" ng-repeat="key in colDefs" ng-click="showColDef(key.name)">{{key.name}}</button>
+                </div>
+                <div ng-show="externalKeys.length>0">
+                  <label class="control-label">Loaded</label>
+                  <div class="btn-toolbar" id="loaded">
+                    <button id="{{ekey.name}}" class="btn btn-xs btn-default" draggable options="{opacity: .5,revert: true}" style="margin: 2px;" ng-repeat="ekey in externalKeys" ng-click="createNew({id:ekey})">{{ekey}}</button>
+                  </div>
                 </div>
               </div>
               <div class="col-md-10" droppable="handleDrop">
@@ -91,7 +97,8 @@
         <div class="box-footer">
           <button class="btn btn-default"  ng-click="cancel()">Cancel</button>
           <div class="pull-right">
-            <button class="btn btn-primary" ng-click="analyzeExternal()"><i class="fa fa-lg fa-edit"></i>&nbsp; Analyze CSV</button>
+            <button type="submit" class="btn btn-primary" ng-click="createDefault()" ng-show="externalKeys.length>0"><i class="fa fa-bolt"></i>&nbsp; Create Default</button>
+            <button class="btn btn-primary" ng-click="uploadFile()"><i class="fa fa-lg fa-edit"></i>&nbsp; Load Data</button>
             <button class="btn btn-primary" ng-click="save()"><i class="fa fa-lg fa-save"></i>&nbsp; Save</button>
             <button class="btn btn-success" ng-click="validate()"><i class="fa fa-lg fa-play-circle"></i>&nbsp; Validate</button>
           </div>
@@ -180,7 +187,7 @@
             </div>
           </div>
         </uib-tab>
-        <uib-tab heading="Relationships">
+        <uib-tab heading="Properties">
           <label>Properties: </label>
           <div class="form-group" ng-repeat="prop in elem.properties">
             <div class="col-sm-6 prop-col">
@@ -201,7 +208,7 @@
             </div>
           </div>
           <br>
-          <label>Rlx Properties: </label>
+          <label>Relationships Properties: </label>
           <div class="form-group" ng-repeat="rprop in elem.rlxProperties">
             <div class="col-sm-6 prop-col">
               <select id="rprop.source" class="form-control" ng-model="rprop.source" ng-options="c.name as c.name for c in coldefs">
@@ -222,7 +229,13 @@
           </div>
         </uib-tab>
       </uib-tabset>
-      <div class="center"><label>Connected to - {{active}}</label></div>
+      <!--<div class="center"><label>{{active}}</label></div>-->
+      <div class="form-group">
+        <label for="active" class="col-sm-3 control-label">Connected to: </label>
+        <div class="col-sm-8">
+          <select id="active" name="active" class="form-control" ng-options="c.name as c.name for c in canConnect" ng-model="active"></select>
+        </div>
+      </div>
     </div>
     <div class="modal-footer">
       <button type="button" class="btn btn-default pull-left" ng-click="cancel('cancel')">Cancel</button>
@@ -243,5 +256,59 @@
   <div class="modal-footer">
     <button type="button" class="btn btn-default pull-left" ng-click="cancel('cancel')">Cancel</button>
     <button type="submit" class="btn btn-primary" ng-click="ok(coldef)"><i class="fa fa-bolt"></i>&nbsp; Ok</button>
+  </div>
+</script>
+
+<script type="text/ng-template" id="upload-file.html">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close" ng-click="cancel()">
+      <span aria-hidden="true">&times;</span></button>
+    <h4 class="modal-title">Load File</h4>
+  </div>
+  <div class="modal-body">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="well well-sm">
+          <h4>Upload</h4>
+          <div class="row">
+            <div class="col-sm-4">
+              <div class="form-group">
+                <label for="delimiter" class="col-xs-5 control-label">Delimiter</label>
+                <div class="col-xs-7">
+                  <input type="text" class="form-control" id="delimiter" ng-model="delim">
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <div class="form-group">
+                <div class="checkbox">
+                  <label>
+                    <input type="checkbox" ng-model="ignoreEmpty"> Ignore empty Cols
+                  </label>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <div class="form-group">
+                <div class="checkbox">
+                  <label>
+                    <input type="checkbox" ng-model="hasHeader"> Has Header
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-12">
+              <div class="file-box" file-box="loadFile($fileContent, $fileName)"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-default pull-left" ng-click="cancel()">Cancel</button>
+    <button type="submit" class="btn btn-primary" ng-click="getCols()" ng-disabled="!csvContent"><i class="fa fa-bolt"></i>&nbsp; Get Columns</button>
   </div>
 </script>

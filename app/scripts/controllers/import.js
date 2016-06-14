@@ -136,9 +136,9 @@ fdView.controller('ImportCtrl', ['$scope', '$window', '$rootScope', '$uibModal',
           }
         }
       }).result.then(function (profile) {
-        $state.go('contentProfile');
-        // angular.element('[data-target="#editor"]').tab('show');
-        // $scope.editProfile(profile);
+        if (profile) {
+          $state.go('contentProfile');
+        }
       });
     };
 
@@ -150,19 +150,11 @@ fdView.controller('ImportCtrl', ['$scope', '$window', '$rootScope', '$uibModal',
       }
     };
 
-
   }]);
 
 
 fdView.controller('LoadProfileCtrl', ['$scope', '$uibModal', 'QueryService', 'ContentProfile', '$state', '$http', '$timeout', '$compile', 'configuration',
   function ($scope, $uibModal, QueryService, ContentProfile, $state, $http, $timeout, $compile, configuration) {
-    $scope.delim=',';
-    $scope.hasHeader=true;
-
-    $scope.loadFile = function(fileContent, fileName){
-      $scope.fileName = fileName;
-      $scope.csvContent = fileContent;
-    };
 
     QueryService.general('fortress').then(function (data) {
       $scope.fortresses = data;
@@ -197,8 +189,6 @@ fdView.controller('LoadProfileCtrl', ['$scope', '$uibModal', 'QueryService', 'Co
       return ContentProfile.graphProfile();
     };
 
-
-
     $scope.checkProfile = function() {
       if (!$scope.fortress) {
         $uibModal.open({
@@ -228,19 +218,6 @@ fdView.controller('LoadProfileCtrl', ['$scope', '$uibModal', 'QueryService', 'Co
        }
        });
        }*/ else {
-        if ($scope.csvContent) {
-          var csvParser = d3.dsv($scope.delim, 'text/plain');
-          csvParser.parse($scope.csvContent, function (data) {
-            $scope.data = data;
-            $scope.keys = d3.keys(data);
-          });
-        }
-        // option for comma only
-        // d3.csv.parse($scope.csvContent, function(data){
-        //   $scope.data = data;
-        //   $scope.keys = d3.keys(data);
-        // });
-
         $state.go('import.edit', {keys: $scope.keys});
       }
     };

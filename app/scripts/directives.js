@@ -317,7 +317,7 @@ angular.module('fdView.directives', [])
                 });
                 scope.$on('cytoscapeReset', function (event) {
                   cy.resize();
-                  cy.fit();
+                  cy.fit(elements,15);
                 });
                 scope.$on('cytoscapeFitOne', function () {
                   cy.fit(elements, cy.width()/4);
