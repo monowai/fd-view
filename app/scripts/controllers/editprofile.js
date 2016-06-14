@@ -333,11 +333,11 @@ fdView.controller('EditProfileCtrl', ['$scope', '$window', 'toastr', '$uibModal'
           };
 
           $scope.getCols = function () {
-            var data, keys;
+            var data=[], keys;
             if ($scope.csvContent) {
               var csvParser = d3.dsv($scope.delim, 'text/plain');
               csvParser.parse($scope.csvContent, function (d) {
-                data = d;
+                data.push(d);
                 keys = d3.keys(d);
               });
             } else {
@@ -352,6 +352,20 @@ fdView.controller('EditProfileCtrl', ['$scope', '$window', 'toastr', '$uibModal'
         $scope.externalKeys = res.keys;
       });
 
+    };
+
+    $scope.createDefault = function () {
+      ContentProfile.getDefault({rows: $scope.externalData}).success(function (res) {
+        $scope.contentProfile = res;
+        $scope.profileGraph = ContentProfile.graphProfile();
+        $scope.colDefs = ContentProfile.getColDefs();
+        $timeout(function () {
+          $scope.$broadcast('cytoscapeFitOne');
+        }, 10);
+        $scope.externalKeys = [];
+      }).error(function (res) {
+        toastr.error(res, 'Error');
+      });
     };
 
     $scope.validate = function(){

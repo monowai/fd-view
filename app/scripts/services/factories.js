@@ -134,6 +134,13 @@ fdView.factory('QueryService', ['$http', 'configuration', function ($http, confi
             });
         }
       },
+      getDefault: function (data) {
+        return $http.post(configuration.engineUrl() + '/api/v1/content/default', data)
+          .success(function (res) {
+            cp = res;
+            cp.documentType = {name:cpType};
+          });
+      },
       graphProfile: function () {
         if (_.isEmpty(cp)) return ;
         if (cpGraph.length>0) {
