@@ -39,14 +39,12 @@ module.exports = function (grunt) {
       },
       development: {
         constants: {
-          engineUrl: 'http://127.0.0.1:8080',
-          exploreUrl: 'not-used'
+          engineUrl: 'http://127.0.0.1:8080'
         }
       },
       production: {
         constants: {
-          engineUrl: 'https://demo.flockdata.com',
-          exploreUrl: 'https://demo.flockdata.com/'
+          engineUrl: '@FD-API@'
         }
       }
     },
@@ -197,8 +195,9 @@ module.exports = function (grunt) {
           src: [
             '<%= yeoman.dist %>/scripts/{,*/}*.js',
             '<%= yeoman.dist %>/styles/{,*/}*.css',
-            '<%= yeoman.dist %>/images/{,*/}*.{png,jpg,jpeg,gif,webp,svg}',
             '<%= yeoman.dist %>/styles/fonts/*'
+            // '<%= yeoman.dist %>/images/{,*/}*.{png,jpg,jpeg,gif,webp,svg}',
+
           ]
         }
       }
@@ -326,11 +325,11 @@ module.exports = function (grunt) {
             dest: '<%= yeoman.dist %>',
             src: [
               '*.{ico,png,txt}',
-              '.htaccess',
+              // '.htaccess',
               '*.html',
               'styles/{,*/}*.css',
               'views/{,*/}*.html',
-              'images/{,*/}*.{webp}',
+              'images/*.*',
               'fonts/*'
             ]
           },
@@ -399,15 +398,15 @@ module.exports = function (grunt) {
     'connect:test'
   ]);
 
-  grunt.registerTask('test', [
+  grunt.registerTask('install', [
     'clean:server',
     'concurrent:test',
     'autoprefixer',
     'connect:test',
-    'build'
+    'dist'
   ]);
 
-  grunt.registerTask('build', [
+  grunt.registerTask('dist', [
     'clean:dist',
     'ngconstant:production',
     'copy:dist',
