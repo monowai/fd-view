@@ -11,7 +11,8 @@ test:
     - grunt default:
         timeout: 180 # fail if command has no output for 3 minutes
   post:
-    - grunt install:
+    # serve:sstop creates the dist, starts and stops with Grunt
+    - grunt serve:sstop:
         timeout: 180
 
 deployment:

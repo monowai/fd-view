@@ -89,8 +89,12 @@
                   $rootScope.$broadcast('event:not-found', rejection);
                   break;
                 case 500:
-                  $rootScope.$broadcast('event:server-error');
+                  $rootScope.$broadcast('event:server-error', rejection.data);
                   break;
+                case 400:
+                  $rootScope.$broadcast('event:server-report', rejection.data);
+                  break;
+
               }
             }
             // otherwise, default behaviour

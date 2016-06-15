@@ -132,7 +132,7 @@ var fdView = angular.module('fdView', [
     angular.extend(toastrConfig, {
       newestOnTop: false,
       positionClass: 'toast-top-center',
-      preventDuplicates: true,
+      // preventDuplicates: true,
       closeButton: true,
       target: 'body'
     });
@@ -140,7 +140,6 @@ var fdView = angular.module('fdView', [
   .run(['$rootScope', '$state', '$http', 'AuthenticationSharedService', 'Session', 'toastr', 'USER_ROLES',
     function ($rootScope, $state, $http, AuthenticationSharedService, Session, toastr, USER_ROLES) {
       // TODO NEED TO SEE
-      $rootScope.msg = '';
       $rootScope.$on("$stateChangeError", console.log.bind(console));
       $rootScope.$on('$stateChangeStart', function (event, next) {
         $rootScope.isAuthorized = AuthenticationSharedService.isAuthorized;
@@ -155,30 +154,28 @@ var fdView = angular.module('fdView', [
           if ($state.is('login')) {
             $state.go('welcome');
           }
-          $rootScope.msg = '';
         }
       );
 
       // Call when the 401 response is returned by the server
       $rootScope.$on('event:auth-loginRequired',
         function () {
+          //if ($rootScope.authenticated.username || $scope.password) {
+          // Only display this if the user is attempting to login, not when they just hit the page
+            toastr.warning('Please login with valid credentials...');
+          //}
           Session.invalidate();
           delete $rootScope.authenticated;
           if (!$state.is('settings') && !$state.is('login')) {
             $state.go('login');
           }
-          if ($rootScope.msg === null || $rootScope.msg === '') {
-            // $rootScope.msg = 'Please login';
-          }
-          toastr.warning('Please login...');
         }
       );
       // Call when the 403 response is returned by the server
       $rootScope.$on('event:auth-notAuthorized',
-        function () {
-          $rootScope.errorMessage = 'errors.403';
+        function (event,data) {
           // $rootScope.msg = 'Your user account has no access to business information';
-          toastr.error('Your user account has no access to business information', 'Error');
+          toastr.error(data.message, 'Error');
         }
       );
 
@@ -197,11 +194,17 @@ var fdView = angular.module('fdView', [
       );
       // Call when the 500 response is returned by the server
       $rootScope.$on('event:server-error',
-        function () {
-          $rootScope.errorMessage = 'errors.500';
-          toastr.error('Server error!');
+        function (event,data) {
+          toastr.error(data.message);
         }
       );
+
+      $rootScope.$on('event:server-report',
+        function (event,data) {
+          toastr.error(data.message);
+        }
+      );
+
       // Call when the 200 response is returned by the server
       $rootScope.$on('event:status-ok',
         function (event, data) {
@@ -232,29 +235,6 @@ fdView.provider('configuration', ['engineUrl', function ( engineUrl) {
     'engineUrl': localStorage.getItem('engineUrl') ||  engineUrl,
     'devMode': localStorage.getItem('devMode')
   };
-
-  // function getDefaultEngineUrl() {
-  //   return config.engineUrl;
-  // }
-  //
-  // function getDefaultExploreUrl() {
-  //   var _exploreUrl;
-  //   if (window.location.href.indexOf('fd-view') > -1) {
-  //     _exploreUrl = window.location.href.substring(0, window.location.href.indexOf('fd-view'));
-  //
-  //   } else {
-  //     var port = window.location.host.indexOf(':');
-  //     if (port > 0) {
-  //       _exploreUrl = window.location.protocol + '//' + window.location.host.substr(0, port) + ':8080';
-  //     } else {
-  //       _exploreUrl = window.location.protocol + '//' + window.location.host;
-  //     }
-  //
-  //   }
-  //   console.log('Calculated URL is ' + _exploreUrl);
-  //
-  //   return _exploreUrl;
-  // }
 
   return {
     $get: function () {

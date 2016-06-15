@@ -21,6 +21,7 @@ module.exports = function (grunt) {
   // Define the configuration for all the tasks
   grunt.initConfig({
     bower: grunt.file.readJSON('./.bowerrc'),
+
     // Project settings
     yeoman: {
       // configurable paths
@@ -33,8 +34,7 @@ module.exports = function (grunt) {
         name: 'config',
         dest: '<%= yeoman.app %>/scripts/config.js',
         constants: {
-          engineUrl: '',
-          exploreUrl: ''
+          engineUrl: ''
         }
       },
       development: {
@@ -58,14 +58,15 @@ module.exports = function (grunt) {
       },
       js: {
         files: ['<%= yeoman.app %>/scripts/{,*/}*.js'],
-        tasks: ['newer:jshint:all'],
+        // tasks: ['newer:jshint:all'],
         options: {
           livereload: '<%= connect.options.livereload %>'
         }
       },
       jsTest: {
-        files: ['test/spec/{,*/}*.js'],
-        tasks: ['newer:jshint:test']
+        tasks: ['newer:jshint:test'],
+        files: ['test/spec/{,*/}*.js']
+
       },
       styles: {
         files: ['<%= yeoman.app %>/styles/{,*/}*.css'],
@@ -101,11 +102,11 @@ module.exports = function (grunt) {
             '.tmp',
             '<%= yeoman.app %>'
           ],
-          middleware: function(connect, options) {
+          middleware: function (connect, options) {
             var middlewares = [];
 
             middlewares.push(modRewrite(['^[^\\.]*$ /index.html [L]'])); //Matches everything that does not contain a '.' (period)
-            options.base.forEach(function(base) {
+            options.base.forEach(function (base) {
               middlewares.push(connect.static(base));
             });
             return middlewares;
@@ -274,7 +275,7 @@ module.exports = function (grunt) {
     htmlmin: {
       dist: {
         options: {
-          removeComments:true,
+          removeComments: true,
           collapseWhitespace: true,
           collapseBooleanAttributes: true,
           removeCommentsFromCDATA: true,
@@ -365,20 +366,26 @@ module.exports = function (grunt) {
   });
 
 
-  grunt.registerTask('serve', function (target) {
-    if (target === 'dist') {
-      return grunt.task.run(['build', 'connect:dist:keepalive']);
-    }
-    grunt.task.run([
-      'clean:server',
-      'wiredep',
-      'concurrent:server',
-      'ngconstant:development',
-      'autoprefixer',
-      'connect:livereload',
-      'watch'
-    ]);
-  });
+  grunt.registerTask('serve',
+    function (target) {
+      grunt.log.writeln('....' + target);
+      if (target == 'dist') {
+        return grunt.task.run(['dist', 'connect:dist:keepalive']);
+      }
+      if (target == 'sstop') {
+        return grunt.task.run(['dist', 'connect:dist']);
+      }
+
+      grunt.task.run([
+        'clean:server',
+        'wiredep',
+        'concurrent:server',
+        'ngconstant:development',
+        'autoprefixer',
+        'connect:livereload',
+        'watch'
+      ]);
+    });
 
   grunt.registerTask('server', function (target) {
     grunt.log.warn('The `server` task has been deprecated. Use `grunt serve` to start a server.');
@@ -416,9 +423,7 @@ module.exports = function (grunt) {
     'htmlmin'
   ]);
 
-  grunt.registerTask('jshint', [
-    'newer:jshint',
-    'default',
-    'build'
-  ]);
+  // grunt.registerTask('jshint', [
+  //   'newer:jshint'
+  // ]);
 };

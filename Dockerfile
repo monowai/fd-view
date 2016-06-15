@@ -7,8 +7,8 @@ FROM nginx:mainline-alpine
 MAINTAINER Mike Holdsworth "https://github.com/monowai"
 
 # bower install
-# grunt build
-# docker dist -t flockdata/fd-view .
+# grunt dist
+# docker build -t flockdata/fd-view .
 # docker run -p 80:80 flockdata/fd-view
 
 ENV ENGINE_URL http://fd-engine:8081

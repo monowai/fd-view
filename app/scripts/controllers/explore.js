@@ -20,8 +20,8 @@
 
 'use strict';
 
-fdView.controller('ExploreCtrl', ['$scope', '$http', 'QueryService', '$compile', '$controller', 'configuration',
-  function ($scope, $http, QueryService, $compile, $controller, configuration) {
+fdView.controller('ExploreCtrl', ['$scope', '$http', 'QueryService', '$compile', '$controller', 'configuration', 'toastr',
+  function ($scope, $http, QueryService, $compile, $controller, configuration, toastr) {
     $scope.matrix = QueryService.lastMatrix();
     if(_.isEmpty($scope.matrix)) {
       angular.element('[data-target="#search"]').tab('show');
@@ -129,7 +129,6 @@ fdView.controller('ExploreCtrl', ['$scope', '$http', 'QueryService', '$compile',
       if ($scope.sharedRlxChecked) {
         $scope.toRlx = $scope.fromRlx;
       }
-      $scope.msg = '';
 
       QueryService.matrixSearch($scope.fortress,
         $scope.searchText,
@@ -142,11 +141,9 @@ fdView.controller('ExploreCtrl', ['$scope', '$http', 'QueryService', '$compile',
         $scope.minCount,
         $scope.reciprocalExcludedChecked,
         true).then(function (data) {
-          if (!data || data.length === 0) {
-            $scope.msg = 'No Results.';
+          if (!data || data.edges.length === 0) {
+            toastr.info('No data was found. Try altering your criteria');
             return data;
-          } else {
-            $scope.msg = null;
           }
 
           $scope.graphData = data;
