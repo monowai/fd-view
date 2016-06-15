@@ -36,7 +36,7 @@ fdView.controller('ImportCtrl', ['$scope', '$window', '$rootScope', '$uibModal',
       $uibModal.open({
         templateUrl: 'create-profile.html',
         scope: $scope,
-        controller: function ($uibModalInstance) {
+        controller: ['$uibModalInstance', function ($uibModalInstance) {
           $scope.new = {};
 
           $scope.cancel = $uibModalInstance.dismiss;
@@ -134,7 +134,7 @@ fdView.controller('ImportCtrl', ['$scope', '$window', '$rootScope', '$uibModal',
             ContentProfile.createEmpty(profile);
             $uibModalInstance.close(profile);
           }
-        }
+        }]
       }).result.then(function (profile) {
         if (profile) {
           $state.go('contentProfile');

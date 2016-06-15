@@ -23,12 +23,16 @@
 fdView.controller('AdminCtrl', ['$scope', '$rootScope', '$uibModal', 'QueryService', 'AuthenticationSharedService', '$state', '$http', '$timeout', 'configuration', 'USER_ROLES',
   function ($scope, $rootScope, $uibModal, QueryService, AuthenticationSharedService, $state, $http, $timeout, configuration, USER_ROLES) {
 
+    $http.get(configuration.engineUrl() + '/api/v1/admin/health').then(function (res) {
+      $scope.fdhealth = res.data;
+    });
+
     QueryService.general('fortress').then(function (data) {
       $scope.fortresses = data;
     });
 
-    $http.get(configuration.engineUrl() + '/api/v1/fortress/timezones').then(function (response) {
-      $scope.timezones = response.data;
+    $http.get(configuration.engineUrl() + '/api/v1/fortress/timezones').then(function (res) {
+      $scope.timezones = res.data;
     });
 
     $scope.isAdmin = function () {

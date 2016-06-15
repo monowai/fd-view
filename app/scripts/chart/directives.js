@@ -19,7 +19,7 @@
  */
 
 angular.module('ab.graph.matrix.directives', [])
-  .directive('chordDiagram', function ($timeout) {
+  .directive('chordDiagram', ['$timeout', function ($timeout) {
     function drawChords(ele, matrix, mmap, scope) {
       var el = ele[0];
       var w = 1024, h = 640, r1 = h / 2, r0 = r1 - 100;
@@ -194,7 +194,8 @@ angular.module('ab.graph.matrix.directives', [])
         });
       }
     }
-  }).directive('cooccurrenceDiagram', function () {
+  }])
+  .directive('cooccurrenceDiagram', function () {
     /**
      * The graph is drawn by row.
      * @param  {[type]} matrix [matrix is a 2 dimension arrays. The 1st dimension is rows and 2nd one is each row.]
@@ -396,7 +397,8 @@ angular.module('ab.graph.matrix.directives', [])
         });
       }
     };
-  }).directive('bipartiteDiagram', function ($q, $timeout) {
+  })
+  .directive('bipartiteDiagram', ['$q', '$timeout', function ($q, $timeout) {
     function reset(graphID) {
       d3.select('#' + graphID).remove();
     }
@@ -439,7 +441,7 @@ angular.module('ab.graph.matrix.directives', [])
 
       }
     };
-  });
+  }]);
 
 var warnMsg = function (timeout, graphID, defer, dataLength) {
   var timeoutMs = 5000;

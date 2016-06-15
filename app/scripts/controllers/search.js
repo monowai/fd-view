@@ -39,7 +39,7 @@ fdView.controller('HeaderCtrl', ['$scope', '$rootScope', 'AuthenticationSharedSe
 }]);
 
 
-fdView.controller('LeftBarCtrl', ['$scope', '$rootScope', 'ProfileService', 
+fdView.controller('LeftBarCtrl', ['$scope', '$rootScope', 'ProfileService',
   function ($scope, $rootScope, ProfileService) {
 
     ProfileService.getMyProfile().then(function (data) {
@@ -54,7 +54,7 @@ fdView.controller('LeftBarCtrl', ['$scope', '$rootScope', 'ProfileService',
 );
 
 // New Search Controller
-fdView.controller('MetaHeaderCtrl', ['$scope', 'EntityService', '$uibModal', 'configuration', 
+fdView.controller('MetaHeaderCtrl', ['$scope', 'EntityService', '$uibModal', 'configuration',
   function ($scope, EntityService, $uibModal, configuration) {
     //ToDo: Why do I need to Explore functions?
     $scope.advancedSearch = false;

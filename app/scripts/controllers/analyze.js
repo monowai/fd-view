@@ -20,8 +20,8 @@
 
 'use strict';
 
-fdView.controller('AnalyzeCtrl', ['$scope', 'QueryService', '$window', '$controller', '$timeout', 'configuration',
-  function ($scope, QueryService, $window, $controller, $timeout, configuration) {
+fdView.controller('AnalyzeCtrl', ['$scope', 'QueryService', '$window', '$timeout', 'configuration',
+  function ($scope, QueryService, $window, $timeout, configuration) {
     $scope.minCount = 1;
     $scope.resultSize = 1000;
     $scope.sharedRlxChecked = true;
@@ -42,7 +42,7 @@ fdView.controller('AnalyzeCtrl', ['$scope', 'QueryService', '$window', '$control
       $timeout(function () {
         $scope.switchChart();
       }, 10);
-    };
+    }
 
     QueryService.general('fortress').then(function (data) {
       $scope.fortresses = data;
@@ -104,32 +104,32 @@ fdView.controller('AnalyzeCtrl', ['$scope', 'QueryService', '$window', '$control
 
     $scope.search = function () {
       if ($scope.chartType === 'TagCloud') {
-        QueryService.tagCloud($scope.searchText, $scope.document, $scope.fortress, $scope.concept, $scope.fromRlx).then(function (data) {
-          var terms = [];
-          for (var key in data.terms) {
-            var item = {};
-            item.occur = data.terms[key];
-            item.term = key;
-            item.size = data.terms[key].value;
-            terms.push(item);
-          }
+        QueryService.tagCloud($scope.searchText, $scope.document, $scope.fortress, $scope.concept, $scope.fromRlx)
+          .then(function (data) {
+            var terms = [];
+            for (var key in data.terms) {
+              var item = {};
+              item.occur = data.terms[key];
+              item.term = key;
+              item.size = data.terms[key].value;
+              terms.push(item);
+            }
 
-          d3.layout.cloud().size([600, 600])
-            .words(terms.map(function (d) {
-              return {text: d.term, size: d.occur};
-            }))
-            .padding(2)
-            .rotate(function () {
-              //return (~~(Math.random() * 6) - 3) * 30;
-              return 0;
-            })
-            .font('Impact')
-            .fontSize(function (d) {
-              return d.size;
-            })
-            .on('end', draw)
-            .start();
-
+            d3.layout.cloud().size([600, 600])
+              .words(terms.map(function (d) {
+                return {text: d.term, size: d.occur};
+              }))
+              .padding(2)
+              .rotate(function () {
+                //return (~~(Math.random() * 6) - 3) * 30;
+                return 0;
+              })
+              .font('Impact')
+              .fontSize(function (d) {
+                return d.size;
+              })
+              .on('end', draw)
+              .start();
         });
       }
       else {
@@ -149,7 +149,8 @@ fdView.controller('AnalyzeCtrl', ['$scope', 'QueryService', '$window', '$control
           $scope.toRlx,
           $scope.minCount,
           $scope.reciprocalExcludedChecked,
-          false).then(function (data) {
+          false)
+          .then(function (data) {
             if (!data || data.length === 0) {
               $scope.msg = 'No Results.';
               return data;
@@ -160,12 +161,8 @@ fdView.controller('AnalyzeCtrl', ['$scope', 'QueryService', '$window', '$control
             $scope.cdData = null;
             $scope.coData = null;
             $scope.bpData = null;
-            $scope.coMgr = $controller(constructCooccurrenceData, {
-              $scope: {},
-              getData: function () {
-                return $scope.graphData;
-              }
-            });
+            $scope.coMgr = new constructCooccurrenceData($scope.graphData);
+
             $scope.switchChart();
           }
         );
@@ -252,8 +249,8 @@ function constructTagCloudData(data) {
 
 }
 
-function constructCooccurrenceData($scope, getData) {
-  var data = getData();
+function constructCooccurrenceData(data) {
+  // var data = getData;
   this.getConstructedData = function () {
     var matrix = [],
       nodes = _.union(_.pluck(data, 'source'), _.pluck(data, 'target')),

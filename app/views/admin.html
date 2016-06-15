@@ -35,6 +35,11 @@
 
   <!-- Default box -->
   <div class="row">
+    <!--<uib-tabset class="nav-tabs-custom">-->
+      <!--<ui-view></ui-view>-->
+    <!--</uib-tabset>-->
+
+
     <div class="col-md-6">
       <div class="box box-warning">
         <div class="box-header with-border">
@@ -115,6 +120,13 @@
       </div>
       <!-- /.box -->
 
+    </div>
+
+    <div class="col-md-6">
+      <div ng-repeat="(k,v) in fdhealth">
+        <label>{{k}}:</label>
+        <span>{{v}}</span>
+      </div>
     </div>
 
     <div class="col-md-6">

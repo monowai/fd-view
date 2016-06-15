@@ -201,7 +201,7 @@ var fdView = angular.module('fdView', [
 
       $rootScope.$on('event:server-report',
         function (event,data) {
-          toastr.error(data.message);
+          toastr.warning(data.message);
         }
       );
 
