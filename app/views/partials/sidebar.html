@@ -24,8 +24,14 @@
       <li ui-sref-active="active"><a ui-sref="analyze"><i class="fa fa-area-chart"></i> <span>Analyze</span></a></li>
       <li ui-sref-active="active"><a ui-sref="explore"><i class="fa fa-link"></i> <span>Explore</span></a></li>
       <li ui-sref-active="active"><a ui-sref="statistics"><i class="fa fa-pie-chart"></i> <span>Statistics</span></a></li>
-      <li ui-sref-active="active"><a ui-sref="import"><i class="fa fa-database"></i> <span>Model</span></a></li>
-      <li ui-sref-active="active"><a ui-sref="admin"><i class="fa fa-dashboard"></i> <span>Administration</span></a></li>
+      <li ui-sref-active="active"><a ui-sref="model"><i class="fa fa-database"></i> <span>Model</span></a></li>
+      <li ui-sref-active="active" class="treeview"><a ui-sref="admin"><i class="fa fa-dashboard"></i> <span>Administration</span></a>
+        <ul class="treeview-menu">
+          <li ui-sref-active="active"><a ui-sref="admin.fortress"><i class="fa fa-database"></i> <span>Data Providers</span></a></li>
+          <li ui-sref-active="active"><a ui-sref="admin.user"><i class="fa fa-user"></i> <span>User Management</span></a></li>
+          <li ui-sref-active="active"><a ui-sref="admin.health"><i class="fa fa-user"></i> <span>Health</span></a></li>
+        </ul>
+      </li>
     </ul>
     <!-- /.sidebar-menu -->
   </section>

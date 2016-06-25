@@ -210,6 +210,7 @@ h4.paragraph-header {
   width: 100%;
   height: 100%;
   display: block;
+  border: 1px solid #ccc ;
 }
 
 .cursor {
@@ -230,6 +231,30 @@ h4.paragraph-header {
 
 select:invalid {
   color: gray;
+}
+
+td > input {
+  padding: 6px 12px;
+  width: 100%;
+  border: 1px solid #fff;
+}
+
+td > input:focus {
+  border-color: #3c8dbc;
+  box-shadow: none;
+  outline: 0;
+}
+
+td > input:hover {
+  border-color: #3c8dbc;
+}
+
+td > input.ng-invalid-required {
+  border-color: #985f0d;
+}
+
+.fortress-info {
+  border-bottom: 1px solid #f4f4f4;
 }
 
 .fader {
@@ -266,6 +291,6 @@ select:invalid {
   transition: all linear 500ms;
 }
 
-.fader.ng-hide-add {
-  transition: all linear 500ms;
-}
+/*.fader.ng-hide-add {*/
+  /*transition: all linear 500ms;*/
+/*}*/

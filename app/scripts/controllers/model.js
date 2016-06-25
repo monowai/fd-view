@@ -20,15 +20,15 @@
 
 'use strict';
 
-fdView.controller('ImportCtrl', ['$scope', '$window', '$rootScope', '$uibModal', 'QueryService', 'ContentProfile', '$state', '$http', '$timeout', '$compile', 'configuration',
-  function ($scope, $window, $rootScope, $uibModal, QueryService, ContentProfile, $state, $http, $timeout, $compile, configuration) {
+fdView.controller('ModelCtrl', ['$scope', '$window', '$rootScope', '$uibModal', 'QueryService', 'ContentModel', '$state', '$http', '$timeout', '$compile', 'configuration',
+  function ($scope, $window, $rootScope, $uibModal, QueryService, ContentModel, $state, $http, $timeout, $compile, configuration) {
     //$state.transitionTo('import.load');
 
     QueryService.general('fortress').then(function (data) {
       $scope.fortresses = data;
     });
 
-    ContentProfile.getAll().then(function (res) {
+    ContentModel.getAll().then(function (res) {
       $scope.cplist = res.data;
     });
 
@@ -130,22 +130,24 @@ fdView.controller('ImportCtrl', ['$scope', '$window', '$rootScope', '$uibModal',
             });
           };
 
-          $scope.createEmpty = function(profile) {
-            ContentProfile.createEmpty(profile);
-            $uibModalInstance.close(profile);
+          $scope.createEmpty = function(isValid, model) {
+            if (isValid) {
+              ContentModel.createEmpty(model);
+              $uibModalInstance.close(model);
+            }
           }
         }]
-      }).result.then(function (profile) {
-        if (profile) {
-          $state.go('contentProfile');
+      }).result.then(function (model) {
+        if (model) {
+          $state.go('contentModel');
         }
       });
     };
 
-    $scope.editProfile = function (profile) {
-      if (profile) {
-        ContentProfile.getProfile(profile).then(function () {
-          $state.go('contentProfile');
+    $scope.editProfile = function (model) {
+      if (model) {
+        ContentModel.getModel(model).then(function () {
+          $state.go('contentModel');
         });
       }
     };
@@ -153,15 +155,15 @@ fdView.controller('ImportCtrl', ['$scope', '$window', '$rootScope', '$uibModal',
   }]);
 
 
-fdView.controller('LoadProfileCtrl', ['$scope', '$uibModal', 'QueryService', 'ContentProfile', '$state', '$http', '$timeout', '$compile', 'configuration',
-  function ($scope, $uibModal, QueryService, ContentProfile, $state, $http, $timeout, $compile, configuration) {
+fdView.controller('LoadProfileCtrl', ['$scope', '$uibModal', 'QueryService', 'ContentModel', '$state', '$http', '$timeout', '$compile', 'configuration',
+  function ($scope, $uibModal, QueryService, ContentModel, $state, $http, $timeout, $compile, configuration) {
 
     QueryService.general('fortress').then(function (data) {
       $scope.fortresses = data;
     });
 
-    $scope.fortress = ContentProfile.getFortress();
-    $scope.type = ContentProfile.getDocType();
+    $scope.fortress = ContentModel.getFortress();
+    $scope.type = ContentModel.getDocType();
 
     $scope.selectFortress = function(fortress) {
       var query = [fortress];
@@ -169,24 +171,24 @@ fdView.controller('LoadProfileCtrl', ['$scope', '$uibModal', 'QueryService', 'Co
         $scope.documents = data;
         if(data.length>0) {
           $scope.type = $scope.documents[0].name;
-          $scope.selectProfile($scope.type);
+          $scope.selectModel($scope.type);
         }
       });
     };
 
-    $scope.selectProfile = function (type) {
-      ContentProfile.getProfile($scope.fortress, type)
+    $scope.selectModel = function (type) {
+      ContentModel.getModel($scope.fortress, type)
         .success(function (data) {
-          $scope.contentProfile = data;
-          $scope.profileGraph = profile2graph();
+          $scope.contentModel = data;
+          $scope.modelGraph = model2graph();
         })
         .error(function(){
-          $scope.noProfile = true;
+          $scope.noModel = true;
         });
     };
 
-    var profile2graph = function () {
-      return ContentProfile.graphProfile();
+    var model2graph = function () {
+      return ContentModel.graphModel();
     };
 
     $scope.checkProfile = function() {

@@ -31,6 +31,7 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <title>FlockData</title>
+  <base href="/" />
   <meta name="description" content="">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <!-- build:css styles/vendor.css -->
@@ -50,13 +51,13 @@
   <link rel="stylesheet" href="styles/skin-blue.css">
  <!-- endbuild -->
 
-  <base href="/">
+
   <!--[if lt IE 9]>
   <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
   <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
   <![endif]-->
 </head>
-<body ng-controller="IndexCtrl" class="hold-transition" ng-class="authenticated() ? 'skin-blue sidebar-mini' : 'login-page'">
+<body ng-controller="IndexCtrl" class="hold-transition" ng-class="authenticated() ? 'skin-blue sidebar-collapse sidebar-mini' : 'login-page'">
 <!--[if lt IE 7]>
 <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade
   your browser</a> to improve your experience.</p>
@@ -103,6 +104,8 @@ https://cdnjs.cloudflare.com/ajax/libs/es5-shim/4.5.8/es5-shim.min.js
 <script src="bower_components/cytoscape/dist/cytoscape.js"></script>
 <script src="bower_components/ng-jsoneditor/ng-jsoneditor.min.js"></script>
 <script src="bower_components/angular-toastr/dist/angular-toastr.tpls.js"></script>
+<script src="bower_components/angular-elastic/elastic.js"></script>
+<script src="bower_components/ng-textcomplete/ng-textcomplete.js"></script>
 <!-- endbower -->
 <!-- endbuild -->
 <!-- build:js({.tmp,app}) scripts/scripts.js -->
@@ -128,8 +131,8 @@ https://cdnjs.cloudflare.com/ajax/libs/es5-shim/4.5.8/es5-shim.min.js
 <script src="scripts/controllers/search.js"></script>
 <script src="scripts/controllers/analyze.js"></script>
 <script src="scripts/controllers/explore.js"></script>
-<script src="scripts/controllers/import.js"></script>
-<script src="scripts/controllers/editprofile.js"></script>
+<script src="scripts/controllers/model.js"></script>
+<script src="scripts/controllers/editmodel.js"></script>
 <script src="scripts/controllers/admin.js"></script>
 <script src="scripts/controllers/viewentity.js"></script>
 <script src="scripts/controllers/login.js"></script>
@@ -138,8 +141,6 @@ https://cdnjs.cloudflare.com/ajax/libs/es5-shim/4.5.8/es5-shim.min.js
 <script src="scripts/directives.js"></script>
 <script src="scripts/adminlte.min.js"></script>
 <!-- endbuild -->
-
-
 
 
 </body>

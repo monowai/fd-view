@@ -80,7 +80,7 @@ fdView.factory('QueryService', ['$http', 'configuration', function ($http, confi
     };
   }]
 )
-.factory('ContentProfile', ['$http', '$q', 'configuration',
+.factory('ContentModel', ['$http', '$q', 'configuration',
   function ($http, $q, configuration) {
     var cplist = [];
     var cp = {};
@@ -89,7 +89,7 @@ fdView.factory('QueryService', ['$http', 'configuration', function ($http, confi
     var colDefs = [];
     return {
       getAll: function () {
-        return $http.get(configuration.engineUrl() + '/api/v1/content/')
+        return $http.get(configuration.engineUrl() + '/api/v1/model/')
           .success(function (data) {
             angular.copy(data, cplist);
           });
@@ -97,20 +97,26 @@ fdView.factory('QueryService', ['$http', 'configuration', function ($http, confi
       getColDefs: function () {
         return colDefs;
       },
+      addCol: function (col) {
+        colDefs.push(col);
+        var column = {};
+        column[col.name]={dataType: col.dataType};
+        _.extend(cp.content,column);
+      },
       getCurrent: function () {
         return cp;
       },
-      createEmpty: function (profile) {
-        cpFortress = profile.fortress.name;
-        cpType = profile.documentType.name;
-        cp = profile;
+      createEmpty: function (content) {
+        cpFortress = content.fortress.name;
+        cpType = content.documentType.name;
+        cp = content;
         cp.content = {};
 
       },
       createDefault: function (fortress, doctype) {
         angular.copy(fortress, cpFortress);
         angular.copy(doctype, cpType);
-        return $http.post(configuration.engineUrl() + '/api/v1/content/default/');
+        return $http.post(configuration.engineUrl() + '/api/v1/model/default/');
       },
       getFortress: function () {
         if (cpFortress) { return cpFortress; }
@@ -118,7 +124,7 @@ fdView.factory('QueryService', ['$http', 'configuration', function ($http, confi
       getDocType: function () {
         if (cpType) { return cpType; }
       },
-      getProfile: function (profile) {
+      getModel: function (profile) {
         if (!profile || (profile.fortress===cpFortress && profile.documentType===cpType && cp!=={}) || (!profile.fortress && cp.length>0)) {
           var deferred = $q.defer();
           deferred.resolve(cp);
@@ -127,21 +133,21 @@ fdView.factory('QueryService', ['$http', 'configuration', function ($http, confi
           if (profile.fortress!==cpFortress) cpFortress=profile.fortress;
           if (profile.documentType!==cpType) cpType=profile.documentType;
 
-          return $http.get(configuration.engineUrl() + '/api/v1/content/' + profile.key)
+          return $http.get(configuration.engineUrl() + '/api/v1/model/' + profile.key)
             .success(function (data) {
               console.log(data);
-              angular.copy(data.contentProfile, cp);
+              angular.copy(data.contentModel, cp);
             });
         }
       },
       getDefault: function (data) {
-        return $http.post(configuration.engineUrl() + '/api/v1/content/default', data)
+        return $http.post(configuration.engineUrl() + '/api/v1/model/default', data)
           .success(function (res) {
             cp = res;
             cp.documentType = {name:cpType};
           });
       },
-      graphProfile: function () {
+      graphModel: function () {
         if (_.isEmpty(cp)) return ;
         if (cpGraph.length>0) {
           return cpGraph;
@@ -156,10 +162,7 @@ fdView.factory('QueryService', ['$http', 'configuration', function ($http, confi
             return entity;
           };
           var isTag = function (o) {
-            return o.tag === true || o.tagOrEntity === 'tag';
-          };
-          var addProp = function (obj, property) {
-            return _.extend(obj, property);
+            return Boolean(o.tag) === true || o.tagOrEntity === 'tag';
           };
           var createTag = function (key, data) {
             var tag = new Object({id: key, name: key, type: 'tag'});
@@ -181,6 +184,11 @@ fdView.factory('QueryService', ['$http', 'configuration', function ($http, confi
           var hasAliases = function (obj) {
             return !!obj.aliases && obj.aliases.length > 0;
           };
+
+          var containsEdge = function (edge) { // to check if edge is already in the graph
+            return _.findIndex(graph.edges,function(o){return _.isMatch(o.data,edge)})>=0;
+          };
+
           var createTargets = function (tag, id) {
             _.each(tag.targets, function (target) {
               var t = createTag(target.code, {label: target.label});
@@ -193,7 +201,9 @@ fdView.factory('QueryService', ['$http', 'configuration', function ($http, confi
                 src = id || tag.code;
                 tgt = t.id;
               }
-              graph.edges.push({data: connect(src, tgt, target.relationship)});
+              var edge = connect(src, tgt, target.relationship);
+              if (!containsEdge(edge))
+                graph.edges.push({data: edge});
               if (hasTargets(target)) createTargets(target);
             })
           };
@@ -210,9 +220,20 @@ fdView.factory('QueryService', ['$http', 'configuration', function ($http, confi
           _.each(cp.content, function (obj, key) {
             if (isTag(obj)) {
               colDefs.push({name: key, type: 'tag'});
-              var tag = createTag(key, {label: (obj.label || key)});
-              graph.nodes.push({data: tag});
-              graph.edges.push({data: connect(root.id, tag.id, obj.relationship)});
+              var label = (obj.label || key);
+              var tag = {};
+              var ti = _.findIndex(graph.nodes,function(o){return _.isMatch(o.data,{type: 'tag', label: label})}); // tag index in nodes array
+              if(ti < 0) {
+                tag = createTag(key, {label: label});
+                graph.nodes.push({data: tag});
+              } else {
+                tag = graph.nodes[ti].data;
+              }
+              var edge = connect(root.id, tag.id, obj.relationship);
+              if (!containsEdge(edge)) {
+                graph.edges.push({data: edge});
+              }
+
               if (hasTargets(obj)) {
                 createTargets(obj, tag.id);
               }
@@ -239,14 +260,61 @@ fdView.factory('QueryService', ['$http', 'configuration', function ($http, confi
           return graph;
         }
       },
-      updateProfile: function (profile) {
+      updateModel: function (profile) {
         cp = {};
         angular.copy(profile, cp);
         // this.graphProfile();
       },
-      saveProfile: function () {
+      saveModel: function () {
         var fcode = cpFortress.toLowerCase().replace(/\s/g, '');
-        return $http.post(configuration.engineUrl() + '/api/v1/content/' + fcode +'/'+cpType+'/', cp);
+        return $http.post(configuration.engineUrl() + '/api/v1/model/' + fcode +'/'+cpType+'/', cp);
       }
   };
+}]);
+
+fdView.service('modalService',['$uibModal', function ($uibModal) {
+  var modalDefaults = {
+    backdrop: true,
+    keyboard: true,
+    modalFade: true,
+    templateUrl: 'views/partials/configDPModal.html'
+  };
+
+  this.showModal = function (customModalDefaults, customModalOptions) {
+    if (!customModalDefaults) customModalDefaults = {};
+    customModalDefaults.backdrop = 'static';
+    return this.show(customModalDefaults, customModalOptions);
+  };
+
+  this.show = function (customModalDefaults, customModalOptions) {
+    var tempModalDefaults = {};
+    var tempModalOptions = {};
+
+    angular.extend(tempModalDefaults, modalDefaults, customModalDefaults);
+    angular.extend(tempModalOptions, customModalOptions);
+
+    if(!tempModalDefaults.controller) {
+      tempModalDefaults.controller = ['$scope','$uibModalInstance','$http','configuration', function ($scope, $uibModalInstance, $http, configuration) {
+        if (!tempModalOptions.disable) {
+          $http.get(configuration.engineUrl() + '/api/v1/fortress/timezones').then(function (res) {
+            $scope.timezones = res.data;
+            if (!$scope.obj)
+              $scope.obj = {
+                searchEnabled: true,
+                timeZone: moment.tz.guess()
+              };
+          });
+        }
+        $scope.modalOptions = tempModalOptions;
+        $scope.obj = $scope.modalOptions.obj;
+        $scope.ok = function (res) {
+          $uibModalInstance.close(res);
+        };
+        $scope.close = $uibModalInstance.dismiss;
+      }];
+    }
+
+    return $uibModal.open(tempModalDefaults).result;
+  };
+
 }]);

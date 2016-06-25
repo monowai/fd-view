@@ -28,4 +28,9 @@ fdView.constant('USER_ROLES',
     admin: 'ROLE_FD_ADMIN',
     user: 'ROLE_FD_USER'
   }
-);
+)
+.filter('contains', function() {
+  return function (array, element) {
+    return array.indexOf(element) > -1;
+  };
+});

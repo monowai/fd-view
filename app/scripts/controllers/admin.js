@@ -20,19 +20,21 @@
 
 'use strict';
 
-fdView.controller('AdminCtrl', ['$scope', '$rootScope', '$uibModal', 'QueryService', 'AuthenticationSharedService', '$state', '$http', '$timeout', 'configuration', 'USER_ROLES',
-  function ($scope, $rootScope, $uibModal, QueryService, AuthenticationSharedService, $state, $http, $timeout, configuration, USER_ROLES) {
+fdView.controller('AdminCtrl', ['$scope', '$state', '$http', 'configuration',
+  function ($scope, $state, $http, configuration) {
+    // $state.transitionTo('admin.health');
 
     $http.get(configuration.engineUrl() + '/api/v1/admin/health').then(function (res) {
       $scope.fdhealth = res.data;
     });
 
+  }]);
+
+fdView.controller('AdminFortressCtrl', ['$scope', '$rootScope', 'QueryService', 'AuthenticationSharedService', '$state', '$http', '$timeout', 'modalService', 'configuration', 'USER_ROLES',
+  function ($scope, $rootScope, QueryService, AuthenticationSharedService, $state, $http, $timeout, modalService, configuration, USER_ROLES) {
+
     QueryService.general('fortress').then(function (data) {
       $scope.fortresses = data;
-    });
-
-    $http.get(configuration.engineUrl() + '/api/v1/fortress/timezones').then(function (res) {
-      $scope.timezones = res.data;
     });
 
     $scope.isAdmin = function () {
@@ -46,54 +48,49 @@ fdView.controller('AdminCtrl', ['$scope', '$rootScope', '$uibModal', 'QueryServi
       QueryService.query('documents', query).then(function (data) {
         $scope.documents = data;
       });
-      $http.get(configuration.engineUrl() + '/api/v1/fortress/'+f.code+'/segments').then(function (response) {
-        $scope.segments = response.data;
-      });
+    };
+
+    $scope.next = function () {
+      var i = $scope.fortresses.indexOf($scope.fortress);
+      var f = $scope.fortresses[i<$scope.fortresses.length-1 ? i+1 : 0];
+      $scope.selectFortress(f);
+    };
+    $scope.previous = function () {
+      var i = $scope.fortresses.indexOf($scope.fortress);
+      var f = $scope.fortresses[i!==0 ? i-1 : $scope.fortresses.length-1];
+      $scope.selectFortress(f);
     };
 
     $scope.editFortress = function (f) {
-      $scope.createDP=true;
-      if(f) {
-        $scope.action='Edit';
-        $scope.name = f.name;
-        $scope.searchable = f.searchEnabled;
-        $scope.versionable = f.storeEnabled;
-        $scope.timezone = f.timeZone;
-      } else {
-        $scope.action = 'Create';
-      }
-    };
-
-    $scope.saveFortress = function () {
-      var dp = {
-        name: $scope.name,
-        searchEnabled: $scope.searchable,
-        storeEnabled: $scope.versionable,
-        timeZone: $scope.timezone
+      var modalOptions = {
+        entity: 'Data Provider',
+        obj: f
       };
-      $http.post(configuration.engineUrl()+'/api/v1/fortress/', dp).then(function(response){
-        $scope.createDP = false;
-        $scope.fortresses.push(response.data);
+
+      modalService.showModal({}, modalOptions).then(function (res) {
+        $http.post(configuration.engineUrl()+'/api/v1/fortress/', res).then(function(response){
+          $rootScope.$broadcast('event:status-ok', response.statusText);
+          $scope.fortress = response.data;
+          $scope.fortresses.push($scope.fortress);
+        });
       });
     };
 
     $scope.deleteFortress = function (f) {
-      $uibModal.open({
-        templateUrl: 'delete-modal.html',
+      var modalDefaults = {
         size: 'sm',
-        controller: ['$scope', '$uibModalInstance', function ($scope, $uibModalInstance) {
-          $scope.cancel = $uibModalInstance.dismiss;
-          $scope.type = 'Data Provider';
-          $scope.name = f.name;
-          $scope.delete = function () {
-            $http.delete(configuration.engineUrl()+'/api/v1/admin/'+f.code).then(function (res) {
-              $rootScope.$broadcast('event:status-ok', res.statusText);
-              $uibModalInstance.close(res);
-            });
-          }
-        }]
-      }).result.then(function () {
-        $scope.fortresses.splice($scope.fortresses.indexOf(f), 1);
+        templateUrl: 'views/partials/deleteModal.html'
+      };
+      f.type = 'Data Provider';
+      var modalOptions = {
+        obj: f
+      };
+      modalService.showModal(modalDefaults,modalOptions).then(function (res) {
+        $http.delete(configuration.engineUrl()+'/api/v1/admin/'+res.code).then(function (response) {
+          $rootScope.$broadcast('event:status-ok', response.statusText);
+          $scope.fortresses.splice($scope.fortresses.indexOf(f), 1);
+          $scope.fortress = null;
+        });
       });
     };
 
@@ -103,77 +100,88 @@ fdView.controller('AdminCtrl', ['$scope', '$rootScope', '$uibModal', 'QueryServi
       });
     };
 
-    $scope.editType = function (doc) {
-      $scope.createDT = true;
-      if (doc) {
-        $scope.taction = 'Edit';
-        $scope.typeName = doc.name;
-      } else {
-        $scope.taction = 'Create';
-        $scope.typeName = '';
-      }
+    $scope.selectDocType = function (d) {
+      $http.get(configuration.engineUrl() + '/api/v1/fortress/'+$scope.fortress.code+'/'+d.name+'/segments').then(function (response) {
+        $scope.segments = response.data[0].segments;
+      });
     };
 
-    $scope.saveDocType = function (name) {
-      $http({
-        method: 'PUT',
-        url: configuration.engineUrl() + '/api/v1/fortress/' +$scope.fortress.code+'/'+name,
-        dataType: 'raw',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        data: ''
-      }).then(function(response){
-        $scope.createDT = false;
-        console.log(response.data);
-        $scope.documents.push(response.data);
+    $scope.editType = function (doc) {
+      var modalOptions = {
+        entity: 'Document Type',
+        obj: doc,
+        disable: true
+      };
+
+      modalService.showModal({}, modalOptions).then(function (res) {
+        $http({
+          method: 'PUT',
+          url: configuration.engineUrl() + '/api/v1/fortress/' +$scope.fortress.code+'/'+res.name,
+          dataType: 'raw',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          data: ''
+        }).then(function(response){
+          $rootScope.$broadcast('event:status-ok', response.statusText);
+          $scope.documents.push(response.data);
+        });
       });
     };
 
     $scope.deleteDocType = function (f, dt) {
-      $uibModal.open({
-        templateUrl: 'delete-modal.html',
+      var modalDefaults = {
         size: 'sm',
-        controller: ['$scope', '$uibModalInstance', function ($scope, $uibModalInstance) {
-          $scope.cancel = $uibModalInstance.dismiss;
-          $scope.type = 'Document Type';
-          $scope.name = dt.name;
-          $scope.delete = function () {
-            $http({
-              method: 'DELETE',
-              url: configuration.engineUrl() + '/api/v1/admin/' +f.code+'/'+dt.name,
-              dataType: 'raw',
-              headers: {
-                'Content-Type': 'application/json'
-              }
-            }).then(function(response) {
-              console.log(response);
-              $uibModalInstance.close();
-            })
+        templateUrl: 'views/partials/deleteModal.html'
+      };
+      dt.type = 'Document Type';
+      var modalOptions = {
+        obj: dt
+      };
+      modalService.showModal(modalDefaults,modalOptions).then(function (res) {
+        $http({
+          method: 'DELETE',
+          url: configuration.engineUrl() + '/api/v1/admin/' +f.code+'/'+res.name,
+          dataType: 'raw',
+          headers: {
+            'Content-Type': 'application/json'
           }
-        }]
-      }).result.then(function (res) {
-        $scope.documents.splice($scope.documents.indexOf(dt), 1);
+        }).then(function(response) {
+          $rootScope.$broadcast('event:status-ok', response.message);
+          $scope.documents.splice($scope.documents.indexOf(dt), 1);
+        });
       });
     };
 
-    $scope.deleteSegment = function (seg) {
-      $uibModal.open({
-        templateUrl: 'delete-modal.html',
+    $scope.deleteSegment = function (f,dt,s) {
+      var modalDefaults = {
         size: 'sm',
-        controller: ['$scope', '$uibModalInstance', function ($scope, $uibModalInstance) {
-          $scope.cancel = $uibModalInstance.dismiss;
-          $scope.type = 'Document Segment';
-          $scope.name = seg.code;
-          $scope.delete = function () {
-            console.log('delete');
-            $uibModalInstance.close();
+        templateUrl: 'views/partials/deleteModal.html'
+      };
+      
+      var modalOptions = {
+        obj: {
+          type: 'Document Segment',
+          name: s
+        }
+      };
+      modalService.showModal(modalDefaults,modalOptions).then(function (res) {
+        $http({
+          method: 'DELETE',
+          url: configuration.engineUrl() + '/api/v1/admin/' +f.code+'/'+dt.name+'/'+res.name,
+          dataType: 'raw',
+          headers: {
+            'Content-Type': 'application/json'
           }
-        }]
-      }).result.then(function (res) {
-        $scope.segments.splice($scope.segments.indexOf(seg), 1);
+        }).then(function(response) {
+          $rootScope.$broadcast('event:status-ok', response.message);
+          $scope.segments.splice($scope.segments.indexOf(s), 1);
+        });
       });
-
     }
+  }]);
+
+fdView.controller('AdminUserCtrl', ['$scope', '$rootScope', '$uibModal', 'QueryService', 'AuthenticationSharedService', '$state', '$http', '$timeout', 'configuration', 'USER_ROLES',
+  function ($scope, $rootScope, $uibModal, QueryService, AuthenticationSharedService, $state, $http, $timeout, configuration, USER_ROLES) {
 
   }]);

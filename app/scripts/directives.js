@@ -320,7 +320,7 @@ angular.module('fdView.directives', [])
                   cy.fit(elements,15);
                 });
                 scope.$on('cytoscapeFitOne', function () {
-                  cy.fit(elements, cy.width()/4);
+                  cy.fit(elements, cy.width()/5);
                 });
                 scope.$on('dropped', function (event, data) {
                   console.log('dropped', event);
@@ -548,5 +548,66 @@ angular.module('fdView.directives', [])
   //
   //   }; // end return
   // }]); // end directive(droppable)
+
+  .directive('textcomplete', ['Textcomplete', function(Textcomplete) {
+    return {
+      restrict: 'EA',
+      scope: {
+        columns: '=',
+        message: '=',
+        id: '@',
+        name: '@',
+        placeholder: '@',
+        disabled: '='
+      },
+      template: '<textarea id="{{id}}" name="{{name}}" ng-model="message" type="text"  class="form-control code" msd-elastic ng-disabled="disabled" placeholder="{{placeholder}}"></textarea>',
+      link: function(scope, iElement, iAttrs) {
+
+        var cols = scope.columns;
+        var codes = ['data'];
+        var ta = iElement.find('textarea');
+        var textcomplete = new Textcomplete(ta, [
+          {
+            match: /(^|\s)([\w\-]*)$/,
+            search: function(term, callback) {
+              callback($.map(cols, function(colName) {
+                return colName.toLowerCase().indexOf(term.toLowerCase()) === 0 ? colName : null;
+              }));
+            },
+            index: 2,
+            replace: function(colName) {
+              return '$1' + colName + '';
+            }
+          },
+          {
+            match: /(^|\s)#([\w\-]*)$/,
+            search: function(term, callback) {
+              callback($.map(codes, function(code) {
+                return code.toLowerCase().indexOf(term.toLowerCase()) === 0 ? code : null;
+              }));
+            },
+            index: 2,
+            replace: function(code) {
+              return '$1#' + code + '[';
+            }
+          }
+        ]);
+
+        $(textcomplete).on({
+          'textComplete:select': function (e, value) {
+            scope.$apply(function() {
+              scope.message = value
+            })
+          },
+          'textComplete:show': function (e) {
+            $(this).data('autocompleting', true);
+          },
+          'textComplete:hide': function (e) {
+            $(this).data('autocompleting', false);
+          }
+        });
+      }
+    }
+  }]);
 
 // Directives

@@ -20,16 +20,16 @@
 
 'use strict';
 
-fdView.controller('EditProfileCtrl', ['$scope', '$window', 'toastr', '$uibModal', 'QueryService', 'ContentProfile', '$state', '$http', '$timeout', '$compile', 'configuration',
-  function ($scope, $window, toastr, $uibModal, QueryService, ContentProfile, $state, $http, $timeout, $compile, configuration) {
+fdView.controller('EditModelCtrl', ['$scope', '$window', 'toastr', '$uibModal', 'QueryService', 'ContentModel', '$state', '$http', '$timeout', 'modalService', 'configuration',
+  function ($scope, $window, toastr, $uibModal, QueryService, ContentModel, $state, $http, $timeout, modalService, configuration) {
 
-    // $scope.contentProfile
+    // $scope.contentModel
 
-    ContentProfile.getProfile().then(function (res) {
-      $scope.contentProfile = res;//.data.contentProfile;
-      $scope.profileGraph = ContentProfile.graphProfile();
-      $scope.colDefs = ContentProfile.getColDefs();
-      if ($scope.profileGraph.nodes.length===1) {
+    ContentModel.getModel().then(function (res) {
+      $scope.contentModel = res;//.data.contentModel;
+      $scope.modelGraph = ContentModel.graphModel();
+      $scope.colDefs = ContentModel.getColDefs();
+      if ($scope.modelGraph.nodes.length===1) {
         $timeout(function () {
           $scope.$broadcast('cytoscapeFitOne');
         }, 10);
@@ -45,14 +45,14 @@ fdView.controller('EditProfileCtrl', ['$scope', '$window', 'toastr', '$uibModal'
     };
 
     $scope.save = function () {
-      var profile = $scope.editor.get();
-      ContentProfile.updateProfile(profile);
-      ContentProfile.saveProfile()
+      var model = $scope.editor.get();
+      ContentModel.updateModel(model);
+      ContentModel.saveModel()
         .success(function (res) {
           toastr.success(res.statusText, 'Success');
           angular.element('[data-target="#structure"]').tab('show');
-          $scope.profileGraph = ContentProfile.graphProfile();
-          $scope.colDefs = ContentProfile.getColDefs();
+          $scope.modelGraph = ContentModel.graphModel();
+          $scope.colDefs = ContentModel.getColDefs();
           $timeout(function () {
             $scope.$broadcast('cytoscapeReset');
           }, 500);
@@ -68,7 +68,7 @@ fdView.controller('EditProfileCtrl', ['$scope', '$window', 'toastr', '$uibModal'
         'selector': 'node',
         'css': {
           'content': 'data(id)',
-          'font-size': '14pt',
+          'font-size': '12pt',
           'min-zoomed-font-size': '9pt',
           'text-halign': 'center',
           'text-valign': 'center',
@@ -164,14 +164,15 @@ fdView.controller('EditProfileCtrl', ['$scope', '$window', 'toastr', '$uibModal'
         return res;
       };
       if($scope.nodes.length>0 && $scope.nodes[0]._private.group==='nodes' && $scope.nodes[0]._private.data.type!=='entity') {
-        selected = findObj($scope.contentProfile.content, $scope.nodes[0]._private.data.id);
+        selected = findObj($scope.contentModel.content, $scope.nodes[0]._private.data.id);
       }
 
       $uibModal.open({
         templateUrl: 'edit-element.html',
         controller: ['$scope','$uibModalInstance','active','creating', function ($scope,$uibModalInstance,active,creating) {
           $scope.elem = {};
-          $scope.elem.name = creating;
+          // $scope.elem.name = creating;
+          $scope.types = ['string','number','date'];
           if (creating==='tag') $scope.elem.tag = true;
           if (active !== 'root' && (active.tag || !active.tag)) {
             // console.log(active);
@@ -183,13 +184,11 @@ fdView.controller('EditProfileCtrl', ['$scope', '$window', 'toastr', '$uibModal'
 
           $scope.ok = function (isValid) {
             if (isValid) {
-              $scope.elem.properties = $scope.elem.properties.filter(function (o) {return Object.keys(o).length > 1;})
-              $scope.elem.rlxProperties = $scope.elem.rlxProperties.filter(function (o) {return Object.keys(o).length > 1;})
               $uibModalInstance.close($scope.elem, $scope.active);
             }
           };
 
-          $scope.coldefs = ContentProfile.getColDefs();
+          $scope.coldefs = ContentModel.getColDefs();
           $scope.canConnect = [{name: 'root'}];
           _.extend($scope.canConnect, $scope.coldefs);
           console.log($scope.canConnect);
@@ -216,22 +215,36 @@ fdView.controller('EditProfileCtrl', ['$scope', '$window', 'toastr', '$uibModal'
           selected.targets.push(res);
         } else {
           // var colname = res.name;
-          $scope.contentProfile.content[res.name] = res;
+          $scope.contentModel.content[res.name] = res;
           $scope.colDefs.push({name: res.name, type: creating});
         }
-        if ($scope.externalKeys.indexOf(creating)>-1) $scope.externalKeys.splice($scope.externalKeys.indexOf(creating),1);
-        ContentProfile.updateProfile($scope.contentProfile);
-        $scope.profileGraph = ContentProfile.graphProfile();
+        ContentModel.updateModel($scope.contentModel);
+        $scope.modelGraph = ContentModel.graphModel();
 
       });
 
     };
 
+    $scope.createColumn = function () {
+      var modalDefaults = {
+        templateUrl: 'create-column.html'
+      };
+      var modalOptions = {
+        disable: true
+      };
+
+      modalService.showModal(modalDefaults,modalOptions).then(function (res) {
+        // console.log(res);
+        ContentModel.addCol(res);
+      });
+    };
+
     $scope.showColDef = function (key) {
-      var cp = ContentProfile.getCurrent();
+      var cp = ContentModel.getCurrent();
       var col = _.pick(cp.content, key);
       $uibModal.open({
         templateUrl: 'edit-coldef.html',
+        size: 'lg',
         controller: 'EditColdefCtrl',
         resolve: {
           coldef: function () {
@@ -239,14 +252,11 @@ fdView.controller('EditProfileCtrl', ['$scope', '$window', 'toastr', '$uibModal'
           }
         }
       }).result.then(function (res) {
-        if (col !== res) {
-          delete cp.content[key];
-          _.extend(cp.content, res);
-          ContentProfile.updateProfile(cp);
-          $scope.contentProfile = cp;
-          $scope.profileGraph = ContentProfile.graphProfile();
-          $scope.colDefs = ContentProfile.getColDefs();//[$scope.colDefs.indexOf(key)] = Object.keys(res)[0];
-        }
+        cp.content[key] = res;
+        ContentModel.updateModel(cp);
+        $scope.contentModel = cp;
+        $scope.modelGraph = ContentModel.graphModel();
+        $scope.colDefs = ContentModel.getColDefs();
       });
     };
 
@@ -332,7 +342,7 @@ fdView.controller('EditProfileCtrl', ['$scope', '$window', 'toastr', '$uibModal'
             $scope.csvContent = fileContent;
           };
 
-          $scope.getCols = function () {
+          $scope.createDefault = function () {
             var data=[], keys;
             if ($scope.csvContent) {
               var csvParser = d3.dsv($scope.delim, 'text/plain');
@@ -343,29 +353,22 @@ fdView.controller('EditProfileCtrl', ['$scope', '$window', 'toastr', '$uibModal'
             } else {
               toastr.warning('File is not loaded', 'Warning');
             }
-            $uibModalInstance.close({keys: keys, data: data});
+            $uibModalInstance.close(data.slice(0,50));
           };
         }]
-      }).result.then(function (res) {
-        console.log(res);
-        $scope.externalData = res.data;
-        $scope.externalKeys = res.keys;
+      }).result.then(function (data) {
+        ContentModel.getDefault({rows: data}).success(function (res) {
+          $scope.contentModel = res;
+          $scope.modelGraph = ContentModel.graphModel();
+          $scope.colDefs = ContentModel.getColDefs();
+          $timeout(function () {
+            $scope.$broadcast('cytoscapeFitOne');
+          }, 10);
+        }).error(function (res) {
+          toastr.error(res, 'Error');
+        });
       });
 
-    };
-
-    $scope.createDefault = function () {
-      ContentProfile.getDefault({rows: $scope.externalData}).success(function (res) {
-        $scope.contentProfile = res;
-        $scope.profileGraph = ContentProfile.graphProfile();
-        $scope.colDefs = ContentProfile.getColDefs();
-        $timeout(function () {
-          $scope.$broadcast('cytoscapeFitOne');
-        }, 10);
-        $scope.externalKeys = [];
-      }).error(function (res) {
-        toastr.error(res, 'Error');
-      });
     };
 
     $scope.validate = function(){
@@ -376,21 +379,67 @@ fdView.controller('EditProfileCtrl', ['$scope', '$window', 'toastr', '$uibModal'
     };
 
     $scope.cancel = function () {
-      $state.go('import');
+      $state.go('model');
     }
 
   }]);
 
-fdView.controller('EditColdefCtrl',['$scope','$uibModalInstance', 'coldef',
-  function ($scope, $uibModalInstance, coldef) {
-    $scope.coldef = coldef;
+fdView.controller('EditColdefCtrl',['$scope','$uibModalInstance', '$uibModal', 'coldef', 'ContentModel',
+  function ($scope, $uibModalInstance, $uibModal, coldef, ContentModel) {
+    $scope.name = Object.keys(coldef)[0];
+    $scope.cd = coldef[$scope.name];
+    $scope.columns = ContentModel.getColDefs();
+    $scope.colNames = _.map($scope.columns, function (c) {
+      return c.name;
+    });
 
-    $scope.editorOptions = { tree: {mode: "tree", modes:["tree","code","form"]}, text: {mode:"text", modes:["text","code"]}};
-    $scope.onEditorLoad = function(instance){
-      $scope.editor = instance;
+    $scope.dataTypes = ['string','number','date'];
+    $scope.dateFormats = ['timestamp','epoc','custom'];
+
+    if (!!$scope.cd.dateFormat && $scope.dateFormats.indexOf($scope.cd.dateFormat) < 0) {
+      $scope.cd.customDate = $scope.cd.dateFormat;
+      $scope.cd.dateFormat = 'custom';
+    }
+
+    $scope.editProperty = function (property) {
+      $uibModal.open({
+        templateUrl: 'tag-property.html',
+        controller: ['$scope', '$uibModalInstance','property','columns', function ($scope, $uibModalInstance, property,columns) {
+          $scope.dataTypes = ['string','number','date'];
+          if (!!property) $scope.property = property;
+          $scope.columns = columns;
+
+          $scope.cancel = $uibModalInstance.dismiss;
+          $scope.ok = function (p) {
+            $uibModalInstance.close(p);
+          }
+        }],
+        resolve: {
+          property: function () {
+            return property;
+          },
+          columns: function () {
+            return $scope.columns;
+          }
+        }
+      }).result.then(function (res) {
+        if (!$scope.cd.properties) $scope.cd.properties = [];
+        $scope.cd.properties.push(res);
+      });
     };
+
+    $scope.addEntityLink = function () {
+      if (!$scope.cd.entityLinks) $scope.cd.entityLinks= [];
+      $scope.cd.entityLinks.push({});
+    };
+
     $scope.cancel = $uibModalInstance.dismiss;
     $scope.ok = function (data) {
+      if (data.dataType==='date') {
+        console.log(data.dateFormat, data.customDate);
+        data.dateFormat = (data.dateFormat==='custom' ? data.customDate : data.dateFormat);
+        if (!!data.customDate) {delete data.customDate;}
+      }
       $uibModalInstance.close(data);
     };
   }]);

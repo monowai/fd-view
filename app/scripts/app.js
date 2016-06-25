@@ -35,7 +35,10 @@ var fdView = angular.module('fdView', [
   'fdView.directives',
   'http-auth-interceptor',
   'ab.graph.matrix.directives',
-  'ng.jsoneditor'
+  'ng.jsoneditor',
+  // 'smartArea',
+  'monospaced.elastic',
+  'ngTextcomplete'
 ])
   .config(['$stateProvider','$urlRouterProvider','$locationProvider','USER_ROLES', function ($stateProvider, $urlRouterProvider, $locationProvider, USER_ROLES) {
     $stateProvider
@@ -93,29 +96,44 @@ var fdView = angular.module('fdView', [
           authorizedRoles: [USER_ROLES.user]
         }
       })
-      .state('import', {
-        url: '/import',
-        templateUrl: 'views/import.html',
-        controller: 'ImportCtrl',
+      .state('model', {
+        url: '/model',
+        templateUrl: 'views/model.html',
+        controller: 'ModelCtrl',
         data: {
           authorizedRoles: [USER_ROLES.user]
         }
       })
-      .state('contentProfile', {
+      .state('contentModel', {
         url: '/edit',
-        templateUrl: 'views/profileeditor.html',
-        controller: 'EditProfileCtrl',
+        templateUrl: 'views/modeleditor.html',
+        controller: 'EditModelCtrl',
         data: {
           authorizedRoles: [USER_ROLES.user]
         }
       })
       .state('admin', {
+        abstract: true,
         url: '/admin',
         templateUrl: 'views/admin.html',
         controller: 'AdminCtrl',
         data: {
           authorizedRoles: [USER_ROLES.user]
         }
+      })
+      .state('admin.health', {
+        url: '',
+        templateUrl: 'views/admin-health.html'
+      })
+      .state('admin.fortress', {
+        url: '/fortress',
+        templateUrl: 'views/admin-fortress.html',
+        controller: 'AdminFortressCtrl'
+      })
+      .state('admin.user', {
+        url: '/user',
+        templateUrl: 'admin-user.html',
+        controller: 'AdminUserCtrl'
       })
       .state('settings', {
         url: '/settings',
@@ -251,10 +269,6 @@ fdView.provider('configuration', ['engineUrl', function ( engineUrl) {
         setEngineUrl: function (engineUrl) {
           config.engineUrl = engineUrl || config.engineUrl;
           localStorage.setItem('engineUrl', engineUrl);
-        },
-        setExploreUrl: function (exploreUrl) {
-          config.exploreUrl = exploreUrl || config.exploreUrl;
-          localStorage.setItem('exploreUrl', exploreUrl);
         },
         setDevMode: function (devMode) {
           //config.devMode = devMode || config.devMode;
