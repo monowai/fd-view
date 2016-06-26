@@ -70,7 +70,7 @@
                 <button id="coldef" class="btn btn-sm btn-block btn-default" ng-click="createColumn()">Calculated Column</button>
                 <button id="tag" class="btn btn-sm btn-block btn-warning" draggable options="{opacity: .5,revert: true}" ng-click="createNew($event)">Tag</button>
                 <button id="alias" class="btn btn-sm btn-block btn-info" draggable options="{opacity: .5,revert: true}">Alias</button>
-                <button id="entity" class="btn btn-sm btn-block btn-primary" draggable droppable="buttonDrop" options="{opacity: .5,revert: true}">Entity Link</button>
+                <button id="entity" class="btn btn-sm btn-block btn-primary" draggable droppable="buttonDrop" options="{opacity: .5,revert: true}" ng-click="createEntitylink()">Entity Link</button>
                 <label class="control-label">Columns</label>
                 <div class="btn-toolbar" id="Columns">
                   <button id="{{key.name}}" class="btn btn-xs " ng-class="key.type==='tag' ? 'btn-warning' : 'btn-primary'" draggable options="{opacity: .5,revert: true}" style="margin: 2px;" ng-repeat="key in colDefs" ng-click="showColDef(key.name)">{{key.name}}</button>
@@ -581,8 +581,8 @@
     </div>
   </div>
   <div class="modal-footer">
-    <button type="button" class="btn btn-default pull-left" ng-click="cancel()">Cancel</button>
     <button type="submit" class="btn btn-primary" ng-click="createDefault()" ng-disabled="!csvContent"><i class="fa fa-bolt"></i>&nbsp; Create Default</button>
+    <button type="button" class="btn btn-default pull-left" ng-click="cancel()">Cancel</button>
   </div>
 </script>
 
@@ -634,8 +634,8 @@
       </div>
     </div>
     <div class="modal-footer">
-      <button type="button" class="btn btn-default pull-left" ng-click="cancel()">Cancel</button>
       <button type="submit" class="btn btn-primary" ng-click="ok(property)"><i class="fa fa-bolt"></i>&nbsp; Ok</button>
+      <button type="button" class="btn btn-default pull-left" ng-click="cancel()">Cancel</button>
     </div>
   </form>
 </script>
@@ -651,22 +651,64 @@
       <div class="row">
         <div class="form-group">
           <label for="colname" class="col-sm-3 control-label">Name: </label>
-          <div class="col-sm-8" ng-class="{'has-error': (!unique(obj.name) || column.$invalid) && !column.name.$pristine}">
-            <input id="colname" type="text" class="form-control" ng-model="obj.name" required autofocus
-                   uib-tooltip="Name is not unique!" tooltip-enable="!unique(obj.name) && !column.name.$pristine"/>
+          <div class="col-sm-8" ng-class="{'has-error': (!unique(obj.name) || column.colname.$invalid) && !column.colname.$pristine}">
+            <input id="colname" name="colname" type="text" class="form-control" ng-model="obj.name" required autofocus
+                   uib-tooltip="Name is not unique!" tooltip-enable="!unique(obj.name) && !column.colname.$pristine"/>
           </div>
         </div>
         <div class="form-group">
           <label for="coltype" class="col-sm-3 control-label">Data Type</label>
           <div class="col-sm-6">
-            <select id="coltype" name="type" class="form-control" ng-model="obj.dataType" ng-options="t as t for t in ['string','number','date']"></select>
+            <select id="coltype" name="coltype" class="form-control" ng-model="obj.dataType" ng-options="t as t for t in ['string','number','date']"></select>
           </div>
         </div>
       </div>
     </div>
     <div class="modal-footer">
-      <button type="button" class="btn btn-default pull-left" ng-click="close()">Cancel</button>
       <button type="submit" class="btn btn-primary"  ng-click="ok(obj)" ng-disabled="column.$invalid || !unique(obj.name)"><i class="fa fa-bolt"></i>&nbsp; Ok</button>
+      <button type="button" class="btn btn-default pull-left" ng-click="close()">Cancel</button>
+    </div>
+  </form>
+</script>
+
+<script type="text/ng-template" id="create-entitylink.html">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close" ng-click="close()">
+      <span aria-hidden="true">&times;</span></button>
+    <h4 class="modal-title">Create Entity Link</h4>
+  </div>
+  <form name="elink" class="form-horizontal" ng-submit="ok(obj)">
+    <div class="modal-body">
+      <div class="row">
+        <div class="form-group">
+          <label for="fortress" class="col-sm-3 control-label">Fortress: </label>
+          <div class="col-sm-8" ng-class="{'has-error': elink.fortress.$invalid && !elink.fortress.$pristine}">
+            <input id="fortress" name="fortress" type="text" class="form-control" ng-model="obj.fortress" required autofocus/>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="docname" class="col-sm-3 control-label">Document Name: </label>
+          <div class="col-sm-8" ng-class="{'has-error': elink.docname.$invalid && !elink.docname.$pristine}">
+            <input id="docname" name="docname" type="text" class="form-control" ng-model="obj.documentName" required />
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="relname" class="col-sm-3 control-label">Relationship: </label>
+          <div class="col-sm-8" ng-class="{'has-error': elink.relname.$invalid && !elink.relname.$pristine}">
+            <input id="relname" name="relname" type="text" class="form-control" ng-model="obj.relationshipName" required />
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="col" class="col-sm-3 control-label">Source Datacolumn</label>
+          <div class="col-sm-6" ng-class="{'has-error': elink.col.$invalid && !elink.col.$pristine}">
+            <select id="col" name="col" class="form-control" ng-model="obj.col" ng-options="s.name as s.name for s in colDefs" required></select>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button type="submit" class="btn btn-primary" ng-click="ok(obj)" ng-disabled="elink.$invalid"><i class="fa fa-bolt"></i>&nbsp; Ok</button>
+      <button type="button" class="btn btn-default pull-left" ng-click="close()">Cancel</button>
     </div>
   </form>
 </script>

@@ -248,7 +248,30 @@ fdView.controller('EditModelCtrl', ['$scope', '$window', 'toastr', '$uibModal', 
         ContentModel.addCol(res);
       });
     };
-    
+
+    $scope.createEntitylink = function () {
+      var modalDefaults = {
+        templateUrl: 'create-entitylink.html',
+        resolve: {
+          colDefs: function () {
+            return $scope.colDefs;
+          }
+        },
+        controller: ['$scope', '$uibModalInstance', 'colDefs', function ($scope, $uibModalInstance, colDefs) {
+          $scope.colDefs = colDefs;
+          $scope.ok = function (res) {
+            $uibModalInstance.close(res);
+          };
+          $scope.close = $uibModalInstance.dismiss;
+        }]
+      };
+
+      modalService.showModal(modalDefaults).then(function (res) {
+        ContentModel.addEntitylink(res.col, _.omit(res, 'col'));
+        $scope.modelGraph = ContentModel.graphModel();
+      });
+    };
+
     $scope.showColDef = function (key) {
       var cp = ContentModel.getCurrent();
       var col = _.pick(cp.content, key);
@@ -446,7 +469,6 @@ fdView.controller('EditColdefCtrl',['$scope','$uibModalInstance', '$uibModal', '
     $scope.cancel = $uibModalInstance.dismiss;
     $scope.ok = function (data) {
       if (data.dataType==='date') {
-        console.log(data.dateFormat, data.customDate);
         data.dateFormat = (data.dateFormat==='custom' ? data.customDate : data.dateFormat);
         if (!!data.customDate) {delete data.customDate;}
       }

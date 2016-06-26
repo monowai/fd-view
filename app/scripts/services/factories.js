@@ -103,6 +103,29 @@ fdView.factory('QueryService', ['$http', 'configuration', function ($http, confi
         column[col.name]={dataType: col.dataType, persistent:true};
         _.extend(cp.content,column);
       },
+      addEntitylink: function (col, el) {
+        var cd = cp.content[col];
+        if (_.has(cd, 'entityLinks'))
+          cd.entityLinks.push(el);
+        else
+          cd['entityLinks'] = [el];
+
+        // add to graph
+        // cpGraph.nodes.push({
+        //   data: {
+        //     id: el.documentName,
+        //     name: el.documentName,
+        //     type: 'entity'
+        //   }
+        // });
+        // cpGraph.edges.push({
+        //   data: {
+        //     source: cpGraph.nodes[0].data.id,
+        //     target: el.documentName,
+        //     label: el.relationshipName
+        //   }
+        // });
+      },
       getCurrent: function () {
         return cp;
       },
@@ -111,7 +134,6 @@ fdView.factory('QueryService', ['$http', 'configuration', function ($http, confi
         cpType = content.documentType.name;
         cp = content;
         cp.content = {};
-
       },
       createDefault: function (fortress, doctype) {
         angular.copy(fortress, cpFortress);
@@ -149,9 +171,10 @@ fdView.factory('QueryService', ['$http', 'configuration', function ($http, confi
       },
       graphModel: function () {
         if (_.isEmpty(cp)) return ;
-        if (cpGraph.length>0) {
-          return cpGraph;
-        }
+        // if (!_.isEmpty(cpGraph) && _.isMatch(cpGraph.nodes, {name: cp.documentType.name})) {
+        //   console.log('return existing');
+        //   return cpGraph;
+        // }
         else {
           var graph = {nodes: [], edges: []};
           colDefs = [];
@@ -296,7 +319,7 @@ fdView.service('modalService',['$uibModal', function ($uibModal) {
     if(!tempModalDefaults.controller) {
       tempModalDefaults.controller = ['$scope','$uibModalInstance','$http','configuration', function ($scope, $uibModalInstance, $http, configuration) {
         if (!tempModalOptions.disable) {
-          
+
           $http.get(configuration.engineUrl() + '/api/v1/fortress/timezones').then(function (res) {
             $scope.timezones = res.data;
             if (!$scope.obj)
