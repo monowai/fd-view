@@ -646,13 +646,14 @@
       <span aria-hidden="true">&times;</span></button>
     <h4 class="modal-title">Create Column</h4>
   </div>
-  <form class="form-horizontal" ng-submit="ok(obj)">
+  <form name="column" class="form-horizontal" ng-submit="ok(obj)">
     <div class="modal-body">
       <div class="row">
         <div class="form-group">
           <label for="colname" class="col-sm-3 control-label">Name: </label>
-          <div class="col-sm-8">
-            <input id="colname" type="text" class="form-control" ng-model="obj.name" />
+          <div class="col-sm-8" ng-class="{'has-error': (!unique(obj.name) || column.$invalid) && !column.name.$pristine}">
+            <input id="colname" type="text" class="form-control" ng-model="obj.name" required autofocus
+                   uib-tooltip="Name is not unique!" tooltip-enable="!unique(obj.name) && !column.name.$pristine"/>
           </div>
         </div>
         <div class="form-group">
@@ -665,7 +666,7 @@
     </div>
     <div class="modal-footer">
       <button type="button" class="btn btn-default pull-left" ng-click="close()">Cancel</button>
-      <button type="submit" class="btn btn-primary" ng-click="ok(obj)"><i class="fa fa-bolt"></i>&nbsp; Ok</button>
+      <button type="submit" class="btn btn-primary"  ng-click="ok(obj)" ng-disabled="column.$invalid || !unique(obj.name)"><i class="fa fa-bolt"></i>&nbsp; Ok</button>
     </div>
   </form>
 </script>

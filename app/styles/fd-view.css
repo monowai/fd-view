@@ -250,7 +250,7 @@ td > input:hover {
 }
 
 td > input.ng-invalid-required {
-  border-color: #985f0d;
+  border-color: #dd4b39;
 }
 
 .fortress-info {

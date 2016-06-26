@@ -23,8 +23,6 @@
 fdView.controller('EditModelCtrl', ['$scope', '$window', 'toastr', '$uibModal', 'QueryService', 'ContentModel', '$state', '$http', '$timeout', 'modalService', 'configuration',
   function ($scope, $window, toastr, $uibModal, QueryService, ContentModel, $state, $http, $timeout, modalService, configuration) {
 
-    // $scope.contentModel
-
     ContentModel.getModel().then(function (res) {
       $scope.contentModel = res;//.data.contentModel;
       $scope.modelGraph = ContentModel.graphModel();
@@ -227,18 +225,30 @@ fdView.controller('EditModelCtrl', ['$scope', '$window', 'toastr', '$uibModal', 
 
     $scope.createColumn = function () {
       var modalDefaults = {
-        templateUrl: 'create-column.html'
-      };
-      var modalOptions = {
-        disable: true
+        templateUrl: 'create-column.html',
+        resolve: {
+          colDefs: function () {
+            return $scope.colDefs;
+          }
+        },
+        controller: ['$scope', '$uibModalInstance', 'colDefs', function ($scope, $uibModalInstance, colDefs) {
+          $scope.unique = function (name) {
+            return !_.any(colDefs, function (o) {
+              return o.name===name;
+            });
+          };
+          $scope.ok = function (res) {
+            $uibModalInstance.close(res);
+          };
+          $scope.close = $uibModalInstance.dismiss;
+        }]
       };
 
-      modalService.showModal(modalDefaults,modalOptions).then(function (res) {
-        // console.log(res);
+      modalService.showModal(modalDefaults).then(function (res) {
         ContentModel.addCol(res);
       });
     };
-
+    
     $scope.showColDef = function (key) {
       var cp = ContentModel.getCurrent();
       var col = _.pick(cp.content, key);

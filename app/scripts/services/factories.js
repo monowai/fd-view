@@ -100,7 +100,7 @@ fdView.factory('QueryService', ['$http', 'configuration', function ($http, confi
       addCol: function (col) {
         colDefs.push(col);
         var column = {};
-        column[col.name]={dataType: col.dataType};
+        column[col.name]={dataType: col.dataType, persistent:true};
         _.extend(cp.content,column);
       },
       getCurrent: function () {
@@ -296,6 +296,7 @@ fdView.service('modalService',['$uibModal', function ($uibModal) {
     if(!tempModalDefaults.controller) {
       tempModalDefaults.controller = ['$scope','$uibModalInstance','$http','configuration', function ($scope, $uibModalInstance, $http, configuration) {
         if (!tempModalOptions.disable) {
+          
           $http.get(configuration.engineUrl() + '/api/v1/fortress/timezones').then(function (res) {
             $scope.timezones = res.data;
             if (!$scope.obj)
