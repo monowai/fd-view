@@ -35,67 +35,147 @@
 <section class="content">
   <div class="row">
     <div class="col-md-12">
-      <div class="box">
-        <div class="box-header">
-          <h3 class="box-title">Edit Content Model - {{contentModel.documentType.name}}</h3>
-          <div class="box-tools">
-            <button type="button" class="close" aria-label="Close" ng-click="cancel()">
-              <span aria-hidden="true">&times;</span></button>
+      <div class="nav-tabs-custom">
+        <ul class="nav nav-tabs pull-right">
+          <li uib-dropdown class="active">
+            <a href id="view-menu" uib-dropdown-toggle>
+              View <span class="caret"></span></a>
+            <ul class="dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="view-menu">
+              <li role="menuitem" class="active"><a href data-target="#structure" data-toggle="tab">Structure</a></li>
+              <li role="menuitem"><a href data-target="#json" data-toggle="tab">Edit JSON</a></li>
+              <li role="menuitem"><a href data-target="#sample" data-toggle="tab">Data</a></li>
+            </ul>
+          </li>
+          <li uib-dropdown>
+            <a href id="action-menu" uib-dropdown-toggle>
+            Action <span class="caret"></span></a>
+            <ul class="dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="action-menu">
+              <li role="menuitem"><a href ng-click="save()">Save</a></li>
+              <li role="menuitem"><a href ng-click="validate()">Validate</a></li>
+              <li role="menuitem"><a href ng-click="uploadFile()">Sample Data</a></li>
+              <li class="divider"></li>
+              <li role="menuitem"><a href ng-click="cancel()">Cancel</a></li>
+            </ul>
+          </li>
 
-          </div>
-        </div>
-        <!-- /.box-header -->
-        <div class="box-body">
-          <div class="row">
-            <!--<div class="col-md-2"></div>-->
-            <div class="col-md-2">
-              <div class="form-group" style="width: 180px; margin: 10px">
-                <label class="col-sm-4 control-label">Layout</label>
-                <div class="col-sm-8">
+          <li class="pull-left header"><i class="fa fa-share-alt"></i> Edit Content Model - {{contentModel.documentType.name}}</li>
+        </ul>
+        <div class="tab-content">
+          <div id="structure" class="tab-pane fade active in">
+            <div class="col-md-2 col-xs-6">
+              <div class="form-group" >
+                <label class="control-label">Layout</label>
+                <div class="pull-right">
                   <select ng-model="layout" ng-options="l.name for l in layouts"></select>
                 </div>
               </div>
-            </div>
-            <div class="col-md-4 pull-right">
-              <ul class="nav nav-pills">
-                <li class="active"><a data-target="#structure" data-toggle="tab"><i class="fa fa-sitemap"></i>Structure</a></li>
-                <li><a data-target="#json" data-toggle="tab"><i class="fa fa-edit"></i>Edit JSON</a></li>
-              </ul>
-            </div>
-          </div>
-          <div class="tab-content">
-            <div id="structure" class="tab-pane fade active in">
-              <div class="col-md-2 col-xs-6">
-                <label class="control-label">Create</label>
-                <button id="coldef" class="btn btn-sm btn-block btn-default" ng-click="createColumn()">Calculated Column</button>
-                <button id="tag" class="btn btn-sm btn-block btn-warning" draggable options="{opacity: .5,revert: true}" ng-click="createNew($event)">Tag</button>
-                <button id="alias" class="btn btn-sm btn-block btn-info" draggable options="{opacity: .5,revert: true}">Alias</button>
-                <button id="entity" class="btn btn-sm btn-block btn-primary" draggable droppable="buttonDrop" options="{opacity: .5,revert: true}" ng-click="createEntitylink()">Entity Link</button>
-                <label class="control-label">Columns</label>
+
+              <label class="control-label">Create</label>
+
+              <button id="coldef" class="btn btn-sm btn-block btn-default" ng-click="createColumn()">Calculated Column</button>
+              <button id="tag" class="btn btn-sm btn-block btn-warning" draggable options="{opacity: .5,revert: true}" ng-click="createNew($event)">Tag</button>
+              <button id="alias" class="btn btn-sm btn-block btn-info" draggable options="{opacity: .5,revert: true}">Alias</button>
+              <button id="entity" class="btn btn-sm btn-block btn-primary" draggable droppable="buttonDrop" options="{opacity: .5,revert: true}" ng-click="createEntitylink()">Entity Link</button>
+
+              <label uib-dropdown>
+                <a href id="list-menu" uib-dropdown-toggle>
+                  {{list}} <span class="caret"></span></a>
+                <ul class="dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="list-menu">
+                  <li role="menuitem"><a href ng-click="list='Columns'">Columns</a></li>
+                  <li role="menuitem"><a href ng-click="list='Tags'">Tags</a></li>
+                  <li role="menuitem"><a href ng-click="list='Settings'">General Settings</a></li>
+                </ul>
+              </label>
+              <!--<label class="control-label">Columns</label>-->
+              <div ng-height="400" class="scroll-col" ng-show="list==='Columns'">
                 <div class="btn-toolbar" id="Columns">
-                  <button id="{{key.name}}" class="btn btn-xs " ng-class="key.type==='tag' ? 'btn-warning' : 'btn-primary'" draggable options="{opacity: .5,revert: true}" style="margin: 2px;" ng-repeat="key in colDefs" ng-click="showColDef(key.name)">{{key.name}}</button>
+                  <button id="{{key.name}}" class="btn btn-xs" ng-class="key.type==='tag' ? 'btn-warning' : 'btn-primary'" draggable options="{opacity: .5,revert: true}" style="margin: 2px;" ng-repeat="key in colDefs" ng-click="showColDef(key.name)">{{key.name}}</button>
                 </div>
               </div>
-              <div class="col-md-10" droppable="handleDrop">
-                <cytoscape elements="modelGraph" layout="layout" styles="styles" selected-nodes="nodes" ng-height="280"></cytoscape>
+              <div ng-height="400" class="scroll-col" ng-show="list==='Tags'">
+                <div class="btn-toolbar" id="Tags">
+                  <button id="{{key.name}}" class="btn btn-xs btn-warning" ng-if="key.type==='tag'" draggable options="{opacity: .5,revert: true}" style="margin: 2px;" ng-repeat="key in colDefs" ng-click="showColDef(key.name)">{{key.name}}</button>
+                </div>
+              </div>
+              <div ng-height="400" class="scroll-col-np" ng-show="list==='Settings'">
+                <div class="form-group">
+                  <label class="control-label">Fortress:</label>
+                  <input type="text" class="form-control input-sm" ng-model="contentModel.fortress.name" placeholder="Description">
+                </div>
+                <div class="form-group">
+                  <label class="control-label">Document Type:</label>
+                  <input type="text" class="form-control input-sm" ng-model="contentModel.documentType.name" placeholder="Description">
+                </div>
+                <div class="form-group">
+                  <label class="control-label">Description:</label>
+                  <input type="text" class="form-control input-sm" ng-model="contentModel.name" placeholder="Description">
+                </div>
+                <div class="form-group">
+                  <div class="checkbox">
+                    <label>
+                      <input type="checkbox" id="emptyIgnored" name="emptyIgnored" ng-model="contentModel.emptyIgnored"> Ignore empty
+                    </label>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <div class="checkbox">
+                    <label>
+                      <input type="checkbox" id="archiveTags" name="archiveTags" ng-model="contentModel.archiveTags"> Archive tags
+                    </label>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <div class="checkbox">
+                    <label>
+                      <input type="checkbox" id="entityOnly" name="entityOnly" ng-model="contentModel.entityOnly"> Entity only
+                    </label>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="control-label">Pre-parse Expression:</label>
+                  <input type="text" class="form-control input-sm" ng-model="contentModel.preParseRowExp" placeholder="Pre-parse row expression">
+                </div>
+                <div class="form-group">
+                  <label class="control-label">Segment Expression:</label>
+                  <input type="text" class="form-control input-sm" ng-model="contentModel.segmentExpression" placeholder="Segment expression">
+                </div>
               </div>
             </div>
-            <div id="json" class="tab-pane fade">
-              <div ng-jsoneditor="onEditorLoad" ng-model="contentModel" options="editorOptions.tree" ng-height="280"></div>
+            <div class="col-md-10" droppable="handleDrop">
+              <cytoscape elements="modelGraph" layout="layout" styles="styles" selected-nodes="nodes" ng-height="180"></cytoscape>
             </div>
-            <div id="upload" class="tab-pane fade"></div>
           </div>
-          <div class="clearfix"></div>
-        </div>
-        <!-- /.box-body -->
-        <div class="box-footer">
-          <button class="btn btn-default"  ng-click="cancel()">Cancel</button>
-          <div class="pull-right">
-            <button class="btn btn-primary" ng-click="uploadFile()"><i class="fa fa-lg fa-edit"></i>&nbsp; Sample Data</button>
-            <button class="btn btn-primary" ng-click="save()"><i class="fa fa-lg fa-save"></i>&nbsp; Save</button>
-            <button class="btn btn-success" ng-click="validate()"><i class="fa fa-lg fa-play-circle"></i>&nbsp; Validate</button>
+
+          <!-- Edit JSON -->
+          <div id="json" class="tab-pane fade">
+            <div ng-jsoneditor="onEditorLoad" ng-model="contentModel" options="editorOptions.tree" ng-height="180"></div>
           </div>
+
+          <!-- View Data Sample -->
+          <div id="sample" class="tab-pane fade">
+            <div ng-show="!dataSample">
+              Please <a href ng-click="uploadFile()">Upload</a> your file.
+            </div>
+            <div class="hscroll-table" ng-show="!!dataSample">
+              <table id="datasample" class="table table-bordered table-hover">
+                <thead>
+                  <tr>
+                    <th ng-repeat="(k,v) in dataSample[0]">{{k}}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr ng-repeat="d in dataSample">
+                    <td ng-repeat="(k,v) in d">{{v}}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <p ng-show="dataSample.length>49"><i>* Only first 50 rows are displayed</i></p>
+          </div>
+
         </div>
+        <div class="clearfix"></div>
+        <br>
       </div>
     </div>
   </div>

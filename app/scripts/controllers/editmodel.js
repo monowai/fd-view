@@ -27,6 +27,7 @@ fdView.controller('EditModelCtrl', ['$scope', '$window', 'toastr', '$uibModal', 
       $scope.contentModel = res;//.data.contentModel;
       $scope.modelGraph = ContentModel.graphModel();
       $scope.colDefs = ContentModel.getColDefs();
+      $scope.list = 'Columns';
       if ($scope.modelGraph.nodes.length===1) {
         $timeout(function () {
           $scope.$broadcast('cytoscapeFitOne');
@@ -390,6 +391,8 @@ fdView.controller('EditModelCtrl', ['$scope', '$window', 'toastr', '$uibModal', 
           };
         }]
       }).result.then(function (data) {
+        $scope.dataSample = data;
+        // console.log(data);
         ContentModel.getDefault({rows: data}).success(function (res) {
           $scope.contentModel = res;
           $scope.modelGraph = ContentModel.graphModel();
