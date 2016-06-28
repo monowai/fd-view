@@ -40,13 +40,12 @@ fdView.controller('EditModelCtrl', ['$scope', '$window', 'toastr', '$uibModal', 
     $scope.editorOptions = {
       mode: "tree",
       modes: ["tree", "code", "form"],
-      expanded: true
+      expanded: true,
+      onChange: function () {
+        console.log('JSON changed...');
+      }
     };
     $scope.onEditorLoad = function (instance) {
-      instance.expandAll();
-      // instance.onChange = function () {
-      //   console.log('JSON changed...');
-      // };
       $scope.editor = instance;
     };
 
@@ -85,6 +84,7 @@ fdView.controller('EditModelCtrl', ['$scope', '$window', 'toastr', '$uibModal', 
     $scope.checkModel = function () {
       $scope.model = {};
       angular.copy($scope.contentModel, $scope.model);
+      $scope.editor.focus();
     };
 
     $scope.styles = [
