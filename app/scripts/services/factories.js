@@ -192,8 +192,13 @@ fdView.factory('QueryService', ['$http', 'configuration', function ($http, confi
             _.extend(tag, data);
             return tag;
           };
-          var connect = function (source, target, rel) {
-            return {source: source, target: target, relationship: rel};
+          var connect = function (source, target, rel, reverse) {
+            if (reverse) {
+              return {source: target, target: source, relationship: rel};
+            } else {
+              return {source: source, target: target, relationship: rel};
+            }
+
           };
 
           var hasTargets = function (obj) {
@@ -216,15 +221,7 @@ fdView.factory('QueryService', ['$http', 'configuration', function ($http, confi
             _.each(tag.targets, function (target) {
               var t = createTag(target.code, {label: target.label});
               graph.nodes.push({data: t});
-              var src, tgt;
-              if (target.reverse) {
-                src = t.id;
-                tgt = id || tag.code;
-              } else {
-                src = id || tag.code;
-                tgt = t.id;
-              }
-              var edge = connect(src, tgt, target.relationship);
+              var edge = connect(t.id, id || tag.code, target.relationship, target.reverse);
               if (!containsEdge(edge))
                 graph.edges.push({data: edge});
               if (hasTargets(target)) createTargets(target);
@@ -252,7 +249,7 @@ fdView.factory('QueryService', ['$http', 'configuration', function ($http, confi
               } else {
                 tag = graph.nodes[ti].data;
               }
-              var edge = connect(root.id, tag.id, obj.relationship);
+              var edge = connect(root.id, tag.id, obj.relationship, obj.reverse);
               if (!containsEdge(edge)) {
                 graph.edges.push({data: edge});
               }
@@ -274,7 +271,7 @@ fdView.factory('QueryService', ['$http', 'configuration', function ($http, confi
               _.each(obj.entityLinks, function (entity) {
                 var e = createEntity(entity.documentName);
                 graph.nodes.push({data: e});
-                graph.edges.push({data: connect(root.id, e.id, entity.relationshipName)});
+                graph.edges.push({data: connect(root.id, e.id, entity.relationshipName,obj.reverse)});
               })
             }
           });

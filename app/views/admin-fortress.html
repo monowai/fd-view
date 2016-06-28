@@ -41,9 +41,9 @@
         <h5><b>Root Index: </b>{{fortress.indexName}}</h5>
       </div>
       <uib-accordion class="box-group">
-        <uib-accordion-group ng-repeat="d in documents" class="box box-solid fader">
+        <uib-accordion-group ng-repeat="d in documents" class="box box-solid fader" is-open="isOpen">
           <uib-accordion-heading>
-            <span class="box-title" ng-click="selectDocType(d)">{{d.name}}</span>
+            <div class="box-title" ng-click="selectDocType(d)">{{d.name}} <i class="pull-right glyphicon" ng-class="isOpen ? 'glyphicon-chevron-down' : 'glyphicon-chevron-right'"></i></div>
           </uib-accordion-heading>
           <div class="row">
             <div class="col-md-12">
@@ -54,16 +54,18 @@
               </div>
               <h4><b>Document Type: </b><a ng-click="editType(d)" href="#">{{d.name}}</a></h4>
 
-              <h4>Data Segments</h4>
+              <div ng-show="segments.length>0">
+                <h4>Data Segments</h4>
 
-              <div ng-repeat="seg in segments" class="row">
-                <div class="col-md-12">
-                  <div class="box-tools pull-right">
-                    <button type="button" class="btn btn-box-tool" uib-tooltip="Analyze" ng-click=""><i class="fa fa-lg fa-search"></i></button>
-                    <button type="button" class="btn btn-box-tool" uib-tooltip="Reindex" ng-click=""><i class="fa fa-lg fa-recycle" ng-if="isAdmin()"></i></button>
-                    <button type="button" class="btn btn-box-tool" uib-tooltip="Delete" ng-click="deleteSegment(fortress,d,seg)" ng-disabled="seg==='Default'" ng-if="isAdmin()"><i class="fa fa-lg fa-trash"></i></button>
+                <div ng-repeat="seg in segments" class="row">
+                  <div class="col-md-12">
+                    <div class="box-tools pull-right">
+                      <button type="button" class="btn btn-box-tool" uib-tooltip="Analyze" ng-click=""><i class="fa fa-lg fa-search"></i></button>
+                      <button type="button" class="btn btn-box-tool" uib-tooltip="Reindex" ng-click=""><i class="fa fa-lg fa-recycle" ng-if="isAdmin()"></i></button>
+                      <button type="button" class="btn btn-box-tool" uib-tooltip="Delete" ng-click="deleteSegment(fortress,d,seg)" ng-disabled="seg==='Default'" ng-if="isAdmin()"><i class="fa fa-lg fa-trash"></i></button>
+                    </div>
+                    <b> Code: </b>&nbsp; {{seg}}
                   </div>
-                  <b> Code: </b>&nbsp; {{seg}}
                 </div>
               </div>
             </div>

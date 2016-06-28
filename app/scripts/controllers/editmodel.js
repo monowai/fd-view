@@ -40,10 +40,7 @@ fdView.controller('EditModelCtrl', ['$scope', '$window', 'toastr', '$uibModal', 
     $scope.editorOptions = {
       mode: "tree",
       modes: ["tree", "code", "form"],
-      expanded: true,
-      onChange: function () {
-        console.log('JSON changed...');
-      }
+      expanded: true
     };
     $scope.onEditorLoad = function (instance) {
       $scope.editor = instance;
