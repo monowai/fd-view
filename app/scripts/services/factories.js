@@ -284,9 +284,7 @@ fdView.factory('QueryService', ['$http', 'configuration', function ($http, confi
         }
       },
       updateModel: function (profile) {
-        cp = {};
-        angular.copy(profile, cp);
-        // this.graphProfile();
+        cp = profile;
       },
       saveModel: function () {
         var fcode = cpFortress.toLowerCase().replace(/\s/g, '');
@@ -300,7 +298,7 @@ fdView.service('modalService',['$uibModal', function ($uibModal) {
     backdrop: true,
     keyboard: true,
     modalFade: true,
-    templateUrl: 'views/partials/configDPModal.html'
+    templateUrl: 'views/partials/confirmModal.html'
   };
 
   this.showModal = function (customModalDefaults, customModalOptions) {

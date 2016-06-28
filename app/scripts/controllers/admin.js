@@ -22,7 +22,6 @@
 
 fdView.controller('AdminCtrl', ['$scope', '$state', '$http', 'configuration',
   function ($scope, $state, $http, configuration) {
-    // $state.transitionTo('admin.health');
 
     $http.get(configuration.engineUrl() + '/api/v1/admin/health').then(function (res) {
       $scope.fdhealth = res.data;
@@ -32,7 +31,7 @@ fdView.controller('AdminCtrl', ['$scope', '$state', '$http', 'configuration',
 
 fdView.controller('AdminFortressCtrl', ['$scope', '$rootScope', 'QueryService', 'AuthenticationSharedService', '$state', '$http', '$timeout', 'modalService', 'configuration', 'USER_ROLES',
   function ($scope, $rootScope, QueryService, AuthenticationSharedService, $state, $http, $timeout, modalService, configuration, USER_ROLES) {
-
+    
     QueryService.general('fortress').then(function (data) {
       $scope.fortresses = data;
     });
@@ -62,12 +61,15 @@ fdView.controller('AdminFortressCtrl', ['$scope', '$rootScope', 'QueryService', 
     };
 
     $scope.editFortress = function (f) {
+      var modalDefaults = {
+        templateUrl: 'views/partials/configDPModal.html'
+      };
       var modalOptions = {
         entity: 'Data Provider',
         obj: f
       };
 
-      modalService.showModal({}, modalOptions).then(function (res) {
+      modalService.showModal(modalDefaults, modalOptions).then(function (res) {
         $http.post(configuration.engineUrl()+'/api/v1/fortress/', res).then(function(response){
           $rootScope.$broadcast('event:status-ok', response.statusText);
           $scope.fortress = response.data;
@@ -78,12 +80,12 @@ fdView.controller('AdminFortressCtrl', ['$scope', '$rootScope', 'QueryService', 
 
     $scope.deleteFortress = function (f) {
       var modalDefaults = {
-        size: 'sm',
-        templateUrl: 'views/partials/deleteModal.html'
+        size: 'sm'
       };
-      f.type = 'Data Provider';
       var modalOptions = {
-        obj: f
+        obj: f,
+        title: 'Delete...',
+        text: 'Warning! You are about to delete the Data Provider - "'+f.name+'" and all associated data. Do you want to proceed?'
       };
       modalService.showModal(modalDefaults,modalOptions).then(function (res) {
         $http.delete(configuration.engineUrl()+'/api/v1/admin/'+res.code).then(function (response) {
@@ -107,13 +109,16 @@ fdView.controller('AdminFortressCtrl', ['$scope', '$rootScope', 'QueryService', 
     };
 
     $scope.editType = function (doc) {
+      var modalDefaults = {
+        templateUrl: 'views/partials/configDPModal.html'
+      };
       var modalOptions = {
         entity: 'Document Type',
         obj: doc,
         disable: true
       };
 
-      modalService.showModal({}, modalOptions).then(function (res) {
+      modalService.showModal(modalDefaults, modalOptions).then(function (res) {
         $http({
           method: 'PUT',
           url: configuration.engineUrl() + '/api/v1/fortress/' +$scope.fortress.code+'/'+res.name,
@@ -131,12 +136,13 @@ fdView.controller('AdminFortressCtrl', ['$scope', '$rootScope', 'QueryService', 
 
     $scope.deleteDocType = function (f, dt) {
       var modalDefaults = {
-        size: 'sm',
-        templateUrl: 'views/partials/deleteModal.html'
+        size: 'sm'
       };
       dt.type = 'Document Type';
       var modalOptions = {
-        obj: dt
+        obj: dt,
+        title: 'Delete...',
+        text: 'Warning! You are about to delete the Document Type - "'+dt.name+'" and all associated data. Do you want to proceed?'
       };
       modalService.showModal(modalDefaults,modalOptions).then(function (res) {
         $http({
@@ -155,15 +161,13 @@ fdView.controller('AdminFortressCtrl', ['$scope', '$rootScope', 'QueryService', 
 
     $scope.deleteSegment = function (f,dt,s) {
       var modalDefaults = {
-        size: 'sm',
-        templateUrl: 'views/partials/deleteModal.html'
+        size: 'sm'
       };
-      
+
       var modalOptions = {
-        obj: {
-          type: 'Document Segment',
-          name: s
-        }
+        obj: {name: s},
+        title: 'Delete segment...',
+        text: 'Warning! You are about to delete the Document Segment - "'+s+'" and all associated data. Do you want to proceed?'
       };
       modalService.showModal(modalDefaults,modalOptions).then(function (res) {
         $http({

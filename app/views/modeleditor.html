@@ -41,8 +41,8 @@
             <a href id="view-menu" uib-dropdown-toggle>
               View <span class="caret"></span></a>
             <ul class="dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="view-menu">
-              <li role="menuitem" class="active"><a href data-target="#structure" data-toggle="tab">Structure</a></li>
-              <li role="menuitem"><a href data-target="#json" data-toggle="tab">Edit JSON</a></li>
+              <li role="menuitem" class="active"><a href data-target="#structure" data-toggle="tab" ng-click="updateModel()">Structure</a></li>
+              <li role="menuitem"><a href data-target="#json" data-toggle="tab" ng-click="checkModel()">Edit JSON</a></li>
               <li role="menuitem"><a href data-target="#sample" data-toggle="tab">Data</a></li>
             </ul>
           </li>
@@ -137,7 +137,7 @@
                 </div>
                 <div class="form-group">
                   <label class="control-label">Segment Expression:</label>
-                  <input type="text" class="form-control input-sm" ng-model="contentModel.segmentExpression" placeholder="Segment expression">
+                  <input type="text" class="form-control input-sm" ng-model="contentModel.segment" placeholder="Segment expression">
                 </div>
               </div>
             </div>
@@ -148,7 +148,7 @@
 
           <!-- Edit JSON -->
           <div id="json" class="tab-pane fade">
-            <div ng-jsoneditor="onEditorLoad" ng-model="contentModel" options="editorOptions.tree" ng-height="180"></div>
+            <div ng-jsoneditor="onEditorLoad" ng-model="contentModel" options="editorOptions" ng-height="180"></div>
           </div>
 
           <!-- View Data Sample -->

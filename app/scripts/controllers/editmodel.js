@@ -23,8 +23,10 @@
 fdView.controller('EditModelCtrl', ['$scope', '$window', 'toastr', '$uibModal', 'QueryService', 'ContentModel', '$state', '$http', '$timeout', 'modalService', 'configuration',
   function ($scope, $window, toastr, $uibModal, QueryService, ContentModel, $state, $http, $timeout, modalService, configuration) {
 
+    var originalModel = {};
     ContentModel.getModel().then(function (res) {
       $scope.contentModel = res;//.data.contentModel;
+      originalModel = angular.copy(res);
       $scope.modelGraph = ContentModel.graphModel();
       $scope.colDefs = ContentModel.getColDefs();
       $scope.list = 'Columns';
@@ -36,10 +38,15 @@ fdView.controller('EditModelCtrl', ['$scope', '$window', 'toastr', '$uibModal', 
     });
 
     $scope.editorOptions = {
-      tree: {mode: "tree", modes: ["tree", "code", "form"]},
-      text: {mode: "text", modes: ["text", "code"]}
+      mode: "tree",
+      modes: ["tree", "code", "form"],
+      expanded: true
     };
     $scope.onEditorLoad = function (instance) {
+      instance.expandAll();
+      // instance.onChange = function () {
+      //   console.log('JSON changed...');
+      // };
       $scope.editor = instance;
     };
 
@@ -51,15 +58,33 @@ fdView.controller('EditModelCtrl', ['$scope', '$window', 'toastr', '$uibModal', 
           toastr.success(res.statusText, 'Success');
           angular.element('[data-target="#structure"]').tab('show');
           $scope.modelGraph = ContentModel.graphModel();
+          originalModel = angular.copy(model);
           $scope.colDefs = ContentModel.getColDefs();
           $timeout(function () {
             $scope.$broadcast('cytoscapeReset');
           }, 500);
-
         })
         .error(function (res) {
           toastr.error(res.message, 'Error');
         });
+    };
+
+    $scope.updateModel = function () {
+      if (!!$scope.model && !angular.equals($scope.model, $scope.contentModel)) {
+        angular.element('[data-target="#structure"]').tab('show');
+        ContentModel.updateModel($scope.contentModel);
+        $scope.modelGraph = ContentModel.graphModel();
+        $scope.colDefs = ContentModel.getColDefs();
+        $timeout(function () {
+          $scope.$broadcast('cytoscapeReset');
+        }, 500);
+        delete $scope.model;
+      }
+    };
+
+    $scope.checkModel = function () {
+      $scope.model = {};
+      angular.copy($scope.contentModel, $scope.model);
     };
 
     $scope.styles = [
@@ -190,7 +215,7 @@ fdView.controller('EditModelCtrl', ['$scope', '$window', 'toastr', '$uibModal', 
           $scope.coldefs = ContentModel.getColDefs();
           $scope.canConnect = [{name: 'root'}];
           _.extend($scope.canConnect, $scope.coldefs);
-          console.log($scope.canConnect);
+          // console.log($scope.canConnect);
           $scope.elem.properties = [];
           $scope.elem.properties.push({});
           $scope.elem.rlxProperties = [];
@@ -277,6 +302,7 @@ fdView.controller('EditModelCtrl', ['$scope', '$window', 'toastr', '$uibModal', 
       var cp = ContentModel.getCurrent();
       var col = _.pick(cp.content, key);
       $uibModal.open({
+        backdrop: 'static',
         templateUrl: 'edit-coldef.html',
         size: 'lg',
         controller: 'EditColdefCtrl',
@@ -310,56 +336,6 @@ fdView.controller('EditModelCtrl', ['$scope', '$window', 'toastr', '$uibModal', 
 
       $scope.createNew(component);
 
-
-      // $uibModal.open({
-      //   templateUrl: 'edit-element.html',
-      //   controller: 'EditElementCtrl',
-      //   resolve: {
-      //     elements: function () {
-      //       return $scope.elements;
-      //     },
-      //     name: function () {
-      //       return name;
-      //     },
-      //     type: function () {
-      //       return type;
-      //     }
-      //   }
-      // }).result.then(function (data) {
-      //   console.log(data);
-      //
-      //   var obj = data.elem;
-      //   $scope.elements.push(obj);
-      //
-      //   if(obj.type==='entity') {rect = jentity.clone();}
-      //   if(obj.type==='tag') {rect = jtag.clone();}
-      //   if(obj.type==='alias') {rect = jalias.clone();}
-      //   rect.position(left, top).attr('text/text',data.name);
-      //   // rect = new jentity({//graphElement({
-      //   //   position: { x: left, y: top },
-      //   //   size: { width: 216, height: 90 },
-      //   //   name: name,
-      //   //   // logo: component.attributes['data-logo'].value,
-      //   //   // binary: isBinary,
-      //   //   options: {interactive: true}
-      //   // });
-      //
-      //   graph.addCell(rect);
-      //   rect.on('createLink', createLink);
-      //   rect.on('removeLink', removeLink);
-      //   rect.on('onOpenDetail', onOpenDetail);
-      //   rect.on('onRemove', onRemove);
-      //
-      //   $scope.diaEntities[obj.name] = rect;
-      //
-      //   if (!!obj.linked) {
-      //
-      //   }
-      //
-      //   //$scope.components[name] = angular.copy(componentInstance);
-      //   $scope.components[name].name = name;
-
-      // $scope.$apply();
     };
 
     $scope.uploadFile = function () {
@@ -392,7 +368,6 @@ fdView.controller('EditModelCtrl', ['$scope', '$window', 'toastr', '$uibModal', 
         }]
       }).result.then(function (data) {
         $scope.dataSample = data;
-        // console.log(data);
         ContentModel.getDefault({rows: data}).success(function (res) {
           $scope.contentModel = res;
           $scope.modelGraph = ContentModel.graphModel();
@@ -416,14 +391,47 @@ fdView.controller('EditModelCtrl', ['$scope', '$window', 'toastr', '$uibModal', 
 
     $scope.cancel = function () {
       $state.go('model');
-    }
+    };
+
+    $scope.$on('$stateChangeStart', function (event, next, current) {
+      if (next.controller != "EditModelCtrl") {
+        if (!angular.equals($scope.contentModel, originalModel)) {
+          event.preventDefault();
+          var discardDefaults = {
+            size: 'sm'
+          };
+          var discardOptions = {
+            title: 'Discard changes...',
+            text: 'Are you sure you want to cancel and discard your changes?'
+          };
+          modalService.showModal(discardDefaults, discardOptions).then(function () {
+            $scope.contentModel = originalModel
+            ContentModel.updateModel(originalModel);
+            $state.go(next.name);
+          });
+        } else {
+          window.onbeforeunload = null;
+        }
+      }
+    });
+
+    window.onbeforeunload = function (e) {
+      var e = e || window.event;
+      var msg = "Do you really want to leave this page?";
+      if (e) {
+        e.returnValue = msg;
+      }
+
+      return msg;
+    };
 
   }]);
 
-fdView.controller('EditColdefCtrl',['$scope','$uibModalInstance', '$uibModal', 'coldef', 'ContentModel',
-  function ($scope, $uibModalInstance, $uibModal, coldef, ContentModel) {
+fdView.controller('EditColdefCtrl',['$scope','$uibModalInstance', 'modalService', 'coldef', 'ContentModel',
+  function ($scope, $uibModalInstance, modalService, coldef, ContentModel) {
     $scope.name = Object.keys(coldef)[0];
-    $scope.cd = coldef[$scope.name];
+
+    $scope.cd = angular.copy(coldef[$scope.name]);
     $scope.columns = ContentModel.getColDefs();
     $scope.colNames = _.map($scope.columns, function (c) {
       return c.name;
@@ -469,7 +477,23 @@ fdView.controller('EditColdefCtrl',['$scope','$uibModalInstance', '$uibModal', '
       $scope.cd.entityLinks.push({});
     };
 
-    $scope.cancel = $uibModalInstance.dismiss;
+    $scope.cancel = function () {
+      if (angular.equals($scope.cd, coldef[$scope.name])) {
+        $uibModalInstance.dismiss();
+      } else {
+        var discardDefaults = {
+          templateUrl: 'views/partials/confirmModal.html',
+          size: 'sm'
+        };
+        var discardOptions = {
+          title: 'Discard changes...',
+          text: 'Are you sure you want to cancel and discard your changes?'
+        };
+        modalService.showModal(discardDefaults, discardOptions).then(function () {
+          $uibModalInstance.dismiss();
+        });
+      }
+    };
     $scope.ok = function (data) {
       if (data.dataType==='date') {
         data.dateFormat = (data.dateFormat==='custom' ? data.customDate : data.dateFormat);
