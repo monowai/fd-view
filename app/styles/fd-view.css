@@ -253,6 +253,21 @@ td > input.ng-invalid-required {
   border-color: #dd4b39;
 }
 
+th.col {
+  cursor: pointer;
+}
+th.col:hover {
+  color: #0d6aad;
+}
+th.col.coldef {
+  background-color: #499ef5;
+}
+th.col.tag {
+  background-color: #f7cd8f;
+}
+th.col>span {
+  border-bottom: 1px dashed;
+}
 .fortress-info {
   border-bottom: 1px solid #f4f4f4;
 }
