@@ -90,25 +90,10 @@ fdView.factory('QueryService', ['$http', 'configuration', function ($http, confi
       tags = [];
 
     var addTag = function (tag) {
-      tag.id = _.uniqueId('tag_');
-      tags.push({label: tag.label || tag.code, id: tag.id});
-      return tag.id;
+      tag.$$id = _.uniqueId('tag_');
+      tags.push({label: tag.label || tag.code, id: tag.$$id});
+      return tag.$$id;
     };
-
-    var cleanModel = function (model) {
-      var cleanIds = function (tag) {
-        delete tag.id;
-        if (!!tag.targets && tag.targets.length>0) {
-          _.each(tag.targets, function (t) {
-            cleanIds(t);
-          })
-        }
-      };
-      _.each(model.content, function (o) {
-        if (o.tag) cleanIds(o);
-      });
-    };
-
     
     return {
       getAll: function () {
@@ -211,14 +196,13 @@ fdView.factory('QueryService', ['$http', 'configuration', function ($http, confi
         if(_.isEmpty(cp.content)) {
           payload = data;
         } else {
-          cleanModel(cp);
           payload = {contentModel: cp, dataMap: data};
         }
         console.log(payload);
         return $http.post(configuration.engineUrl() + '/api/v1/model/default', payload)
           .success(function (res) {
             console.log(res);
-            _.extend(cp.content, res.content);
+            angular.extend(cp.content, res.content);
             // cp = res;
             // cp.documentType = {name:cpType};
             // cp.fortress = {name:cpFortress};
@@ -279,10 +263,10 @@ fdView.factory('QueryService', ['$http', 'configuration', function ($http, confi
 
           var createTargets = function (tag) {
             _.each(tag.targets, function (target) {
-              var t = createTag(target.id, {label: target.label, code: target.code});
+              var t = createTag(target.$$id, {label: target.label, code: target.code});
               if(!containsTag(t)) {
                 graph.nodes.push({data: t});
-                var edge = connect(t.id, tag.id, target.relationship, target.reverse);
+                var edge = connect(t.id, tag.$$id, target.relationship, target.reverse);
                 if (!containsEdge(edge))
                   graph.edges.push({data: edge});
               }
@@ -305,7 +289,7 @@ fdView.factory('QueryService', ['$http', 'configuration', function ($http, confi
               var label = (obj.label || key);
               var tag = containsTag(obj);
               if(!tag) {
-                tag = createTag(obj.id || addTag(obj), {label: label, code: obj.code});
+                tag = createTag(obj.$$id || addTag(obj), {label: label, code: obj.code});
                 graph.nodes.push({data: tag});
               }
               var edge = connect(root.id, tag.id, obj.relationship, obj.reverse);
@@ -335,7 +319,6 @@ fdView.factory('QueryService', ['$http', 'configuration', function ($http, confi
             }
           });
           cpGraph = graph;
-          // angular.copy(graph, cpGraph);
           console.log(graph);
           return graph;
         }
@@ -345,10 +328,8 @@ fdView.factory('QueryService', ['$http', 'configuration', function ($http, confi
       },
       saveModel: function () {
         var fcode = cpFortress.toLowerCase().replace(/\s/g, '');
-        var model = angular.copy(cp);
 
-        cleanModel(model);
-        return $http.post(configuration.engineUrl() + '/api/v1/model/' + fcode +'/'+cpType+'/', model);
+        return $http.post(configuration.engineUrl() + '/api/v1/model/' + fcode +'/'+cpType+'/', cp);
       }
   };
 }]);

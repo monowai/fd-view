@@ -478,23 +478,34 @@
           <fieldset ng-show="!cd.tag">
             <legend>Properties to set into Column &nbsp;<button type="button" class="btn btn-sm btn-primary" uib-tooltip="Add new" ng-click="editProperty()"><i class="fa fa-plus"></i></button></legend>
 
-            <div class="row" ng-repeat="p in cd.properties">
-              <div class="col-md-5 form-group">
-                <label for="pSource" class="control-label col-xs-4">Source</label>
-                <div class="input-group col-xs-8">
-                  <select id="pSource" name="pSource" class="form-control" ng-model="p.source" ng-options="c.name as c.name for c in columns"></select>
+            <div class="row" ng-repeat="p in props">
+              <div class="col-md-12">
+                <div class="col-md-1 form-group">
+                  <div class="checkbox">
+                    <label>
+                      <input type="checkbox" id="rlx" name="rlx" ng-model="p.$$rlx"  ng-true-value="'rlxProperties'" ng-false-value="'properties'"> <b>rlx</b>
+                    </label>
+                  </div>
                 </div>
-              </div>
-              <div class="col-md-7">
-                <label for="pTarget" class="control-label col-xs-3">Set as</label>
-                <div class="input-group col-xs-9">
-                  <input id="pTarget" name="pTarget" type="text" class="form-control" ng-model="p.target"/>
+                <div class="col-md-5 form-group">
+                  <label for="pSource" class="control-label col-xs-4">Source</label>
+                  <div class="input-group col-xs-8">
+                    <select id="pSource" name="pSource" class="form-control" ng-model="p.source" ng-options="c.name as c.name for c in columns">
+                      <option value="" disabled selected>{{name}}</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <label for="pTarget" class="control-label col-xs-3">Set as</label>
+                  <div class="input-group col-xs-9">
+                    <input id="pTarget" name="pTarget" type="text" class="form-control" ng-model="p.target"/>
                       <span class="input-group-btn">
                         <button type="button" class="btn btn-default" ng-click="editProperty(p)" uib-tooltip="Edit"><i class="fa fa-edit"></i></button>
                       </span>
                       <span class="input-group-btn">
-                        <button type="button" class="btn btn-default" ng-click="cd.properties.splice($index,1)" uib-tooltip="Delete"><i class="fa fa-trash"></i></button>
+                        <button type="button" class="btn btn-default" ng-click="props.splice($index,1)" uib-tooltip="Delete"><i class="fa fa-trash"></i></button>
                       </span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -565,31 +576,12 @@
                   </label>
                 </div>
               </div>
-              <hr>
-              <fieldset>
-                <legend>Properties to set into Tag &nbsp;<button type="button" class="btn btn-sm btn-primary" uib-tooltip="Add new" ng-click="editProperty()"><i class="fa fa-plus"></i></button></legend>
-
-                <div class="row" ng-repeat="p in cd.properties">
-                  <div class="col-md-5 form-group">
-                    <label for="pSource" class="control-label col-xs-4">Source</label>
-                    <div class="input-group col-xs-8">
-                      <select id="pSource" name="pSource" class="form-control" ng-model="p.source" ng-options="c.name as c.name for c in columns"></select>
-                    </div>
-                  </div>
-                  <div class="col-md-7">
-                    <label for="pTarget" class="control-label col-xs-3">Set as</label>
-                    <div class="input-group col-xs-9">
-                      <input id="pTarget" name="pTarget" type="text" class="form-control" ng-model="p.target"/>
-                      <span class="input-group-btn">
-                        <button type="button" class="btn btn-default" ng-click="editProperty(p)" uib-tooltip="Edit"><i class="fa fa-edit"></i></button>
-                      </span>
-                      <span class="input-group-btn">
-                        <button type="button" class="btn btn-default" ng-click="cd.properties.splice($index,1)" uib-tooltip="Delete"><i class="fa fa-trash"></i></button>
-                      </span>
-                    </div>
-                  </div>
+              <div class="form-group">
+                <label for="delim" class="control-label col-xs-3">Delimiter</label>
+                <div class="col-xs-9 col-sm-7">
+                  <input id="delim" name="delim" type="text" class="form-control" ng-model="cd.delimiter"/>
                 </div>
-              </fieldset>
+              </div>
             </div>
             <div class="col-md-4">
               <fieldset>
@@ -620,6 +612,43 @@
                 </div>
               </fieldset>
             </div>
+            <div class="col-md-12">
+              <fieldset>
+                <legend>Properties to set into Tag &nbsp;<button type="button" class="btn btn-sm btn-primary" uib-tooltip="Add new" ng-click="editProperty()"><i class="fa fa-plus"></i></button></legend>
+
+                <div class="row" ng-repeat="p in props">
+                  <div class="col-md-12">
+                    <div class="col-md-1 form-group">
+                      <div class="checkbox">
+                        <label>
+                          <input type="checkbox" id="rlx" name="rlx" ng-model="p.$$rlx"  ng-true-value="'rlxProperties'" ng-false-value="'properties'"> <b>rlx</b>
+                        </label>
+                      </div>
+                    </div>
+                    <div class="col-md-5 form-group">
+                      <label for="pSource" class="control-label col-xs-4">Source</label>
+                      <div class="input-group col-xs-8">
+                        <select id="pSource" name="pSource" class="form-control" ng-model="p.source" ng-options="c.name as c.name for c in columns">
+                          <option value="" disabled selected>{{name}}</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <label for="pTarget" class="control-label col-xs-3">Set as</label>
+                      <div class="input-group col-xs-9">
+                        <input id="pTarget" name="pTarget" type="text" class="form-control" ng-model="p.target"/>
+                      <span class="input-group-btn">
+                        <button type="button" class="btn btn-default" ng-click="editProperty(p)" uib-tooltip="Edit"><i class="fa fa-edit"></i></button>
+                      </span>
+                      <span class="input-group-btn">
+                        <button type="button" class="btn btn-default" ng-click="props.splice($index,1)" uib-tooltip="Delete"><i class="fa fa-trash"></i></button>
+                      </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </fieldset>
+            </div>
           </div>
         </uib-tab>
         <uib-tab heading="Entity Links">
@@ -630,12 +659,12 @@
                 <legend class="legend">Existing Entity Links &nbsp;
                   <button type="button" class="btn btn-sm btn-primary" uib-tooltip="Add new" ng-click="addEntityLink()"><i class="fa fa-plus"></i></button>
                 </legend>
-                <table class="table">
+                <table class="table" ng-show="cd.entityLinks.length>0">
                   <tr>
                     <th>Fortress</th>
                     <th>Document Name</th>
                     <th>Relationship</th>
-                    <th class="checkbox" ng-show="cd.entityLinks.length>0">
+                    <th class="checkbox">
                       <label>
                         <input type="checkbox" name="reverse" ng-model="cd.reverse"> <b>Reverse</b>
                       </label>
@@ -728,10 +757,21 @@
   <form ng-submit="ok(property)">
     <div class="modal-body">
       <div class="row">
+        <div class="col-md-12">
+          <div class="form-group">
+            <span class="checkbox">
+              <label>
+                <input type="checkbox" id="rlx" name="rlx" ng-model="property.$$rlx" ng-true-value="'rlxProperties'" ng-false-value="'properties'"> <b>Rlx</b>
+              </label>
+            </span>
+          </div>
+        </div>
         <div class="col-md-6">
           <div class="form-group">
             <label for="source">Source</label>
-            <select id="source" name="source" class="form-control" ng-model="property.source" ng-options="c.name as c.name for c in columns"></select>
+            <select id="source" name="source" class="form-control" ng-model="property.source" ng-options="c.name as c.name for c in columns">
+              <option value='' disabled selected>{{column}}</option>
+            </select>
           </div>
         </div>
         <div class="col-md-6">

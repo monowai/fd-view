@@ -303,7 +303,7 @@ fdView.controller('EditModelCtrl', ['$scope', '$window', 'toastr', '$uibModal', 
       if (tag) {
         (function findTag(list, id) {
           _.find(list, function (o) {
-            if (o.id === id) {
+            if (o.$$id === id) {
               o.openAsTag=true;
               col[o.label]=o;
             }
@@ -424,7 +424,7 @@ fdView.controller('EditModelCtrl', ['$scope', '$window', 'toastr', '$uibModal', 
             text: 'Are you sure you want to cancel and discard your changes?'
           };
           modalService.showModal(discardDefaults, discardOptions).then(function () {
-            $scope.contentModel = originalModel
+            $scope.contentModel = originalModel;
             ContentModel.updateModel(originalModel);
             $state.go(next.name);
           });
@@ -471,13 +471,25 @@ fdView.controller('EditColdefCtrl',['$scope','$uibModalInstance', 'modalService'
       $scope.cd.dateFormat = 'custom';
     }
 
+    $scope.props = _.union(_.map($scope.cd.properties, function (p) {
+      p.$$rlx = 'properties';
+      return p;
+    }),_.map($scope.cd.rlxProperties, function (p) {
+      p.$$rlx = 'rlxProperties';
+      return p;
+    }));
+
+    var propsCopy = angular.copy($scope.props);
+
     $scope.editProperty = function (property) {
       modalService.show({
         templateUrl: 'tag-property.html',
-        controller: ['$scope', '$uibModalInstance','property','columns', function ($scope, $uibModalInstance, property,columns) {
+        controller: ['$scope', '$uibModalInstance','property','columns','col', function ($scope, $uibModalInstance, property,columns,col) {
           $scope.dataTypes = ['string','number','date'];
           if (!!property) $scope.property = property;
+          else $scope.property ={$$rlx: 'properties'};
           $scope.columns = columns;
+          $scope.column = col;
 
           $scope.cancel = $uibModalInstance.dismiss;
           $scope.ok = function (p) {
@@ -490,11 +502,18 @@ fdView.controller('EditColdefCtrl',['$scope','$uibModalInstance', 'modalService'
           },
           columns: function () {
             return $scope.columns;
+          },
+          col: function () {
+            return $scope.name;
           }
         }
       }).then(function (res) {
-        if (!$scope.cd.properties) $scope.cd.properties = [];
-        $scope.cd.properties.push(res);
+        if (!$scope.props) $scope.props = [];
+        if (res.$$hashKey) {
+          angular.extend(property, res);
+        } else {
+          $scope.props.push(res);
+        }
       });
     };
 
@@ -524,6 +543,14 @@ fdView.controller('EditColdefCtrl',['$scope','$uibModalInstance', 'modalService'
       if (data.dataType==='date') {
         data.dateFormat = (data.dateFormat==='custom' ? data.customDate : data.dateFormat);
         if (!!data.customDate) {delete data.customDate;}
+      }
+      if (!angular.equals(propsCopy, $scope.props)) {
+        var props = _.groupBy($scope.props, function (o) {
+          return o.$$rlx;
+        });
+
+        data.properties = props['properties'];
+        data.rlxProperties = props['rlxProperties'];
       }
       $uibModalInstance.close(data);
     };
