@@ -95,6 +95,21 @@ fdView.factory('QueryService', ['$http', 'configuration', function ($http, confi
       return tag.id;
     };
 
+    var cleanModel = function (model) {
+      var cleanIds = function (tag) {
+        delete tag.id;
+        if (!!tag.targets && tag.targets.length>0) {
+          _.each(tag.targets, function (t) {
+            cleanIds(t);
+          })
+        }
+      };
+      _.each(model.content, function (o) {
+        if (o.tag) cleanIds(o);
+      });
+    };
+
+    
     return {
       getAll: function () {
         return $http.get(configuration.engineUrl() + '/api/v1/model/')
@@ -192,10 +207,21 @@ fdView.factory('QueryService', ['$http', 'configuration', function ($http, confi
         }
       },
       getDefault: function (data) {
-        return $http.post(configuration.engineUrl() + '/api/v1/model/default', data)
+        var payload;
+        if(_.isEmpty(cp.content)) {
+          payload = data;
+        } else {
+          cleanModel(cp);
+          payload = {contentModel: cp, dataMap: data};
+        }
+        console.log(payload);
+        return $http.post(configuration.engineUrl() + '/api/v1/model/default', payload)
           .success(function (res) {
-            cp = res;
-            cp.documentType = {name:cpType};
+            console.log(res);
+            _.extend(cp.content, res.content);
+            // cp = res;
+            // cp.documentType = {name:cpType};
+            // cp.fortress = {name:cpFortress};
           });
       },
       graphModel: function () {
@@ -320,18 +346,8 @@ fdView.factory('QueryService', ['$http', 'configuration', function ($http, confi
       saveModel: function () {
         var fcode = cpFortress.toLowerCase().replace(/\s/g, '');
         var model = angular.copy(cp);
-        var cleanIds = function (tag) {
-          delete tag.id;
-          if (!!tag.targets && tag.targets.length>0) {
-            _.each(tag.targets, function (t) {
-              cleanIds(t);
-            })
-          }
-        };
-        _.each(model.content, function (o) {
-          if (o.tag) cleanIds(o);
-        });
 
+        cleanModel(model);
         return $http.post(configuration.engineUrl() + '/api/v1/model/' + fcode +'/'+cpType+'/', model);
       }
   };

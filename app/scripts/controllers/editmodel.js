@@ -371,7 +371,7 @@ fdView.controller('EditModelCtrl', ['$scope', '$window', 'toastr', '$uibModal', 
             $scope.csvContent = fileContent;
           };
 
-          $scope.createDefault = function () {
+          $scope.getDefault = function () {
             var data=[], keys;
             if ($scope.csvContent) {
               var csvParser = d3.dsv($scope.delim, 'text/plain');
