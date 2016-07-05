@@ -52,7 +52,6 @@
             <ul class="dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="action-menu">
               <li role="menuitem"><a href ng-click="save()">Save</a></li>
               <li role="menuitem"><a href ng-click="validate()">Validate</a></li>
-              <li role="menuitem"><a href ng-click="uploadFile()">Sample Data</a></li>
               <li class="divider"></li>
               <li role="menuitem"><a href ng-click="cancel()">Cancel</a></li>
             </ul>
@@ -89,7 +88,7 @@
               <!--<label class="control-label">Columns</label>-->
               <div ng-height="400" class="scroll-col" ng-show="list==='Columns'">
                 <div class="btn-toolbar" id="Columns">
-                  <button id="{{col}}" class="btn btn-xs" ng-class="{'btn-warning' : val.tag, 'btn-primary': !val.tag, 'disabled': !val.persistent}" draggable options="{opacity: .5,revert: true}" style="margin: 2px;" ng-repeat="(col, val) in contentModel.content" ng-click="showColDef(col)">{{col}}</button>
+                  <button id="{{col}}" class="btn btn-xs" ng-class="{'btn-warning' : val.tag, 'btn-primary': !val.tag, 'btn-dim': !val.persistent}" draggable options="{opacity: .5,revert: true}" style="margin: 2px;" ng-repeat="(col, val) in contentModel.content" ng-click="showColDef(col)">{{col}}</button>
                 </div>
               </div>
               <div ng-height="400" class="scroll-col" ng-show="list==='Tags'">
@@ -168,9 +167,52 @@
           <!-- View Data Sample -->
           <div id="sample" class="tab-pane fade">
             <div ng-show="!dataSample">
-              Please <a href ng-click="uploadFile()">Upload</a> your file.
+              <div class="row">
+                <div class="col-sm-3">
+                  <fieldset>
+                    <legend>Upload <button type="submit" class="btn btn-primary pull-right" ng-click="getDefault()" ng-disabled="!csvContent" ng-show="!!csvContent"><i class="fa fa-bolt"></i>&nbsp; Create Default</button></legend>
+                    <div class="row">
+
+                      <div class="form-group">
+                        <label for="data-delim" class="col-xs-4 control-label">Delimiter</label>
+                        <div class="col-xs-7">
+                          <input type="text" class="form-control" id="data-delim" ng-model="delim">
+                        </div>
+                      </div>
+
+                      <div class="col-sm-6">
+                        <div class="form-group">
+                          <div class="checkbox">
+                            <label>
+                              <input type="checkbox" ng-model="ignoreEmpty"> <b>Ignore empty Cols</b>
+                            </label>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-sm-6">
+                        <div class="form-group">
+                          <div class="checkbox">
+                            <label>
+                              <input type="checkbox" ng-model="hasHeader"> <b>Has Header</b>
+                            </label>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </fieldset>
+                </div>
+                <div class="col-sm-9">
+                  <div class="well well-sm">
+                    <div class="row">
+                      <div class="col-md-12">
+                        <div class="file-box" file-box="loadFile($fileContent, $fileName)"></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
-            <div class="hscroll-table" ng-show="!!dataSample">
+            <div class="hscroll-table fader" ng-show="!!dataSample">
               <table id="datasample" class="table table-bordered table-hover">
                 <thead>
                   <tr>
@@ -692,60 +734,6 @@
       <button type="submit" class="btn btn-primary" ng-click="ok(cd)" ng-disabled="colDefForm.$invalid"><i class="fa fa-bolt"></i>&nbsp; Ok</button>
     </div>
   </form>
-</script>
-
-<script type="text/ng-template" id="upload-file.html">
-  <div class="modal-header">
-    <button type="button" class="close" data-dismiss="modal" aria-label="Close" ng-click="cancel()">
-      <span aria-hidden="true">&times;</span></button>
-    <h4 class="modal-title">Sample data from a file</h4>
-  </div>
-  <div class="modal-body">
-    <div class="row">
-      <div class="col-md-12">
-        <div class="well well-sm">
-          <h4>Upload</h4>
-          <div class="row">
-            <div class="col-sm-4">
-              <div class="form-group">
-                <label for="delimiter" class="col-xs-5 control-label">Delimiter</label>
-                <div class="col-xs-7">
-                  <input type="text" class="form-control" id="delimiter" ng-model="delim">
-                </div>
-              </div>
-            </div>
-            <div class="col-sm-4">
-              <div class="form-group">
-                <div class="checkbox">
-                  <label>
-                    <input type="checkbox" ng-model="ignoreEmpty"> Ignore empty Cols
-                  </label>
-                </div>
-              </div>
-            </div>
-            <div class="col-sm-4">
-              <div class="form-group">
-                <div class="checkbox">
-                  <label>
-                    <input type="checkbox" ng-model="hasHeader"> Has Header
-                  </label>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-md-12">
-              <div class="file-box" file-box="loadFile($fileContent, $fileName)"></div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="modal-footer">
-    <button type="submit" class="btn btn-primary" ng-click="getDefault()" ng-disabled="!csvContent"><i class="fa fa-bolt"></i>&nbsp; Create Default</button>
-    <button type="button" class="btn btn-default pull-left" ng-click="cancel()">Cancel</button>
-  </div>
 </script>
 
 <script type="text/ng-template" id="tag-property.html">

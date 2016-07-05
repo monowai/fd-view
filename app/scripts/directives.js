@@ -184,8 +184,8 @@ angular.module('fdView.directives', [])
                   });
                   element.addClass('is-success');
                 };
-              };
-            };
+              }
+            }
             reader.readAsText(e.originalEvent.dataTransfer.files[0]);
           });
           element.on('change', function(onChangeEvent) {
