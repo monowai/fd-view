@@ -372,12 +372,11 @@ fdView.controller('EditModelCtrl', ['$scope', '$window', 'toastr', '$uibModal', 
           };
 
           $scope.getDefault = function () {
-            var data=[], keys;
+            var data=[];
             if ($scope.csvContent) {
               var csvParser = d3.dsv($scope.delim, 'text/plain');
               csvParser.parse($scope.csvContent, function (d) {
                 data.push(d);
-                keys = d3.keys(d);
               });
             } else {
               toastr.warning('File is not loaded', 'Warning');
@@ -388,9 +387,23 @@ fdView.controller('EditModelCtrl', ['$scope', '$window', 'toastr', '$uibModal', 
       }).result.then(function (data) {
         $scope.dataSample = data;
         ContentModel.getDefault({rows: data}).success(function (res) {
+          toastr.success('Data is loaded', 'Success');
           $scope.contentModel = res;
           $scope.modelGraph = ContentModel.graphModel();
           $scope.colDefs = ContentModel.getColDefs();
+          $scope.keys = _(Object.keys($scope.dataSample[0]))
+            .chain()
+            .map(function (key) {
+              var colDef = _.find($scope.colDefs, function (c) {
+                return c.name === key;
+              });
+              if (key==='$$hashKey') return ;
+              return {name: key, type: colDef.type};
+            })
+            .filter(function (o) {
+              return !!o;
+            })
+            .value();
           $timeout(function () {
             $scope.$broadcast('cytoscapeFitOne');
           }, 10);

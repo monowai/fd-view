@@ -94,7 +94,7 @@ fdView.factory('QueryService', ['$http', 'configuration', function ($http, confi
       tags.push({label: tag.label || tag.code, id: tag.$$id});
       return tag.$$id;
     };
-    
+
     return {
       getAll: function () {
         return $http.get(configuration.engineUrl() + '/api/v1/model/')
@@ -196,16 +196,11 @@ fdView.factory('QueryService', ['$http', 'configuration', function ($http, confi
         if(_.isEmpty(cp.content)) {
           payload = data;
         } else {
-          payload = {contentModel: cp, dataMap: data};
+          payload = angular.extend({contentModel: cp}, data);
         }
-        console.log(payload);
         return $http.post(configuration.engineUrl() + '/api/v1/model/default', payload)
           .success(function (res) {
-            console.log(res);
-            angular.extend(cp.content, res.content);
-            // cp = res;
-            // cp.documentType = {name:cpType};
-            // cp.fortress = {name:cpFortress};
+            cp.content = res.content;
           });
       },
       graphModel: function () {

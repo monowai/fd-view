@@ -174,7 +174,7 @@
               <table id="datasample" class="table table-bordered table-hover">
                 <thead>
                   <tr>
-                    <th class="col coldef" ng-repeat="col in colDefs" ng-click="showColDef(col.name)" ng-class="{'tag': col.type==='tag'}"><span>{{col.name}}</span></th>
+                    <th class="col coldef" ng-repeat="key in keys" ng-click="showColDef(key.name)" ng-class="{'tag': key.type==='tag'}"><span>{{key.name}}</span></th>
                   </tr>
                 </thead>
                 <tbody>
