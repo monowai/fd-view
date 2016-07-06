@@ -166,80 +166,48 @@ fdView.controller('EditModelCtrl', ['$scope', '$window', 'toastr', '$uibModal', 
       console.log('Element Dropped..');
     };
 
-    $scope.createNew = function (event) {
-      var creating = event.id || event.target.id;
-
+    $scope.createTag = function () {
       var selected = 'root';
-      var findObj = function (o, id) {
-        if (id in o) {
-          return o[id];
-        }
-        if (o.code === id) {
-          return o;
-        }
-        var res, p;
-        for (p in o) {
-          if (o.hasOwnProperty(p) && !!o[p] && typeof o[p] === 'object') {
-            res = findObj(o[p], id);
-            if (res) return res;
-          }
-        }
-        return res;
-      };
-      if($scope.nodes.length>0 && $scope.nodes[0]._private.group==='nodes' && $scope.nodes[0]._private.data.type!=='entity') {
-        selected = findObj($scope.contentModel.content, $scope.nodes[0]._private.data.id);
-      }
+      if ($scope.nodes.length>0)
+        selected = ContentModel.findTag($scope.nodes[0]._private.data.id);
 
       $uibModal.open({
-        templateUrl: 'edit-element.html',
-        controller: ['$scope','$uibModalInstance','active','creating', function ($scope,$uibModalInstance,active,creating) {
+        templateUrl: 'create-tag.html',
+        resolve: {
+          tags: function () {
+            return $scope.tags;
+          },
+          active: function () {
+            return selected;
+          }
+        },
+        controller: ['$scope','$uibModalInstance','tags','active', function ($scope,$uibModalInstance,tags,active) {
           $scope.elem = {};
-          // $scope.elem.name = creating;
-          $scope.types = ['string','number','date'];
-          if (creating==='tag') $scope.elem.tag = true;
-          if (active !== 'root' && (active.tag || !active.tag)) {
-            // console.log(active);
+          if (active === 'root') {
             $scope.elem.tag = true;
-            $scope.target = true;
           }
           $scope.active = active.name || active.label || active;// || active.dataType.name;
-          $scope.cancel = $uibModalInstance.dismiss;
+          $scope.canConnect = [{label: 'root', id:0}];
+          _.each(tags, function (t) {
+            $scope.canConnect.push(t);
+          }); 
 
+          $scope.cancel = $uibModalInstance.dismiss;
           $scope.ok = function (isValid) {
             if (isValid) {
               $uibModalInstance.close($scope.elem, $scope.active);
             }
           };
-
-          $scope.coldefs = ContentModel.getTags();
-          $scope.canConnect = [{name: 'root'}];
-          _.extend($scope.canConnect, $scope.coldefs);
-          // console.log($scope.canConnect);
-          $scope.elem.properties = [];
-          $scope.elem.properties.push({});
-          $scope.elem.rlxProperties = [];
-          $scope.elem.rlxProperties.push({});
-
-        }],
-        resolve: {
-          active: function () {
-            return selected;
-          },
-          creating: function () {
-            return creating;
-          }
-        }
+        }]
       }).result.then(function (res) {
-        if(selected!=='root') {
+        if(selected==='root') {
+          $scope.contentModel.content[res.name] = res;
+          $scope.colDefs.push({name: res.name, type: 'tag'});
+        } else {
           if(!selected.targets) {
             selected.targets = [];
           }
-          delete res.tag;
           selected.targets.push(res);
-        } else {
-          // var colname = res.name;
-          $scope.contentModel.content[res.name] = res;
-          $scope.colDefs.push({name: res.name, type: creating});
         }
         ContentModel.updateModel($scope.contentModel);
         $scope.modelGraph = ContentModel.graphModel();
@@ -297,19 +265,46 @@ fdView.controller('EditModelCtrl', ['$scope', '$window', 'toastr', '$uibModal', 
       });
     };
 
+    $scope.createAlias = function () {
+      var modalDefaults = {
+        templateUrl: 'create-alias.html',
+        resolve: {
+          tags: function () {
+            return $scope.tags;
+          },
+          active: function () {
+            if ($scope.nodes.length>0)
+              return _.find($scope.tags, function (t) {
+                return t.id===$scope.nodes[0]._private.data.id;
+              });
+            else return undefined;
+          }
+        },
+        controller: ['$scope', '$uibModalInstance', 'tags', 'active', function ($scope, $uibModalInstance, tags, active) {
+          $scope.tags = tags;
+          if (active) {
+            $scope.obj = {tag: $scope.tags[$scope.tags.indexOf(active)]};
+          }
+          $scope.ok = function (res) {
+            $uibModalInstance.close(res);
+          };
+          $scope.close = $uibModalInstance.dismiss;
+        }]
+      };
+
+      modalService.showModal(modalDefaults).then(function (res) {
+        ContentModel.addAlias(res.tag, _.omit(res, 'tag'));
+        $scope.modelGraph = ContentModel.graphModel();
+      });
+    };
+
     $scope.showColDef = function (key, tag) {
       var cp = ContentModel.getCurrent();
       var col = {};
       if (tag) {
-        (function findTag(list, id) {
-          _.find(list, function (o) {
-            if (o.$$id === id) {
-              o.openAsTag=true;
-              col[o.label]=o;
-            }
-            if (o.targets) findTag(o.targets, id);
-          });
-        })(cp.content,key);
+        var t = ContentModel.findTag(key);
+        col[t.label] = t;
+        col.openAsTag = true;
       } else {
         col = _.pick(cp.content, key);
       }
@@ -327,7 +322,6 @@ fdView.controller('EditModelCtrl', ['$scope', '$window', 'toastr', '$uibModal', 
         if (tag) {
           var t = col[Object.keys(col)[0]];
           _.extend(t, res);
-          delete t.openAsTag;
         } else {
           cp.content[key] = res;
         }
@@ -398,6 +392,7 @@ fdView.controller('EditModelCtrl', ['$scope', '$window', 'toastr', '$uibModal', 
       }).error(function (res) {
         toastr.error(res, 'Error');
       });
+      delete $scope.csvContent;
     };
 
     $scope.validate = function(){
@@ -455,7 +450,9 @@ fdView.controller('EditColdefCtrl',['$scope','$uibModalInstance', 'modalService'
       return c.name;
     });
 
-    if ($scope.cd.openAsTag) {
+    $scope.openAsTag = coldef.openAsTag;
+
+    if (coldef.openAsTag) {
       $scope.caption = 'Tag Input';
       $scope.tab=1;
     } else {

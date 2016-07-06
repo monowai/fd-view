@@ -52,6 +52,7 @@
             <ul class="dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="action-menu">
               <li role="menuitem"><a href ng-click="save()">Save</a></li>
               <li role="menuitem"><a href ng-click="validate()">Validate</a></li>
+              <li role="menuitem" ng-show="!!dataSample"><a href ng-click="dataSample=null">Reload Sample</a></li>
               <li class="divider"></li>
               <li role="menuitem"><a href ng-click="cancel()">Cancel</a></li>
             </ul>
@@ -72,8 +73,8 @@
               <label class="control-label">Create</label>
 
               <button id="coldef" class="btn btn-sm btn-block btn-default" ng-click="createColumn()">Calculated Column</button>
-              <button id="tag" class="btn btn-sm btn-block btn-warning" draggable options="{opacity: .5,revert: true}" ng-click="createNew($event)">Tag</button>
-              <!--<button id="alias" class="btn btn-sm btn-block btn-info" draggable options="{opacity: .5,revert: true}">Alias</button>-->
+              <button id="tag" class="btn btn-sm btn-block btn-warning" draggable options="{opacity: .5,revert: true}" ng-click="createTag()">Tag</button>
+              <button id="alias" class="btn btn-sm btn-block btn-info" draggable options="{opacity: .5,revert: true}" ng-click="createAlias()">Alias</button>
               <button id="entity" class="btn btn-sm btn-block btn-primary" draggable droppable="buttonDrop" options="{opacity: .5,revert: true}" ng-click="createEntitylink()">Entity Link</button>
 
               <label uib-dropdown>
@@ -166,7 +167,7 @@
 
           <!-- View Data Sample -->
           <div id="sample" class="tab-pane fade">
-            <div ng-show="!dataSample">
+            <div ng-if="!dataSample">
               <div class="row">
                 <div class="col-sm-3">
                   <fieldset>
@@ -237,142 +238,6 @@
   </div>
 </section>
 
-<script type="text/ng-template" id="edit-element.html">
-  <div class="modal-header">
-    <button type="button" class="close" data-dismiss="modal" aria-label="Close" ng-click="cancel()">
-      <span aria-hidden="true">&times;</span></button>
-    <h4 class="modal-title">Edit Properties</h4>
-  </div>
-  <form name="coldefProperties" role="form" class="form-horizontal" ng-submit="ok(coldefProperties.$valid)" novalidate>
-    <div class="modal-body">
-      <uib-tabset class="nav-tabs-custom">
-        <uib-tab heading="Main">
-          <div class="form-group">
-            <div class="col-sm-offset-3 col-sm-3">
-              <div class="checkbox">
-                <label>
-                  <input type="checkbox" id="isTag" name="isTag" ng-model="elem.tag" ng-disabled="target"> <b>Tag</b>
-                </label>
-              </div>
-            </div>
-          </div>
-          <div class="form-group">
-            <label for="name" class="col-sm-3 control-label">Name: </label>
-            <div class="col-sm-8">
-              <textarea id="name" name="name" class="form-control" ng-model="elem.name" rows="1" autofocus></textarea>
-            </div>
-          </div>
-          <div class="form-group">
-            <label for="code" class="col-sm-3 control-label">Code: </label>
-            <div class="col-sm-8">
-              <textarea id="code" name="code" class="form-control" ng-model="elem.code" rows="1" required></textarea>
-            </div>
-          </div>
-          <div class="form-group">
-            <label for="label" class="col-sm-3 control-label">Label: </label>
-            <div class="col-sm-8">
-              <textarea id="label" name="label" class="form-control" ng-model="elem.label" rows="1" required></textarea>
-            </div>
-          </div>
-          <div class="form-group">
-            <label for="relationship" class="col-sm-3 control-label">Relationship: </label>
-            <div class="col-sm-8">
-              <textarea id="relationship" name="relationship" class="form-control" ng-model="elem.relationship" rows="1"></textarea>
-            </div>
-          </div>
-          <div class="form-group">
-            <label for="keyPrefix" class="col-sm-3 control-label">Key Prefix: </label>
-            <div class="col-sm-8">
-              <input type="text" id="keyPrefix" name="keyPrefix" class="form-control" ng-model="elem.keyPrefix">
-            </div>
-          </div>
-          <div class="form-group">
-            <label for="notFoundCode" class="col-sm-3 control-label">Not Found Code: </label>
-            <div class="col-sm-8">
-              <input type="text" id="notFoundCode" name="notFoundCode" class="form-control" ng-model="elem.notFoundCode">
-            </div>
-          </div>
-          <div class="form-group">
-            <div class="col-sm-offset-3 col-sm-3">
-              <div class="checkbox">
-                <label>
-                  <input type="checkbox" id="mustExist" name="mustExist" ng-model="elem.mustExist"> Must Exist
-                </label>
-              </div>
-            </div>
-            <div class="col-sm-3">
-              <div class="checkbox">
-                <label>
-                  <input type="checkbox" id="merge" name="merge" ng-model="elem.merge"> Merge
-                </label>
-              </div>
-            </div>
-            <div class="col-sm-3">
-              <div class="checkbox">
-                <label>
-                  <input type="checkbox" id="reverse" name="reverse" ng-model="elem.reverse"> Reverse
-                </label>
-              </div>
-            </div>
-          </div>
-        </uib-tab>
-        <uib-tab heading="Properties">
-          <label>Properties: </label>
-          <div class="form-group" ng-repeat="prop in elem.properties">
-            <div class="col-sm-6 prop-col">
-              <select id="prop.source" class="form-control" ng-model="prop.source" ng-options="c.name as c.name for c in coldefs">
-                <option value='' disabled selected>Source</option>
-              </select>
-            </div>
-            <div class="col-sm-6 prop-col">
-              <div class="input-group">
-                <input type="text" class="form-control" id="prop.target" name="prop.target" ng-model="prop.target" placeholder="Target">
-                <span class="input-group-btn">
-                  <button type="button" class="btn btn-primary btn-flat" ng-click="elem.properties.splice($index,1)" ng-show="!$last"><i class="fa fa-trash"></i></button>
-                </span>
-                <span class="input-group-btn">
-                  <button type="button" class="btn btn-primary btn-flat" ng-click="elem.properties.push({})" ng-show="$last"><i class="fa fa-plus"></i></button>
-                </span>
-              </div>
-            </div>
-          </div>
-          <br>
-          <label>Relationships Properties: </label>
-          <div class="form-group" ng-repeat="rprop in elem.rlxProperties">
-            <div class="col-sm-6 prop-col">
-              <select id="rprop.source" class="form-control" ng-model="rprop.source" ng-options="c.name as c.name for c in coldefs">
-                <option value='' disabled selected>Source</option>
-              </select>
-            </div>
-            <div class="col-sm-6 prop-col">
-              <div class="input-group">
-                <input type="text" class="form-control" id="rprop.target" name="rprop.target" ng-model="rprop.target" placeholder="Target">
-                <span class="input-group-btn">
-                  <button type="button" class="btn btn-primary btn-flat" ng-click="elem.rlxProperties.splice($index,1)" ng-show="!$last"><i class="fa fa-trash"></i></button>
-                </span>
-                <span class="input-group-btn">
-                  <button type="button" class="btn btn-primary btn-flat" ng-click="elem.rlxProperties.push({})" ng-show="$last"><i class="fa fa-plus"></i></button>
-                </span>
-              </div>
-            </div>
-          </div>
-        </uib-tab>
-      </uib-tabset>
-      <!--<div class="center"><label>{{active}}</label></div>-->
-      <div class="form-group">
-        <label for="active" class="col-sm-3 control-label">Connected to: </label>
-        <div class="col-sm-8">
-          <select id="active" name="active" class="form-control" ng-options="c.label as c.label for c in canConnect" ng-model="active"></select>
-        </div>
-      </div>
-    </div>
-    <div class="modal-footer">
-      <button type="button" class="btn btn-default pull-left" ng-click="cancel('cancel')">Cancel</button>
-      <button type="submit" class="btn btn-primary" ng-disabled="coldefProperties.$invalid"><i class="fa fa-bolt"></i>&nbsp; Ok</button>
-    </div>
-  </form>
-</script>
-
 <script type="text/ng-template" id="edit-coldef.html">
   <div class="modal-header">
     <button type="button" class="close" data-dismiss="modal" aria-label="Close" ng-click="cancel()">
@@ -382,7 +247,7 @@
   <form name="colDefForm" class="form-horizontal" novalidate>
     <div class="modal-body">
       <uib-tabset class="nav-tabs-custom" active="tab">
-        <uib-tab heading="Main" ng-hide="cd.openAsTag">
+        <uib-tab heading="Main" ng-hide="openAsTag">
           <div class="row">
             <div class="col-md-6">
               <div class="form-group">
@@ -832,6 +697,62 @@
   </form>
 </script>
 
+<script type="text/ng-template" id="create-tag.html">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close" ng-click="cancel()">
+      <span aria-hidden="true">&times;</span></button>
+    <h4 class="modal-title">Create New Tag</h4>
+  </div>
+  <form name="newTag" role="form" class="form-horizontal" ng-submit="ok(newTag.$valid)" novalidate>
+    <div class="modal-body">
+      <div class="form-group">
+        <label for="name" class="col-sm-3 control-label">Name: </label>
+        <div class="col-sm-8">
+          <textarea id="name" name="name" class="form-control" ng-model="elem.name" rows="1" autofocus></textarea>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="code" class="col-sm-3 control-label">Code: </label>
+        <div class="col-sm-8">
+          <textarea id="code" name="code" class="form-control" ng-model="elem.code" ng-class="{'has-error': newTag.code.$invalid && !newTag.code.$pristine}" rows="1" required></textarea>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="label" class="col-sm-3 control-label">Label: </label>
+        <div class="col-sm-8">
+          <textarea id="label" name="label" class="form-control" ng-model="elem.label" ng-class="{'has-error': newTag.label.$invalid && !newTag.label.$pristine}" rows="1" required></textarea>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="relationship" class="col-sm-3 control-label">Relationship: </label>
+        <div class="col-sm-8">
+          <textarea id="relationship" name="relationship" class="form-control" ng-model="elem.relationship" rows="1"></textarea>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="col-sm-offset-3 col-sm-3">
+          <div class="checkbox">
+            <label>
+              <input type="checkbox" id="reverse" name="reverse" ng-model="elem.reverse"> <b>Reverse</b>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="active" class="col-sm-3 control-label">Connected to: </label>
+        <div class="col-sm-8">
+          <select id="active" name="active" class="form-control" ng-options="t.label as t.label for t in canConnect" ng-model="active"></select>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-default pull-left" ng-click="cancel('cancel')">Cancel</button>
+      <button type="submit" class="btn btn-primary" ng-disabled="newTag.$invalid"><i class="fa fa-bolt"></i>&nbsp; Ok</button>
+    </div>
+  </form>
+</script>
+
 <script type="text/ng-template" id="create-entitylink.html">
   <div class="modal-header">
     <button type="button" class="close" data-dismiss="modal" aria-label="Close" ng-click="close()">
@@ -869,6 +790,43 @@
     </div>
     <div class="modal-footer">
       <button type="submit" class="btn btn-primary" ng-click="ok(obj)" ng-disabled="elink.$invalid"><i class="fa fa-bolt"></i>&nbsp; Ok</button>
+      <button type="button" class="btn btn-default pull-left" ng-click="close()">Cancel</button>
+    </div>
+  </form>
+</script>
+
+<script type="text/ng-template" id="create-alias.html">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close" ng-click="close()">
+      <span aria-hidden="true">&times;</span></button>
+    <h4 class="modal-title">Create Alias</h4>
+  </div>
+  <form name="aliasForm" class="form-horizontal" ng-submit="ok(obj)">
+    <div class="modal-body">
+      <div class="row">
+        <div class="form-group">
+          <label for="alias-code" class="col-sm-3 control-label">Code: </label>
+          <div class="col-sm-8" ng-class="{'has-error': aliasForm.code.$invalid && !aliasForm.code.$pristine}">
+            <input id="alias-code" name="code" type="text" class="form-control" ng-model="obj.code" required autofocus/>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="description" class="col-sm-3 control-label">Description: </label>
+          <div class="col-sm-8" ng-class="{'has-error': aliasForm.description.$invalid && !aliasForm.description.$pristine}">
+            <input id="description" name="description" type="text" class="form-control" ng-model="obj.description" required />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="aliased" class="col-sm-3 control-label">Tag</label>
+          <div class="col-sm-6" ng-class="{'has-error': aliasForm.tag.$invalid && !aliasForm.tag.$pristine}">
+            <select id="aliased" name="tag" class="form-control" ng-model="obj.tag" ng-options="t as t.label for t in tags" required></select>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button type="submit" class="btn btn-primary" ng-click="ok(obj)" ng-disabled="aliasForm.$invalid"><i class="fa fa-bolt"></i>&nbsp; Ok</button>
       <button type="button" class="btn btn-default pull-left" ng-click="close()">Cancel</button>
     </div>
   </form>
