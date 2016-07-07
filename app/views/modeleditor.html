@@ -42,8 +42,8 @@
               View <span class="caret"></span></a>
             <ul class="dropdown-menu pull-right" uib-dropdown-menu role="menu" aria-labelledby="view-menu">
               <li role="menuitem" class="active"><a href data-target="#structure" data-toggle="tab" ng-click="updateModel()">Structure</a></li>
-              <li role="menuitem"><a href data-target="#json" data-toggle="tab" ng-click="checkModel()">Edit JSON</a></li>
-              <li role="menuitem"><a href data-target="#sample" data-toggle="tab">Data Sample</a></li>
+              <li role="menuitem"><a href data-target="#sample" data-toggle="tab">Data</a></li>
+              <li role="menuitem"><a href data-target="#json" data-toggle="tab" ng-click="checkModel()">Source</a></li>
             </ul>
           </li>
           <li uib-dropdown>
@@ -383,7 +383,7 @@
             </div>
           </div>
           <fieldset ng-show="!cd.tag">
-            <legend>Properties to set into Column &nbsp;<button type="button" class="btn btn-sm btn-primary" uib-tooltip="Add new" ng-click="editProperty()"><i class="fa fa-plus"></i></button></legend>
+            <legend>Properties to set into Object &nbsp;<button type="button" class="btn btn-sm btn-primary" uib-tooltip="Add new" ng-click="editProperty()"><i class="fa fa-plus"></i></button></legend>
 
             <div class="row" ng-repeat="p in props">
               <div class="col-md-12">

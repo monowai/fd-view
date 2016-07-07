@@ -55,11 +55,13 @@
             <div class="box-body table-responsive no-padding">
               <table class="table table-hover">
                 <tbody><tr>
-                  <th>Data Type</th>
+                  <th>Data Provider</th>
+                  <th>Type</th>
                   <th>Description</th>
                   <th>Action</th>
                 </tr>
                 <tr ng-repeat="cp in cplist">
+                  <td>{{cp.fortress}}</td>
                   <td>{{cp.documentType}}</td>
                   <td>{{cp.name}}</td>
                   <td>
