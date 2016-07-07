@@ -57,6 +57,7 @@ fdView.controller('EditModelCtrl', ['$scope', '$window', 'toastr', '$uibModal', 
           $scope.modelGraph = ContentModel.graphModel();
           originalModel = angular.copy(model);
           $scope.colDefs = ContentModel.getColDefs();
+          $scope.tags = ContentModel.getTags();
           $timeout(function () {
             $scope.$broadcast('cytoscapeReset');
           }, 500);
@@ -72,6 +73,7 @@ fdView.controller('EditModelCtrl', ['$scope', '$window', 'toastr', '$uibModal', 
         ContentModel.updateModel($scope.contentModel);
         $scope.modelGraph = ContentModel.graphModel();
         $scope.colDefs = ContentModel.getColDefs();
+        $scope.tags = ContentModel.getTags();
         $timeout(function () {
           $scope.$broadcast('cytoscapeReset');
         }, 500);
@@ -211,6 +213,7 @@ fdView.controller('EditModelCtrl', ['$scope', '$window', 'toastr', '$uibModal', 
         }
         ContentModel.updateModel($scope.contentModel);
         $scope.modelGraph = ContentModel.graphModel();
+        $scope.tags = ContentModel.getTags();
 
       });
 

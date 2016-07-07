@@ -86,11 +86,12 @@ fdView.factory('QueryService', ['$http', 'configuration', function ($http, confi
       cp = {},            // actual content model
       cpGraph = {},       // latest graph visualization of the content model
       cpFortress, cpType, // fortress and doctype of the current content model
+      code,               // code for tag only model
       colDefs = [],       // list of column definitions with type
       tags = [];          // list of tags
 
     var addTag = function (tag) {
-      tag.$$id = _.uniqueId('tag_');
+      tag.$$id = tag.$$id || _.uniqueId('tag_');
       tags.push({label: tag.label || tag.code, id: tag.$$id});
       return tag.$$id;
     };
@@ -164,8 +165,9 @@ fdView.factory('QueryService', ['$http', 'configuration', function ($http, confi
         return cp;
       },
       createEmpty: function (content) {
-        cpFortress = content.fortress.name;
-        cpType = content.documentType.name;
+        cpFortress = content.fortress ? content.fortress.name : undefined;
+        cpType = content.documentType ? content.documentType.name : undefined;
+        code = content.code;
         cp = content;
         cp.content = {};
       },
@@ -227,20 +229,30 @@ fdView.factory('QueryService', ['$http', 'configuration', function ($http, confi
         if (!_.isEmpty(cp)) {
           var graph = {nodes: [], edges: []};
           colDefs = [];
+          tags = [];
 
           var createEntity = function (name, data) {
             var entity = new Object({id: name, name: name, type: 'entity'});
             _.extend(entity, data);
             return entity;
           };
-          var isTag = function (o) {
-            return Boolean(o.tag) === true || o.tagOrEntity === 'tag';
+
+          var isTagModel = function (model) {
+            if (model.tagOrEntity==='tag' || (!model.documentName && !model.documentType))
+              model.tagModel = true;
+            return model.tagModel;
           };
+
+          var isTag = function (o) {
+            return Boolean(o.tag) === true;
+          };
+
           var createTag = function (id, data) {
             var tag = new Object({id: id, name: id, type: 'tag'});
             _.extend(tag, data);
             return tag;
           };
+
           var connect = function (source, target, rel, reverse) {
             if (reverse) {
               return {source: target, target: source, relationship: rel};
@@ -277,10 +289,11 @@ fdView.factory('QueryService', ['$http', 'configuration', function ($http, confi
 
           var createTargets = function (tag) {
             _.each(tag.targets, function (target) {
+              addTag(target);
               var t = createTag(target.$$id  || addTag(target), {label: target.label, code: target.code});
               if(!containsTag(t)) {
                 graph.nodes.push({data: t});
-                var edge = connect(t.id, tag.$$id, target.relationship, target.reverse);
+                var edge = connect(tag.$$id, t.id, target.relationship, target.reverse);
                 if (!containsEdge(edge))
                   graph.edges.push({data: edge});
               }
@@ -290,25 +303,26 @@ fdView.factory('QueryService', ['$http', 'configuration', function ($http, confi
 
           var root = {};
 
-          if (!isTag(cp)) {
-            root = createEntity(cp.documentName || cp.documentType.name);
-            graph.nodes.push({data: root});
-          } else {
-            root = createTag(cp.documentName);
+          if (!isTagModel(cp)) {
+            root = createEntity(cp.documentName || cp.documentType.name || 'Name Missing!');
             graph.nodes.push({data: root});
           }
+
           _.each(cp.content, function (obj, key) {
             if (isTag(obj)) {
               colDefs.push({name: key, type: 'tag'});
+              addTag(obj);
               var label = (obj.label || key);
               var tag = containsTag(obj);
               if(!tag) {
                 tag = createTag(obj.$$id || addTag(obj), {label: label, code: obj.code});
                 graph.nodes.push({data: tag});
               }
-              var edge = connect(root.id, tag.id, obj.relationship, obj.reverse);
-              if (!containsEdge(edge)) {
-                graph.edges.push({data: edge});
+              if(!_.isEmpty(root)) {
+                var edge = connect(root.id, tag.id, obj.relationship, obj.reverse);
+                if (!containsEdge(edge)) {
+                  graph.edges.push({data: edge});
+                }
               }
 
               if (hasTargets(obj)) {
@@ -339,11 +353,19 @@ fdView.factory('QueryService', ['$http', 'configuration', function ($http, confi
       },
       updateModel: function (profile) {
         cp = profile;
+        if (cp.code) code = cp.code;
+        if (!cp.documentType) cp.tagModel = true;
       },
       saveModel: function () {
-        var fcode = cpFortress.toLowerCase().replace(/\s/g, '');
+        var url;
+        if (cp.tagModel || cp.tagOrEntity==='tag')
+          url = 'tag/'+ code;
+        else {
+          var fcode = cpFortress.toLowerCase().replace(/\s/g, '');
+          url = fcode +(!!cpType ? '/'+cpType : '');
+        }
 
-        return $http.post(configuration.engineUrl() + '/api/v1/model/' + fcode +'/'+cpType+'/', cp);
+        return $http.post(configuration.engineUrl()+'/api/v1/model/' + url, cp);
       }
   };
 }]);

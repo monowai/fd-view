@@ -100,15 +100,19 @@
               <div ng-height="400" class="scroll-col-np" ng-show="list==='Settings'">
                 <div class="form-group">
                   <label class="control-label">Fortress:</label>
-                  <input type="text" class="form-control input-sm" ng-model="contentModel.fortress.name" placeholder="Description">
+                  <input type="text" class="form-control input-sm" ng-model="contentModel.fortress.name" placeholder="Data Provider">
                 </div>
                 <div class="form-group">
                   <label class="control-label">Document Type:</label>
-                  <input type="text" class="form-control input-sm" ng-model="contentModel.documentType.name" placeholder="Description">
+                  <input type="text" class="form-control input-sm" ng-model="contentModel.documentType.name" placeholder="Document Type">
                 </div>
                 <div class="form-group">
                   <label class="control-label">Description:</label>
                   <input type="text" class="form-control input-sm" ng-model="contentModel.name" placeholder="Description">
+                </div>
+                <div class="form-group" ng-show="contentModel.tagModel||contentModel.tagOrEntity==='tag'">
+                  <label class="control-label">Code:</label>
+                  <input type="text" class="form-control input-sm" ng-model="contentModel.code" placeholder="Code">
                 </div>
                 <div class="form-group">
                   <div class="checkbox">
