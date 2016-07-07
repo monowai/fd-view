@@ -121,9 +121,7 @@ fdView.factory('QueryService', ['$http', 'configuration', function ($http, confi
       getTags: function () {
         return tags;
       },
-      findTag: function(id) {
-        return findTag(id);
-      },
+      findTag: findTag,
       addCol: function (col) {
         colDefs.push(col);
         var column = {};
@@ -153,9 +151,7 @@ fdView.factory('QueryService', ['$http', 'configuration', function ($http, confi
         //   }
         // });
       },
-      addTag: function(tag){
-        return addTag(tag);
-      },
+      addTag: addTag,
       addAlias: function (tag, alias) {
         var t = findTag(tag.id);
         console.log(t);

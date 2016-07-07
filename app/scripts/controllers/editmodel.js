@@ -190,7 +190,7 @@ fdView.controller('EditModelCtrl', ['$scope', '$window', 'toastr', '$uibModal', 
           $scope.canConnect = [{label: 'root', id:0}];
           _.each(tags, function (t) {
             $scope.canConnect.push(t);
-          }); 
+          });
 
           $scope.cancel = $uibModalInstance.dismiss;
           $scope.ok = function (isValid) {
@@ -362,8 +362,12 @@ fdView.controller('EditModelCtrl', ['$scope', '$window', 'toastr', '$uibModal', 
     $scope.getDefault = function () {
       var data=[];
       if ($scope.csvContent) {
-        var csvParser = d3.dsv($scope.delim, 'text/plain');
-        csvParser.parse($scope.csvContent, function (d) {
+        var t = $scope.csvContent.replace(/^#.*/gm,'').trim();
+        var parser;
+        if (this.delim==='\\t') {
+          parser = d3.tsv;
+        } else parser = d3.dsv(this.delim, 'text/plain');
+        parser.parse(t, function (d) {
           data.push(d);
         });
       } else {
