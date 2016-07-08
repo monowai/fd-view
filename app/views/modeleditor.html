@@ -89,7 +89,8 @@
               <!--<label class="control-label">Columns</label>-->
               <div ng-height="400" class="scroll-col" ng-show="list==='Columns'">
                 <div class="btn-toolbar" id="Columns">
-                  <button id="{{col}}" class="btn btn-xs" ng-class="{'btn-warning' : val.tag, 'btn-primary': !val.tag, 'btn-dim': !val.persistent}" draggable options="{opacity: .5,revert: true}" style="margin: 2px;" ng-repeat="(col, val) in contentModel.content" ng-click="showColDef(col)">{{col}}</button>
+                  <button id="{{col}}" class="btn btn-xs" ng-class="{'btn-warning' : val.tag, 'btn-primary': !val.tag, 'btn-dim': !val.persistent, 'btn-success':val.callerRef, 'bg-aqua': !!val.$$alias}"
+                          draggable options="{opacity: .5,revert: true}" style="margin: 2px;" ng-repeat="(col, val) in contentModel.content" ng-click="showColDef(col)">{{col}}</button>
                 </div>
               </div>
               <div ng-height="400" class="scroll-col" ng-show="list==='Tags'">
@@ -102,7 +103,7 @@
                   <label class="control-label">Fortress:</label>
                   <input type="text" class="form-control input-sm" ng-model="contentModel.fortress.name" placeholder="Data Provider">
                 </div>
-                <div class="form-group">
+                <div class="form-group" ng-show="!contentModel.tagModel">
                   <label class="control-label">Document Type:</label>
                   <input type="text" class="form-control input-sm" ng-model="contentModel.documentType.name" placeholder="Document Type">
                 </div>
@@ -110,7 +111,7 @@
                   <label class="control-label">Description:</label>
                   <input type="text" class="form-control input-sm" ng-model="contentModel.name" placeholder="Description">
                 </div>
-                <div class="form-group" ng-show="contentModel.tagModel||contentModel.tagOrEntity==='tag'">
+                <div class="form-group" ng-show="contentModel.tagModel">
                   <label class="control-label">Code:</label>
                   <input type="text" class="form-control input-sm" ng-model="contentModel.code" placeholder="Code">
                 </div>
@@ -221,7 +222,7 @@
               <table id="datasample" class="table table-bordered table-hover">
                 <thead>
                   <tr>
-                    <th class="col coldef" ng-repeat="key in keys" ng-click="showColDef(key.name)" ng-class="{'tag': key.type==='tag'}"><span>{{key.name}}</span></th>
+                    <th class="col coldef" ng-repeat="(k,v) in dataSample[0]" ng-click="showColDef(k)" ng-class="{'tag': contentModel.content[k].tag, 'caller-ref': contentModel.content[k].callerRef, 'bg-aqua': !!contentModel.content[k].$$alias}"><span>{{k}}</span></th>
                   </tr>
                 </thead>
                 <tbody>
@@ -293,31 +294,38 @@
           <div class="row">
             <div class="col-sm-12">
               <div class="form-group">
-                <div class="col-sm-offset-1 col-xs-3">
+                <div class="col-sm-offset-1 col-xs-4 col-sm-3">
                   <div class="checkbox">
                     <label>
                       <input type="checkbox" id="isPK" name="isPK" ng-model="cd.callerRef"> <b>Primary Key</b>
                     </label>
                   </div>
                 </div>
-                <div class="col-xs-3">
+                <div class="col-xs-4 col-sm-2">
                   <div class="checkbox">
                     <label>
                       <input type="checkbox" id="isTitle" name="isTitle" ng-model="cd.title"> <b>Title</b>
                     </label>
                   </div>
                 </div>
-                <div class="col-xs-3">
+                <div class="col-xs-4 col-sm-2">
                   <div class="checkbox">
                     <label>
                       <input type="checkbox" id="isDescr" name="isDescr" ng-model="cd.description"> <b>Description</b>
                     </label>
                   </div>
                 </div>
-                <div class="col-xs-2">
+                <div class="col-xs-4 col-sm-2">
                   <div class="checkbox">
                     <label>
                       <input type="checkbox" id="isTag" name="isTag" ng-model="cd.tag"> <b>Tag</b>
+                    </label>
+                  </div>
+                </div>
+                <div class="col-xs-4 col-sm-2">
+                  <div class="checkbox">
+                    <label>
+                      <input type="checkbox" id="isAlias" name="isAlias" ng-model="isAlias" ng-change="toggleAlias(isAlias)"> <b>Alias</b>
                     </label>
                   </div>
                 </div>
@@ -386,6 +394,32 @@
               </div>
             </div>
           </div>
+          <fieldset ng-show="isAlias || !!cd.$$alias">
+            <legend>Alias properties required</legend>
+            <div class="row">
+              <div class="col-sm-3">
+                <label for="tg-alias" class="control-label col-xs-4">Tag</label>
+                <div class="input-group col-xs-8">
+                  <select id="tg-alias" name="tg-alias" class="form-control" ng-model="cd.$$alias.tag" ng-options="t.id as t.label for t in tags" ng-required="isAlias">
+                    <option value="" disabled selected>Select tag</option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-sm-4">
+                <label for="code-alias" class="control-label col-xs-4">Code</label>
+                <div class="input-group col-xs-8">
+                  <input type="text" id="code-alias" name="code-alias" class="form-control" ng-model="cd.$$alias.code" ng-required="isAlias" disabled />
+                </div>
+              </div>
+              <div class="col-sm-5">
+                <label for="dsc-alias" class="control-label col-xs-4">Description</label>
+                <div class="input-group col-xs-8">
+                  <input type="text" id="dsc-alias" name="dsc-alias" class="form-control" ng-model="cd.$$alias.description" ng-required="isAlias" />
+                </div>
+              </div>
+            </div>
+          </fieldset>
+
           <fieldset ng-show="!cd.tag">
             <legend>Properties to set into Object &nbsp;<button type="button" class="btn btn-sm btn-primary" uib-tooltip="Add new" ng-click="editProperty()"><i class="fa fa-plus"></i></button></legend>
 
@@ -422,7 +456,7 @@
             </div>
           </fieldset>
         </uib-tab>
-        <uib-tab heading="Tag Properties" disable="!(cd.tag || cd.openAsTag)">
+        <uib-tab heading="Tag Properties" disable="!(cd.tag || openAsTag)"  ng-show="(cd.tag || openAsTag)">
           <div class="row">
             <div class="col-md-8">
               <br>
@@ -496,27 +530,6 @@
             </div>
             <div class="col-md-4">
               <fieldset>
-                <legend>Geo Data</legend>
-                <div class="form-group">
-                  <label for="standard" class="control-label col-xs-3">Standard</label>
-                  <div class="col-xs-9">
-                    <input id="standard" name="standard" type="text" class="form-control" />
-                  </div>
-                </div>
-                <div class="form-group">
-                  <label for="geoX" class="control-label col-xs-3">X</label>
-                  <div class="col-xs-9">
-                    <input id="geoX" name="geoX" type="text" class="form-control" />
-                  </div>
-                </div>
-                <div class="form-group">
-                  <label for="geoY" class="control-label col-xs-3">Y</label>
-                  <div class="col-xs-9">
-                    <input id="geoY" name="geoY" type="text" class="form-control" />
-                  </div>
-                </div>
-              </fieldset>
-              <fieldset>
                 <legend>Target Tags</legend>
                 <div class="control-group">
 
@@ -566,7 +579,6 @@
           <div class="row">
             <div class="col-md-12">
               <fieldset>
-
                 <legend class="legend">Existing Entity Links &nbsp;
                   <button type="button" class="btn btn-sm btn-primary" uib-tooltip="Add new" ng-click="addEntityLink()"><i class="fa fa-plus"></i></button>
                 </legend>
@@ -595,6 +607,29 @@
               </fieldset>
             </div>
           </div>
+        </uib-tab>
+        <uib-tab heading="Geo Data" ng-show="cd.tag || openAsTag">
+          <fieldset>
+            <legend>Geo Data</legend>
+            <div class="form-group">
+              <label for="standard" class="control-label col-xs-3">Standard</label>
+              <div class="col-xs-9">
+                <input id="standard" name="standard" type="text" class="form-control" />
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="geoX" class="control-label col-xs-3">X</label>
+              <div class="col-xs-9">
+                <input id="geoX" name="geoX" type="text" class="form-control" />
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="geoY" class="control-label col-xs-3">Y</label>
+              <div class="col-xs-9">
+                <input id="geoY" name="geoY" type="text" class="form-control" />
+              </div>
+            </div>
+          </fieldset>
         </uib-tab>
       </uib-tabset>
     </div>

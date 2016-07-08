@@ -319,6 +319,9 @@ fdView.controller('EditModelCtrl', ['$scope', '$window', 'toastr', '$uibModal', 
         resolve: {
           coldef: function () {
             return col;
+          },
+          tags: function () {
+            return $scope.tags;
           }
         }
       }).result.then(function (res) {
@@ -327,6 +330,14 @@ fdView.controller('EditModelCtrl', ['$scope', '$window', 'toastr', '$uibModal', 
           _.extend(t, res);
         } else {
           cp.content[key] = res;
+        }
+
+        if (!!res.$$alias) {
+          var atag = ContentModel.findTag(res.$$alias.tag);
+          if (!atag.aliases) atag.aliases = [];
+          var alias = _.omit(res.$$alias, 'tag');
+          if (_.findWhere(atag.aliases, alias)===undefined)
+            atag.aliases.push(alias);
         }
 
         ContentModel.updateModel(cp);
@@ -447,15 +458,17 @@ fdView.controller('EditModelCtrl', ['$scope', '$window', 'toastr', '$uibModal', 
 
   }]);
 
-fdView.controller('EditColdefCtrl',['$scope','$uibModalInstance', 'modalService', 'coldef', 'ContentModel',
-  function ($scope, $uibModalInstance, modalService, coldef, ContentModel) {
+fdView.controller('EditColdefCtrl',['$scope','$uibModalInstance', 'modalService', 'coldef', 'tags', 'ContentModel',
+  function ($scope, $uibModalInstance, modalService, coldef, tags, ContentModel) {
     $scope.name = Object.keys(coldef)[0];
 
     $scope.cd = angular.copy(coldef[$scope.name]);
     $scope.columns = ContentModel.getColDefs();
+    $scope.tags = tags;
     $scope.colNames = _.map($scope.columns, function (c) {
       return c.name;
     });
+    $scope.isAlias = !!$scope.cd.$$alias;
 
     $scope.openAsTag = coldef.openAsTag;
 
@@ -483,6 +496,14 @@ fdView.controller('EditColdefCtrl',['$scope','$uibModalInstance', 'modalService'
     }));
 
     var propsCopy = angular.copy($scope.props);
+
+    $scope.toggleAlias = function (alias) {
+      if (alias) {
+        $scope.cd.$$alias= {code: $scope.name};
+      } else {
+        delete $scope.cd.$$alias;
+      }
+    };
 
     $scope.editProperty = function (property) {
       modalService.show({

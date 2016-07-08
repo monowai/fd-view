@@ -265,6 +265,12 @@ th.col.coldef {
 th.col.tag {
   background-color: #f7cd8f;
 }
+th.col.caller-ref {
+  font-style: italic;
+}
+th.col.alias {
+  background-color: #f7bf65;
+}
 th.col>span {
   display: inline-block;
 }

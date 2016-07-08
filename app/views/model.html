@@ -40,16 +40,16 @@
           <div class="box">
             <div class="box-header">
               <h3 class="box-title">Manage Content Models - {{profile.companyName}}</h3>
-              <!--<div class="box-tools">-->
-                <!--<div class="input-group input-group-sm" style="width: 150px;">-->
-                  <!--<select class="form-control" id="fortress"  ng-model="fortress" ng-options="f.name as f.name for f in fortresses" ng-change="selectFortress(fortress)">-->
-                    <!--<option value="" disabled selected>Data Provider</option>-->
-                  <!--</select>-->
+              <div class="box-tools">
+                <div class="input-group input-group-sm" style="width: 150px;">
+                  <select class="form-control" id="fortress"  ng-model="fortress" ng-options="f.name as f.name for f in fortresses" ng-change="console.log(fortress);">
+                    <option value="" selected>Data Provider</option>
+                  </select>
                   <!--<div class="input-group-btn">-->
                     <!--<button class="btn" ng-click="createFortress()" uib-tooltip="New Data Provider"><i class="fa fa-lg fa-plus"></i></button>-->
                   <!--</div>-->
-                <!--</div>-->
-              <!--</div>-->
+                </div>
+              </div>
             </div>
             <!-- /.box-header -->
             <div class="box-body table-responsive no-padding">
@@ -60,7 +60,7 @@
                   <th>Description</th>
                   <th>Action</th>
                 </tr>
-                <tr ng-repeat="cp in cplist">
+                <tr ng-repeat="cp in cplist | filter:fortress:cp.fortress">
                   <td>{{cp.fortress}}</td>
                   <td>{{cp.documentType}}</td>
                   <td>{{cp.name}}</td>
