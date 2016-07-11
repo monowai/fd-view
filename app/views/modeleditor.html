@@ -37,22 +37,17 @@
     <div class="col-md-12">
       <div class="nav-tabs-custom">
         <ul class="nav nav-tabs pull-right">
-          <li uib-dropdown class="active">
-            <a href id="view-menu" uib-dropdown-toggle>
-              View <span class="caret"></span></a>
-            <ul class="dropdown-menu pull-right" uib-dropdown-menu role="menu" aria-labelledby="view-menu">
-              <li role="menuitem" class="active"><a href data-target="#structure" data-toggle="tab" ng-click="updateModel()">Structure</a></li>
-              <li role="menuitem"><a href data-target="#sample" data-toggle="tab">Data</a></li>
-              <li role="menuitem"><a href data-target="#json" data-toggle="tab" ng-click="checkModel()">Source</a></li>
-            </ul>
-          </li>
+          <li uib-tooltip="Source"><a href data-target="#json" data-toggle="tab" ng-click="checkModel()"><i class="fa fa-lg fa-edit"></i></a></li>
+          <li uib-tooltip="Model Settings"><a href data-target="#settings" data-toggle="tab"><i class="fa fa-lg fa-cog"></i></a></li>
+          <li uib-tooltip="Data"><a href data-target="#sample" data-toggle="tab"><i class="fa fa-lg fa-file-text"></i></a></li>
+          <li uib-tooltip="Structure" class="active"><a href data-target="#structure" data-toggle="tab" ng-click="updateModel()"><i class="fa fa-lg fa-sitemap"></i></a></li>
           <li uib-dropdown>
             <a href id="action-menu" uib-dropdown-toggle>
             Action <span class="caret"></span></a>
             <ul class="dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="action-menu">
               <li role="menuitem"><a href ng-click="save()">Save</a></li>
               <li role="menuitem"><a href ng-click="validate()">Validate</a></li>
-              <li role="menuitem" ng-show="!!dataSample"><a href ng-click="dataSample=null">Reload Sample</a></li>
+              <li role="menuitem" ng-show="!!csvContent || !!dataSample"><a href ng-click="cleanSample()">Reload Sample</a></li>
               <li class="divider"></li>
               <li role="menuitem"><a href ng-click="cancel()">Cancel</a></li>
             </ul>
@@ -83,13 +78,12 @@
                 <ul class="dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="list-menu">
                   <li role="menuitem"><a href ng-click="list='Columns'">Columns</a></li>
                   <li role="menuitem"><a href ng-click="list='Tags'">Tags</a></li>
-                  <li role="menuitem"><a href ng-click="list='Settings'">General Settings</a></li>
                 </ul>
               </label>
               <!--<label class="control-label">Columns</label>-->
               <div ng-height="400" class="scroll-col" ng-show="list==='Columns'">
                 <div class="btn-toolbar" id="Columns">
-                  <button id="{{col}}" class="btn btn-xs" ng-class="{'btn-warning' : val.tag, 'btn-primary': !val.tag, 'btn-dim': !val.persistent, 'btn-success':val.callerRef, 'bg-aqua': !!val.$$alias}"
+                  <button id="{{col}}" class="btn btn-xs" ng-class="{'btn-warning' : val.tag, 'btn-primary': !val.tag, 'dim': !val.persistent, 'btn-success':val.callerRef, 'bg-aqua': !!val.$$alias}"
                           draggable options="{opacity: .5,revert: true}" style="margin: 2px;" ng-repeat="(col, val) in contentModel.content" ng-click="showColDef(col)">{{col}}</button>
                 </div>
               </div>
@@ -98,76 +92,10 @@
                   <button id="{{tag.id}}" class="btn btn-xs btn-warning" draggable options="{opacity: .5,revert: true}" style="margin: 2px;" ng-repeat="tag in tags" ng-click="showColDef(tag.id,true)">{{tag.label}}</button>
                 </div>
               </div>
-              <div ng-height="400" class="scroll-col-np" ng-show="list==='Settings'">
-                <div class="form-group">
-                  <label class="control-label">Fortress:</label>
-                  <input type="text" class="form-control input-sm" ng-model="contentModel.fortress.name" placeholder="Data Provider">
-                </div>
-                <div class="form-group" ng-show="!contentModel.tagModel">
-                  <label class="control-label">Document Type:</label>
-                  <input type="text" class="form-control input-sm" ng-model="contentModel.documentType.name" placeholder="Document Type">
-                </div>
-                <div class="form-group">
-                  <label class="control-label">Description:</label>
-                  <input type="text" class="form-control input-sm" ng-model="contentModel.name" placeholder="Description">
-                </div>
-                <div class="form-group" ng-show="contentModel.tagModel">
-                  <label class="control-label">Code:</label>
-                  <input type="text" class="form-control input-sm" ng-model="contentModel.code" placeholder="Code">
-                </div>
-                <div class="form-group">
-                  <div class="checkbox">
-                    <label>
-                      <input type="checkbox" id="emptyIgnored" name="emptyIgnored" ng-model="contentModel.emptyIgnored"> Ignore empty
-                    </label>
-                  </div>
-                </div>
-                <div class="form-group">
-                  <div class="checkbox">
-                    <label>
-                      <input type="checkbox" id="archiveTags" name="archiveTags" ng-model="contentModel.archiveTags"> Archive tags
-                    </label>
-                  </div>
-                </div>
-                <div class="form-group">
-                  <div class="checkbox">
-                    <label>
-                      <input type="checkbox" id="entityOnly" name="entityOnly" ng-model="contentModel.entityOnly"> Entity only
-                    </label>
-                  </div>
-                </div>
-                <div class="form-group">
-                  <div class="checkbox">
-                    <label>
-                      <input type="checkbox" id="trackSuppressed" name="trackSuppressed" ng-model="contentModel.trackSuppressed"> Track suppressed
-                    </label>
-                  </div>
-                </div>
-                <div class="form-group">
-                  <div class="checkbox">
-                    <label>
-                      <input type="checkbox" id="searchSuppressed" name="searchSuppressed" ng-model="contentModel.searchSuppressed"> Search suppressed
-                    </label>
-                  </div>
-                </div>
-                <div class="form-group">
-                  <label class="control-label">Pre-parse Expression:</label>
-                  <input type="text" class="form-control input-sm" ng-model="contentModel.preParseRowExp" placeholder="Pre-parse row expression">
-                </div>
-                <div class="form-group">
-                  <label class="control-label">Segment Expression:</label>
-                  <input type="text" class="form-control input-sm" ng-model="contentModel.segmentExpression" placeholder="Segment expression">
-                </div>
-              </div>
             </div>
             <div class="col-md-10" droppable="handleDrop">
               <cytoscape elements="modelGraph" layout="layout" styles="styles" selected-nodes="nodes" ng-height="180"></cytoscape>
             </div>
-          </div>
-
-          <!-- Edit JSON -->
-          <div id="json" class="tab-pane fade">
-            <div ng-jsoneditor="onEditorLoad" ng-model="contentModel" options="editorOptions" ng-height="180"></div>
           </div>
 
           <!-- View Data Sample -->
@@ -222,7 +150,7 @@
               <table id="datasample" class="table table-bordered table-hover">
                 <thead>
                   <tr>
-                    <th class="col coldef" ng-repeat="(k,v) in dataSample[0]" ng-click="showColDef(k)" ng-class="{'tag': contentModel.content[k].tag, 'caller-ref': contentModel.content[k].callerRef, 'bg-aqua': !!contentModel.content[k].$$alias}"><span>{{k}}</span></th>
+                    <th class="col coldef" ng-repeat="(k,v) in dataSample[0]" ng-click="showColDef(k)" ng-class="{'tag': contentModel.content[k].tag, 'bg-green': contentModel.content[k].callerRef, 'bg-aqua': !!contentModel.content[k].$$alias, 'dim': !contentModel.content[k].persistent}"><span>{{k}}</span></th>
                   </tr>
                 </thead>
                 <tbody>
@@ -233,6 +161,77 @@
               </table>
             </div>
             <p ng-show="dataSample.length>49"><i>* Only first 50 rows are displayed</i></p>
+          </div>
+
+          <!-- General model settings-->
+          <div id="settings" class="tab-pane fade">
+            <div class="col-md-6">
+              <div class="form-group">
+                <label class="control-label">Fortress:</label>
+                <input type="text" class="form-control input-sm" ng-model="contentModel.fortress.name" placeholder="Data Provider">
+              </div>
+              <div class="form-group" ng-show="!contentModel.tagModel">
+                <label class="control-label">Document Type:</label>
+                <input type="text" class="form-control input-sm" ng-model="contentModel.documentType.name" placeholder="Document Type">
+              </div>
+              <div class="form-group">
+                <label class="control-label">Description:</label>
+                <input type="text" class="form-control input-sm" ng-model="contentModel.name" placeholder="Description">
+              </div>
+              <div class="form-group" ng-show="contentModel.tagModel">
+                <label class="control-label">Code:</label>
+                <input type="text" class="form-control input-sm" ng-model="contentModel.code" placeholder="Code">
+              </div>
+              <div class="form-group">
+                <div class="checkbox">
+                  <label>
+                    <input type="checkbox" id="emptyIgnored" name="emptyIgnored" ng-model="contentModel.emptyIgnored"> Ignore empty
+                  </label>
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="checkbox">
+                  <label>
+                    <input type="checkbox" id="archiveTags" name="archiveTags" ng-model="contentModel.archiveTags"> Archive tags
+                  </label>
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="checkbox">
+                  <label>
+                    <input type="checkbox" id="entityOnly" name="entityOnly" ng-model="contentModel.entityOnly"> Entity only
+                  </label>
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="checkbox">
+                  <label>
+                    <input type="checkbox" id="trackSuppressed" name="trackSuppressed" ng-model="contentModel.trackSuppressed"> Track suppressed
+                  </label>
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="checkbox">
+                  <label>
+                    <input type="checkbox" id="searchSuppressed" name="searchSuppressed" ng-model="contentModel.searchSuppressed"> Search suppressed
+                  </label>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="control-label">Pre-parse Expression:</label>
+                <input type="text" class="form-control input-sm" ng-model="contentModel.preParseRowExp" placeholder="Pre-parse row expression">
+              </div>
+              <div class="form-group">
+                <label class="control-label">Segment Expression:</label>
+                <input type="text" class="form-control input-sm" ng-model="contentModel.segmentExpression" placeholder="Segment expression">
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Edit JSON -->
+          <div id="json" class="tab-pane fade">
+            <div ng-jsoneditor="onEditorLoad" ng-model="contentModel" options="editorOptions" ng-height="180"></div>
           </div>
 
         </div>

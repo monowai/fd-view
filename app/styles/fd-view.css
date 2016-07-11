@@ -293,7 +293,7 @@ li.dropdown:hover>.dropdown-menu {
   display: block;
 }
 
-.btn-dim {
+.dim {
   opacity: 0.65;
 }
 

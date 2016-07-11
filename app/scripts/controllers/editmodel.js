@@ -376,12 +376,19 @@ fdView.controller('EditModelCtrl', ['$scope', '$window', 'toastr', '$uibModal', 
     $scope.getDefault = function () {
       var data=[];
       if ($scope.csvContent) {
-        var t = $scope.csvContent.replace(/^#.*/gm,'').trim();
+        var lines = $scope.csvContent.match(/[^\r\n]+/g);
+        var i = 0;
+        while (lines[i].match(/^#.*/)) {
+          lines[i]='';
+          i++;
+        }
+        var clean = lines.join('\n').trim();
+
         var parser;
         if (this.delim==='\\t') {
           parser = d3.tsv;
         } else parser = d3.dsv(this.delim, 'text/plain');
-        parser.parse(t, function (d) {
+        parser.parse(clean, function (d) {
           data.push(d);
         });
       } else {
@@ -411,6 +418,11 @@ fdView.controller('EditModelCtrl', ['$scope', '$window', 'toastr', '$uibModal', 
         toastr.error(res, 'Error');
       });
       delete $scope.csvContent;
+    };
+
+    $scope.cleanSample = function () {
+      if ($scope.csvContent) delete $scope.csvContent;
+      if ($scope.dataSample) delete $scope.dataSample;
     };
 
     $scope.validate = function(){
@@ -576,6 +588,7 @@ fdView.controller('EditColdefCtrl',['$scope','$uibModalInstance', 'modalService'
         data.properties = props['properties'];
         data.rlxProperties = props['rlxProperties'];
       }
+      if (data.name === "") delete data.name;
       $uibModalInstance.close(data);
     };
   }]);
