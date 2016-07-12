@@ -238,7 +238,7 @@ fdView.factory('QueryService', ['$http', 'configuration', function ($http, confi
           };
 
           var isTagModel = function (model) {
-            if (model.tagOrEntity==='tag' || (!model.documentName && !model.documentType))
+            if (!model.documentName && !model.documentType)
               model.tagModel = true;
             return model.tagModel;
           };
@@ -253,13 +253,15 @@ fdView.factory('QueryService', ['$http', 'configuration', function ($http, confi
             return tag;
           };
 
-          var connect = function (source, target, rel, reverse) {
+          var connect = function (source, target, rel, reverse, type) {
+            var edge = {};
             if (reverse) {
-              return {source: target, target: source, relationship: rel};
+              edge = {source: target, target: source, relationship: rel, type: type};
             } else {
-              return {source: source, target: target, relationship: rel};
+              edge = {source: source, target: target, relationship: rel, type: type};
             }
-
+            if (!containsEdge(edge))
+              graph.edges.push({data: edge});
           };
 
           var hasTargets = function (obj) {
@@ -293,9 +295,7 @@ fdView.factory('QueryService', ['$http', 'configuration', function ($http, confi
               var t = createTag(target.$$id  || addTag(target), {label: target.label, code: target.code});
               if(!containsTag(t)) {
                 graph.nodes.push({data: t});
-                var edge = connect(tag.$$id, t.id, target.relationship, target.reverse);
-                if (!containsEdge(edge))
-                  graph.edges.push({data: edge});
+                connect(tag.$$id, t.id, target.relationship, target.reverse);
               }
               if (hasTargets(target)) createTargets(target);
             })
@@ -319,20 +319,29 @@ fdView.factory('QueryService', ['$http', 'configuration', function ($http, confi
                 graph.nodes.push({data: tag});
               }
               if(!_.isEmpty(root)) {
-                var edge = connect(root.id, tag.id, obj.relationship, obj.reverse);
-                if (!containsEdge(edge)) {
-                  graph.edges.push({data: edge});
+                if (!!obj.entityTagLinks) {
+                  _.each(obj.entityTagLinks, function (link) {
+                    connect(root.id, tag.id, link.relationshipName, obj.reverse, link.geo ? 'geo' : undefined);
+                  })
+                } else {
+                  connect(root.id, tag.id, obj.relationship, obj.reverse);
                 }
               }
 
               if (hasTargets(obj)) {
                 createTargets(obj);
               }
+              
               if (hasAliases(obj)) {
                 _.each(obj.aliases, function (alias) {
-                  var a = {id: alias.code, code: alias.code, description: alias.description, type: 'alias'};
+                  var a = { 
+                    id: alias.code, 
+                    code: alias.code, 
+                    description: alias.description, 
+                    type: 'alias'
+                  };
                   graph.nodes.push({data: a});
-                  graph.edges.push({data: connect(tag.id, a.id)});
+                  connect(tag.id, a.id);
                 })
               }
             } else {
@@ -342,7 +351,7 @@ fdView.factory('QueryService', ['$http', 'configuration', function ($http, confi
               _.each(obj.entityLinks, function (entity) {
                 var e = createEntity(entity.documentName);
                 graph.nodes.push({data: e});
-                graph.edges.push({data: connect(root.id, e.id, entity.relationshipName,obj.reverse)});
+                connect(root.id, e.id, entity.relationshipName,obj.reverse);
               })
             }
           });
@@ -358,7 +367,7 @@ fdView.factory('QueryService', ['$http', 'configuration', function ($http, confi
       },
       saveModel: function () {
         var url;
-        if (cp.tagModel || cp.tagOrEntity==='tag')
+        if (cp.tagModel)
           url = 'tag/'+ code;
         else {
           var fcode = cpFortress.toLowerCase().replace(/\s/g, '');

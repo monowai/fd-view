@@ -28,7 +28,7 @@ fdView.controller('EditModelCtrl', ['$scope', '$window', 'toastr', '$uibModal', 
       $scope.contentModel = res;//.data.contentModel;
       originalModel = angular.copy(res);
       $scope.modelGraph = ContentModel.graphModel();
-      $scope.colDefs = ContentModel.getColDefs();
+      // $scope.colDefs = ContentModel.getColDefs();
       $scope.tags = ContentModel.getTags();
       $scope.list = 'Columns';
       if ($scope.modelGraph.nodes.length===1) {
@@ -56,7 +56,7 @@ fdView.controller('EditModelCtrl', ['$scope', '$window', 'toastr', '$uibModal', 
           angular.element('[data-target="#structure"]').tab('show');
           $scope.modelGraph = ContentModel.graphModel();
           originalModel = angular.copy(model);
-          $scope.colDefs = ContentModel.getColDefs();
+          // $scope.colDefs = ContentModel.getColDefs();
           $scope.tags = ContentModel.getTags();
           $timeout(function () {
             $scope.$broadcast('cytoscapeReset');
@@ -72,7 +72,7 @@ fdView.controller('EditModelCtrl', ['$scope', '$window', 'toastr', '$uibModal', 
         angular.element('[data-target="#structure"]').tab('show');
         ContentModel.updateModel($scope.contentModel);
         $scope.modelGraph = ContentModel.graphModel();
-        $scope.colDefs = ContentModel.getColDefs();
+        // $scope.colDefs = ContentModel.getColDefs();
         $scope.tags = ContentModel.getTags();
         $timeout(function () {
           $scope.$broadcast('cytoscapeReset');
@@ -118,7 +118,7 @@ fdView.controller('EditModelCtrl', ['$scope', '$window', 'toastr', '$uibModal', 
         'selector': 'node[type="alias"]',
         'css': {
           'background-color': '#f7bf65',
-          'content': 'data(description)',
+          'content': 'data(code)',
           'shape': 'ellipse',
           'width': '100',
           'height': '45'
@@ -128,9 +128,16 @@ fdView.controller('EditModelCtrl', ['$scope', '$window', 'toastr', '$uibModal', 
         'selector': 'edge',
         'css': {
           'content': 'data(relationship)',
-          'width': 3,
+          'width': 5,
           'target-arrow-color': '#ccc',
           'target-arrow-shape': 'triangle'
+        }
+      },
+      {
+        'selector': 'edge[type="geo"]',
+        'css': {
+          'line-color' : '#00a65a',
+          'target-arrow-color': '#00a65a'
         }
       },
       {
@@ -204,7 +211,7 @@ fdView.controller('EditModelCtrl', ['$scope', '$window', 'toastr', '$uibModal', 
       }).result.then(function (res) {
         if(selected==='root') {
           $scope.contentModel.content[res.name] = res;
-          $scope.colDefs.push({name: res.name, type: 'tag'});
+          // $scope.colDefs.push({name: res.name, type: 'tag'});
         } else {
           if(!selected.targets) {
             selected.targets = [];
@@ -224,7 +231,7 @@ fdView.controller('EditModelCtrl', ['$scope', '$window', 'toastr', '$uibModal', 
         templateUrl: 'create-column.html',
         resolve: {
           colDefs: function () {
-            return $scope.colDefs;
+            return Object.keys($scope.contentModel.content);
           }
         },
         controller: ['$scope', '$uibModalInstance', 'colDefs', function ($scope, $uibModalInstance, colDefs) {
@@ -250,7 +257,7 @@ fdView.controller('EditModelCtrl', ['$scope', '$window', 'toastr', '$uibModal', 
         templateUrl: 'create-entitylink.html',
         resolve: {
           colDefs: function () {
-            return $scope.colDefs;
+            return Object.keys($scope.contentModel.content);
           }
         },
         controller: ['$scope', '$uibModalInstance', 'colDefs', function ($scope, $uibModalInstance, colDefs) {
@@ -343,7 +350,8 @@ fdView.controller('EditModelCtrl', ['$scope', '$window', 'toastr', '$uibModal', 
         ContentModel.updateModel(cp);
         $scope.contentModel = cp;
         $scope.modelGraph = ContentModel.graphModel();
-        $scope.colDefs = ContentModel.getColDefs();
+        // $scope.colDefs = ContentModel.getColDefs();
+        $scope.tags = ContentModel.getTags();
       });
     };
 
@@ -394,26 +402,14 @@ fdView.controller('EditModelCtrl', ['$scope', '$window', 'toastr', '$uibModal', 
       } else {
         toastr.warning('File is not loaded', 'Warning');
       }
-      $scope.dataSample = data.slice(0,50);
+      $scope.dataSample = data.slice(0,200);
       ContentModel.getDefault({rows: $scope.dataSample}).success(function (res) {
         toastr.success('Data is loaded', 'Success');
         $scope.model = {};
         $scope.contentModel = res;
         $scope.modelGraph = ContentModel.graphModel();
-        $scope.colDefs = ContentModel.getColDefs();
-        $scope.keys = _(Object.keys($scope.dataSample[0]))
-          .chain()
-          .map(function (key) {
-            var colDef = _.find($scope.colDefs, function (c) {
-              return c.name === key;
-            });
-            if (key==='$$hashKey') return ;
-            return {name: key, type: colDef.type};
-          })
-          .filter(function (o) {
-            return !!o;
-          })
-          .value();
+        // $scope.colDefs = ContentModel.getColDefs();
+        $scope.tags = ContentModel.getTags();
       }).error(function (res) {
         toastr.error(res, 'Error');
       });
@@ -483,13 +479,8 @@ fdView.controller('EditColdefCtrl',['$scope','$uibModalInstance', 'modalService'
     $scope.isAlias = !!$scope.cd.$$alias;
 
     $scope.openAsTag = coldef.openAsTag;
-
-    if (coldef.openAsTag) {
-      $scope.caption = 'Tag Input';
-      $scope.tab=1;
-    } else {
-      $scope.caption = 'Column Definition'
-    }
+    $scope.caption = coldef.openAsTag ? 'Tag Input' : 'Column Definition';
+    $scope.tab = coldef.tag || coldef.openAsTag ? 1 : 0;
 
     $scope.dataTypes = ['string','number','date'];
     $scope.dateFormats = ['timestamp','epoc','custom'];
@@ -553,6 +544,12 @@ fdView.controller('EditColdefCtrl',['$scope','$uibModalInstance', 'modalService'
       });
     };
 
+    $scope.addEntityRel = function () {
+      if (!$scope.cd.entityTagLinks) $scope.cd.entityTagLinks= [];
+      $scope.cd.entityTagLinks.push({});
+    };
+
+
     $scope.addEntityLink = function () {
       if (!$scope.cd.entityLinks) $scope.cd.entityLinks= [];
       $scope.cd.entityLinks.push({});
@@ -589,6 +586,7 @@ fdView.controller('EditColdefCtrl',['$scope','$uibModalInstance', 'modalService'
         data.rlxProperties = props['rlxProperties'];
       }
       if (data.name === "") delete data.name;
+      
       $uibModalInstance.close(data);
     };
   }]);

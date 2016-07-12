@@ -146,6 +146,9 @@ var fdView = angular.module('fdView', [
     $urlRouterProvider.otherwise('/');
     $locationProvider.html5Mode(true);
   }])
+  .config(['$compileProvider', function ($compileProvider) {
+    $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|mailto|tel|file|blob|data):/);
+  }])
   .config(['toastrConfig', function(toastrConfig) {
     angular.extend(toastrConfig, {
       newestOnTop: false,

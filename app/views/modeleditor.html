@@ -508,7 +508,7 @@
                   <input id="valIfNull" name="valIfNull" type="text" class="form-control" ng-model="cd.notFound"/>
                 </div>
               </div>
-              <div class="form-group">
+              <div class="form-group" ng-show="!cd.tag || !!cd.relationship">
                 <label for="relationship" class="control-label col-xs-3">Relationship name</label>
                 <div class="col-xs-9 col-sm-7">
                   <!--<input id="relationship" name="relationship" type="text" class="form-control" ng-model="cd.relationship"/>-->
@@ -532,6 +532,42 @@
                 <legend>Target Tags</legend>
                 <div class="control-group">
 
+                </div>
+              </fieldset>
+            </div>
+            <div class="col-md-12" ng-show="cd.tag">
+              <fieldset>
+                <legend>Entity relationships  &nbsp;<button type="button" class="btn btn-sm btn-primary" uib-tooltip="Add new" ng-click="cd.entityTagLinks.push({})"><i class="fa fa-plus"></i></button></legend>
+
+                <div class="row" ng-repeat="link in cd.entityTagLinks">
+                  <div class="col-md-12">
+                    <div class="col-md-6">
+                      <label for="rel-name" class="control-label col-xs-4">Relationship name</label>
+                      <div class="input-group col-xs-8">
+                        <input id="rel-name" name="relName" type="text" class="form-control" ng-model="link.relationshipName"/>
+                        <!--<span class="input-group-btn">-->
+                          <!--<button type="button" class="btn btn-default" ng-click="editRelProperty(p)" uib-tooltip="Edit"><i class="fa fa-edit"></i></button>-->
+                        <!--</span>-->
+                        <!--<span class="input-group-btn">-->
+                          <!--<button type="button" class="btn btn-default" ng-click="cd.entityTagLinks.splice($index,1)" uib-tooltip="Delete"><i class="fa fa-trash"></i></button>-->
+                        <!--</span>-->
+                      </div>
+                    </div>
+                    <div class="col-sm-2 form-group">
+                      <div class="checkbox">
+                        <label>
+                          <input type="checkbox" id="rel-geo" name="geo" ng-model="link.geo"> <b>Geo</b>
+                        </label>
+                      </div>
+                    </div>
+                    <div class="col-sm-2 form-group">
+                      <div class="checkbox">
+                        <label>
+                          <input type="checkbox" id="rel-reverse" name="reverse" ng-model="link.reverse"> <b>Reverse</b>
+                        </label>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </fieldset>
             </div>
@@ -560,12 +596,12 @@
                       <label for="pTarget" class="control-label col-xs-3">Set as</label>
                       <div class="input-group col-xs-9">
                         <input id="pTarget" name="pTarget" type="text" class="form-control" ng-model="p.target"/>
-                      <span class="input-group-btn">
-                        <button type="button" class="btn btn-default" ng-click="editProperty(p)" uib-tooltip="Edit"><i class="fa fa-edit"></i></button>
-                      </span>
-                      <span class="input-group-btn">
-                        <button type="button" class="btn btn-default" ng-click="props.splice($index,1)" uib-tooltip="Delete"><i class="fa fa-trash"></i></button>
-                      </span>
+                        <span class="input-group-btn">
+                          <button type="button" class="btn btn-default" ng-click="editProperty(p)" uib-tooltip="Edit"><i class="fa fa-edit"></i></button>
+                        </span>
+                        <span class="input-group-btn">
+                          <button type="button" class="btn btn-default" ng-click="props.splice($index,1)" uib-tooltip="Delete"><i class="fa fa-trash"></i></button>
+                        </span>
                       </div>
                     </div>
                   </div>
@@ -608,27 +644,31 @@
           </div>
         </uib-tab>
         <uib-tab heading="Geo Data" ng-show="cd.tag || openAsTag">
-          <fieldset>
-            <legend>Geo Data</legend>
-            <div class="form-group">
-              <label for="standard" class="control-label col-xs-3">Standard</label>
-              <div class="col-xs-9">
-                <input id="standard" name="standard" type="text" class="form-control" />
-              </div>
+          <div class="row">
+            <div class="col-md-6">
+              <fieldset>
+                <legend>Geo Data</legend>
+                <div class="form-group">
+                  <label for="standard" class="control-label col-xs-3">Standard</label>
+                  <div class="col-xs-9">
+                    <input id="standard" name="standard" type="text" class="form-control" ng-model="cd.geoData.sourceFormat" />
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="geoX" class="control-label col-xs-3">X</label>
+                  <div class="col-xs-9">
+                    <input id="geoX" name="geoX" type="text" class="form-control" ng-model="cd.geoData.x" />
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="geoY" class="control-label col-xs-3">Y</label>
+                  <div class="col-xs-9">
+                    <input id="geoY" name="geoY" type="text" class="form-control" ng-model="cd.geoData.y" />
+                  </div>
+                </div>
+              </fieldset>
             </div>
-            <div class="form-group">
-              <label for="geoX" class="control-label col-xs-3">X</label>
-              <div class="col-xs-9">
-                <input id="geoX" name="geoX" type="text" class="form-control" />
-              </div>
-            </div>
-            <div class="form-group">
-              <label for="geoY" class="control-label col-xs-3">Y</label>
-              <div class="col-xs-9">
-                <input id="geoY" name="geoY" type="text" class="form-control" />
-              </div>
-            </div>
-          </fieldset>
+          </div>
         </uib-tab>
       </uib-tabset>
     </div>
