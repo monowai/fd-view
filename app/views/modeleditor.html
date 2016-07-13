@@ -251,7 +251,7 @@
   <form name="colDefForm" class="form-horizontal" novalidate>
     <div class="modal-body">
       <uib-tabset class="nav-tabs-custom" active="tab">
-        <uib-tab heading="Main" ng-hide="openAsTag">
+        <uib-tab heading="Column" ng-hide="openAsTag">
           <div class="row">
             <div class="col-md-6">
               <div class="form-group">
@@ -337,7 +337,7 @@
                 <label for="value" class="col-sm-1 control-label">Value: </label>
                 <div class="col-sm-11">
                   <!--<textarea id="value" name="value" class="form-control code" ng-model="cd.value" rows="1" ng-disabled="cd.tag" ng-trim="false" msd-elastic smart-area="codeConf" placeholder="Default is value in the column. You can use a SPeL expression, e.g. #data['colA']+'-'+#data['colB']"></textarea>-->
-                  <textcomplete id="value" name="value" message="cd.value" columns="colNames" disabled="cd.tag" placeholder="Default is value in the column. You can use a SPeL expression, e.g. #data['colA']+'-'+#data['colB']"></textcomplete>
+                  <textcomplete id="value" name="value" message="cd.value" columns="columns" disabled="cd.tag" placeholder="Default is value in the column. You can use a SPeL expression, e.g. #data['colA']+'-'+#data['colB']"></textcomplete>
                 </div>
               </div>
             </div>
@@ -455,7 +455,7 @@
             </div>
           </fieldset>
         </uib-tab>
-        <uib-tab heading="Tag Properties" disable="!(cd.tag || openAsTag)"  ng-show="(cd.tag || openAsTag)">
+        <uib-tab heading="{{cd.label}} Properties" disable="!(cd.tag || openAsTag)"  ng-show="(cd.tag || openAsTag)">
           <div class="row">
             <div class="col-md-8">
               <br>
@@ -469,14 +469,14 @@
                 <label for="tagCode" class="control-label col-xs-2">Code</label>
                 <div class="col-xs-10">
                   <!--<textarea id="tagCode" name="tagCode" rows="1" class="form-control" ng-model="cd.code" placeholder="Defaults to column data value" autofocus></textarea>-->
-                  <textcomplete id="tagCode" name="tagCode" message="cd.code" columns="colNames" placeholder="Defaults to column data value"></textcomplete>
+                  <textcomplete id="tagCode" name="tagCode" message="cd.code" columns="columns" placeholder="Defaults to column data value"></textcomplete>
                 </div>
               </div>
               <div class="form-group">
                 <label for="nameCol" class="control-label col-xs-2">Name</label>
                 <div class="col-xs-10">
                   <!--<textarea id="nameCol" name="nameCol" rows="1" class="form-control" ng-model="cd.name" placeholder="Optional columnName, #data['expression'], or 'literal value'"></textarea>-->
-                  <textcomplete id="nameCol" name="nameCol" message="cd.name" columns="colNames" placeholder="Optional columnName, #data['expression'], or 'literal value'"></textcomplete>
+                  <textcomplete id="nameCol" name="nameCol" message="cd.name" columns="columns" placeholder="Optional columnName, #data['expression'], or 'literal value'"></textcomplete>
                 </div>
               </div>
               <div class="form-group">
@@ -512,7 +512,7 @@
                 <label for="relationship" class="control-label col-xs-3">Relationship name</label>
                 <div class="col-xs-9 col-sm-7">
                   <!--<input id="relationship" name="relationship" type="text" class="form-control" ng-model="cd.relationship"/>-->
-                  <textcomplete id="relationship" name="relationship" message="cd.relationship" columns="colNames"></textcomplete>
+                  <textcomplete id="relationship" name="relationship" message="cd.relationship" columns="columns"></textcomplete>
                 </div>
                 <div class="col-sm-2 checkbox">
                   <label>
@@ -535,77 +535,111 @@
                 </div>
               </fieldset>
             </div>
-            <div class="col-md-12" ng-show="cd.tag">
-              <fieldset>
-                <legend>Entity relationships  &nbsp;<button type="button" class="btn btn-sm btn-primary" uib-tooltip="Add new" ng-click="cd.entityTagLinks.push({})"><i class="fa fa-plus"></i></button></legend>
 
-                <div class="row" ng-repeat="link in cd.entityTagLinks">
-                  <div class="col-md-12">
-                    <div class="col-md-6">
-                      <label for="rel-name" class="control-label col-xs-4">Relationship name</label>
-                      <div class="input-group col-xs-8">
-                        <input id="rel-name" name="relName" type="text" class="form-control" ng-model="link.relationshipName"/>
-                        <!--<span class="input-group-btn">-->
-                          <!--<button type="button" class="btn btn-default" ng-click="editRelProperty(p)" uib-tooltip="Edit"><i class="fa fa-edit"></i></button>-->
-                        <!--</span>-->
-                        <!--<span class="input-group-btn">-->
-                          <!--<button type="button" class="btn btn-default" ng-click="cd.entityTagLinks.splice($index,1)" uib-tooltip="Delete"><i class="fa fa-trash"></i></button>-->
-                        <!--</span>-->
-                      </div>
+            <div class="col-md-12">
+              <fieldset>
+                <legend>Properties to set into Tag &nbsp;<button type="button" class="btn btn-sm btn-primary" uib-tooltip="Add new" ng-click="addProperty(cd)"><i class="fa fa-plus"></i></button></legend>
+
+                <div class="row" ng-repeat="p in cd.properties">
+                  <div class="col-md-6 form-group">
+                    <label for="pSource" class="control-label col-xs-4">Source</label>
+                    <div class="input-group col-xs-8">
+                      <select id="pSource" name="pSource" class="form-control" ng-model="p.source" ng-options="c.name as c.name for c in columns">
+                        <option value="" disabled selected>{{name}}</option>
+                      </select>
                     </div>
-                    <div class="col-sm-2 form-group">
-                      <div class="checkbox">
-                        <label>
-                          <input type="checkbox" id="rel-geo" name="geo" ng-model="link.geo"> <b>Geo</b>
-                        </label>
-                      </div>
-                    </div>
-                    <div class="col-sm-2 form-group">
-                      <div class="checkbox">
-                        <label>
-                          <input type="checkbox" id="rel-reverse" name="reverse" ng-model="link.reverse"> <b>Reverse</b>
-                        </label>
-                      </div>
+                  </div>
+                  <div class="col-md-6">
+                    <label for="pTarget" class="control-label col-xs-3">Set as</label>
+                    <div class="input-group col-xs-9">
+                      <input id="pTarget" name="pTarget" type="text" class="form-control" ng-model="p.target"/>
+                      <span class="input-group-btn">
+                        <button type="button" class="btn btn-default" ng-click="editProperty(cd.properties, p)" uib-tooltip="Edit"><i class="fa fa-edit"></i></button>
+                      </span>
+                      <span class="input-group-btn">
+                        <button type="button" class="btn btn-default" ng-click="cd.properties.splice($index,1)" uib-tooltip="Delete"><i class="fa fa-trash"></i></button>
+                      </span>
                     </div>
                   </div>
                 </div>
               </fieldset>
             </div>
-            <div class="col-md-12">
+          </div>
+        </uib-tab>
+        <uib-tab heading="Relationships" ng-show="cd.tag">
+          <div class="row">
+            <div class="col-md-12" ng-show="cd.tag">
               <fieldset>
-                <legend>Properties to set into Tag &nbsp;<button type="button" class="btn btn-sm btn-primary" uib-tooltip="Add new" ng-click="editProperty()"><i class="fa fa-plus"></i></button></legend>
+                <legend>'{{entity}}' Relationships  &nbsp;<button type="button" class="btn btn-sm btn-primary" uib-tooltip="Add new" ng-click="addEntityRel()"><i class="fa fa-plus"></i></button></legend>
 
-                <div class="row" ng-repeat="p in props">
-                  <div class="col-md-12">
-                    <div class="col-md-1 form-group">
-                      <div class="checkbox">
-                        <label>
-                          <input type="checkbox" id="rlx" name="rlx" ng-model="p.$$rlx"  ng-true-value="'rlxProperties'" ng-false-value="'properties'"> <b>rlx</b>
-                        </label>
+                <uib-accordion class="box-group">
+                  <uib-accordion-group ng-repeat="link in cd.entityTagLinks" class="box box-solid fader" is-open="isOpen">
+                    <uib-accordion-heading>
+                      <div class="box-title" >{{link.relationshipName}} <i class="pull-right glyphicon" ng-class="isOpen ? 'glyphicon-chevron-down' : 'glyphicon-chevron-right'"></i></div>
+                    </uib-accordion-heading>
+
+                    <div class="row">
+                      <div class="col-md-6">
+                        <label for="rel-name" class="control-label col-xs-4">Relationship name</label>
+                        <div class="input-group col-xs-8">
+                          <input id="rel-name" name="relName" type="text" class="form-control" ng-model="link.relationshipName"/>
+                        </div>
+                      </div>
+                      <div class="col-sm-2 form-group">
+                        <div class="checkbox">
+                          <label>
+                            <input type="checkbox" id="rel-geo" name="geo" ng-model="link.geo"> <b>Geo</b>
+                          </label>
+                        </div>
+                      </div>
+                      <div class="col-sm-2 form-group">
+                        <div class="checkbox">
+                          <label>
+                            <input type="checkbox" id="rel-reverse" name="reverse" ng-model="link.reverse"> <b>Reverse</b>
+                          </label>
+                        </div>
+                      </div>
+                      <div class="col-sm-2">
+                        <div class="box-tools pull-right">
+                          <button type="button" class="btn btn-default btn-sm" uib-tooltip="Add Property" ng-click="addProperty(link)"><i class="fa fa-lg fa-plus"></i></button>
+                          <button type="button" class="btn btn-default btn-sm" uib-tooltip="Delete Link" ng-click="cd.entityTagLinks.splice($index,1)"><i class="fa fa-lg fa-trash"></i></button>
+                        </div>
                       </div>
                     </div>
-                    <div class="col-md-5 form-group">
-                      <label for="pSource" class="control-label col-xs-4">Source</label>
-                      <div class="input-group col-xs-8">
-                        <select id="pSource" name="pSource" class="form-control" ng-model="p.source" ng-options="c.name as c.name for c in columns">
-                          <option value="" disabled selected>{{name}}</option>
-                        </select>
+                    <div class="row" ng-show="!!link.properties">
+                      <div class="col-md-12">
+                        <fieldset>
+                          <legend>Properties</legend>
+
+                          <div class="row" ng-repeat="p in link.properties">
+                            <div class="col-md-12">
+                              <div class="col-md-5 form-group">
+                                <label for="plSource" class="control-label col-xs-4">Source</label>
+                                <div class="input-group col-xs-8">
+                                  <select id="plSource" name="plSource" class="form-control" ng-model="p.source" ng-options="c as c for c in columns">
+                                    <option value="" disabled selected>{{name}}</option>
+                                  </select>
+                                </div>
+                              </div>
+                              <div class="col-md-6">
+                                <label for="plTarget" class="control-label col-xs-3">Set as</label>
+                                <div class="input-group col-xs-9">
+                                  <input id="plTarget" name="plTarget" type="text" class="form-control" ng-model="p.target"/>
+                                  <span class="input-group-btn">
+                                    <button type="button" class="btn btn-default" ng-click="editProperty(link.properties, p)" uib-tooltip="Edit"><i class="fa fa-edit"></i></button>
+                                  </span>
+                                  <span class="input-group-btn">
+                                    <button type="button" class="btn btn-default" ng-click="link.properties.splice($index,1)" uib-tooltip="Delete"><i class="fa fa-trash"></i></button>
+                                  </span>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </fieldset>
                       </div>
                     </div>
-                    <div class="col-md-6">
-                      <label for="pTarget" class="control-label col-xs-3">Set as</label>
-                      <div class="input-group col-xs-9">
-                        <input id="pTarget" name="pTarget" type="text" class="form-control" ng-model="p.target"/>
-                        <span class="input-group-btn">
-                          <button type="button" class="btn btn-default" ng-click="editProperty(p)" uib-tooltip="Edit"><i class="fa fa-edit"></i></button>
-                        </span>
-                        <span class="input-group-btn">
-                          <button type="button" class="btn btn-default" ng-click="props.splice($index,1)" uib-tooltip="Delete"><i class="fa fa-trash"></i></button>
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+                  </uib-accordion-group>
+                </uib-accordion>
               </fieldset>
             </div>
           </div>
@@ -679,7 +713,7 @@
   </form>
 </script>
 
-<script type="text/ng-template" id="tag-property.html">
+<script type="text/ng-template" id="edit-property.html">
   <div class="modal-header">
     <button type="button" class="close" data-dismiss="modal" aria-label="Close" ng-click="cancel()">
       <span aria-hidden="true">&times;</span></button>
@@ -688,19 +722,10 @@
   <form ng-submit="ok(property)">
     <div class="modal-body">
       <div class="row">
-        <div class="col-md-12">
-          <div class="form-group">
-            <span class="checkbox">
-              <label>
-                <input type="checkbox" id="rlx" name="rlx" ng-model="property.$$rlx" ng-true-value="'rlxProperties'" ng-false-value="'properties'"> <b>Rlx</b>
-              </label>
-            </span>
-          </div>
-        </div>
         <div class="col-md-6">
           <div class="form-group">
             <label for="source">Source</label>
-            <select id="source" name="source" class="form-control" ng-model="property.source" ng-options="c.name as c.name for c in columns">
+            <select id="source" name="source" class="form-control" ng-model="property.source" ng-options="c as c for c in columns">
               <option value='' disabled selected>{{column}}</option>
             </select>
           </div>

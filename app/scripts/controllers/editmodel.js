@@ -28,7 +28,6 @@ fdView.controller('EditModelCtrl', ['$scope', '$window', 'toastr', '$uibModal', 
       $scope.contentModel = res;//.data.contentModel;
       originalModel = angular.copy(res);
       $scope.modelGraph = ContentModel.graphModel();
-      // $scope.colDefs = ContentModel.getColDefs();
       $scope.tags = ContentModel.getTags();
       $scope.list = 'Columns';
       if ($scope.modelGraph.nodes.length===1) {
@@ -56,7 +55,6 @@ fdView.controller('EditModelCtrl', ['$scope', '$window', 'toastr', '$uibModal', 
           angular.element('[data-target="#structure"]').tab('show');
           $scope.modelGraph = ContentModel.graphModel();
           originalModel = angular.copy(model);
-          // $scope.colDefs = ContentModel.getColDefs();
           $scope.tags = ContentModel.getTags();
           $timeout(function () {
             $scope.$broadcast('cytoscapeReset');
@@ -72,7 +70,6 @@ fdView.controller('EditModelCtrl', ['$scope', '$window', 'toastr', '$uibModal', 
         angular.element('[data-target="#structure"]').tab('show');
         ContentModel.updateModel($scope.contentModel);
         $scope.modelGraph = ContentModel.graphModel();
-        // $scope.colDefs = ContentModel.getColDefs();
         $scope.tags = ContentModel.getTags();
         $timeout(function () {
           $scope.$broadcast('cytoscapeReset');
@@ -350,7 +347,6 @@ fdView.controller('EditModelCtrl', ['$scope', '$window', 'toastr', '$uibModal', 
         ContentModel.updateModel(cp);
         $scope.contentModel = cp;
         $scope.modelGraph = ContentModel.graphModel();
-        // $scope.colDefs = ContentModel.getColDefs();
         $scope.tags = ContentModel.getTags();
       });
     };
@@ -408,7 +404,6 @@ fdView.controller('EditModelCtrl', ['$scope', '$window', 'toastr', '$uibModal', 
         $scope.model = {};
         $scope.contentModel = res;
         $scope.modelGraph = ContentModel.graphModel();
-        // $scope.colDefs = ContentModel.getColDefs();
         $scope.tags = ContentModel.getTags();
       }).error(function (res) {
         toastr.error(res, 'Error');
@@ -471,11 +466,14 @@ fdView.controller('EditColdefCtrl',['$scope','$uibModalInstance', 'modalService'
     $scope.name = Object.keys(coldef)[0];
 
     $scope.cd = angular.copy(coldef[$scope.name]);
-    $scope.columns = ContentModel.getColDefs();
-    $scope.tags = tags;
-    $scope.colNames = _.map($scope.columns, function (c) {
-      return c.name;
+    var contentModel = {};
+    ContentModel.getModel().then(function (res) {
+      contentModel = res;
+      $scope.columns = Object.keys(contentModel.content);
+      $scope.entity = contentModel.documentType.name;
     });
+    $scope.tags = tags;
+    
     $scope.isAlias = !!$scope.cd.$$alias;
 
     $scope.openAsTag = coldef.openAsTag;
@@ -490,16 +488,6 @@ fdView.controller('EditColdefCtrl',['$scope','$uibModalInstance', 'modalService'
       $scope.cd.dateFormat = 'custom';
     }
 
-    $scope.props = _.union(_.map($scope.cd.properties, function (p) {
-      p.$$rlx = 'properties';
-      return p;
-    }),_.map($scope.cd.rlxProperties, function (p) {
-      p.$$rlx = 'rlxProperties';
-      return p;
-    }));
-
-    var propsCopy = angular.copy($scope.props);
-
     $scope.toggleAlias = function (alias) {
       if (alias) {
         $scope.cd.$$alias= {code: $scope.name};
@@ -508,13 +496,13 @@ fdView.controller('EditColdefCtrl',['$scope','$uibModalInstance', 'modalService'
       }
     };
 
-    $scope.editProperty = function (property) {
+    $scope.editProperty = function (properties, property) {
       modalService.show({
-        templateUrl: 'tag-property.html',
+        templateUrl: 'edit-property.html',
         controller: ['$scope', '$uibModalInstance','property','columns','col', function ($scope, $uibModalInstance, property,columns,col) {
           $scope.dataTypes = ['string','number','date'];
           if (!!property) $scope.property = property;
-          else $scope.property ={$$rlx: 'properties'};
+
           $scope.columns = columns;
           $scope.column = col;
 
@@ -535,18 +523,22 @@ fdView.controller('EditColdefCtrl',['$scope','$uibModalInstance', 'modalService'
           }
         }
       }).then(function (res) {
-        if (!$scope.props) $scope.props = [];
         if (res.$$hashKey) {
           angular.extend(property, res);
         } else {
-          $scope.props.push(res);
+          properties.push(res);
         }
       });
     };
 
     $scope.addEntityRel = function () {
       if (!$scope.cd.entityTagLinks) $scope.cd.entityTagLinks= [];
-      $scope.cd.entityTagLinks.push({});
+      $scope.cd.entityTagLinks.push({relationshipName: 'name'});
+    };
+
+    $scope.addProperty = function (obj) {
+      if (!obj.properties) obj.properties = [];
+      $scope.editProperty(obj.properties);
     };
 
 
@@ -577,16 +569,9 @@ fdView.controller('EditColdefCtrl',['$scope','$uibModalInstance', 'modalService'
         data.dateFormat = (data.dateFormat==='custom' ? data.customDate : data.dateFormat);
         if (!!data.customDate) {delete data.customDate;}
       }
-      if (!angular.equals(propsCopy, $scope.props)) {
-        var props = _.groupBy($scope.props, function (o) {
-          return o.$$rlx;
-        });
 
-        data.properties = props['properties'];
-        data.rlxProperties = props['rlxProperties'];
-      }
       if (data.name === "") delete data.name;
-      
+
       $uibModalInstance.close(data);
     };
   }]);

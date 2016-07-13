@@ -82,13 +82,12 @@ fdView.factory('QueryService', ['$http', 'configuration', function ($http, confi
 )
 .factory('ContentModel', ['$http', '$q', 'configuration',
   function ($http, $q, configuration) {
-    var cplist = [],      // list of all content models in the database
-      cp = {},            // actual content model
-      cpGraph = {},       // latest graph visualization of the content model
-      cpFortress, cpType, // fortress and doctype of the current content model
-      code,               // code for tag only model
-      colDefs = [],       // list of column definitions with type
-      tags = [];          // list of tags
+    var cplist = [],        // list of all content models in the database
+        cp = {},            // actual content model
+        cpGraph = {},       // latest graph visualization of the content model
+        cpFortress, cpType, // fortress and doctype of the current content model
+        code,               // code for tag only model
+        tags = [];          // list of tags
 
     var addTag = function (tag) {
       tag.$$id = tag.$$id || _.uniqueId('tag_');
@@ -116,15 +115,11 @@ fdView.factory('QueryService', ['$http', 'configuration', function ($http, confi
             angular.copy(data, cplist);
           });
       },
-      getColDefs: function () {
-        return colDefs;
-      },
       getTags: function () {
         return tags;
       },
       findTag: findTag,
       addCol: function (col) {
-        colDefs.push(col);
         var column = {};
         column[col.name]={dataType: col.dataType, persistent:true};
         _.extend(cp.content,column);
@@ -228,7 +223,6 @@ fdView.factory('QueryService', ['$http', 'configuration', function ($http, confi
       graphModel: function () {
         if (!_.isEmpty(cp)) {
           var graph = {nodes: [], edges: []};
-          colDefs = [];
           tags = [];
 
           var createEntity = function (name, data) {
@@ -310,7 +304,6 @@ fdView.factory('QueryService', ['$http', 'configuration', function ($http, confi
 
           _.each(cp.content, function (obj, key) {
             if (isTag(obj)) {
-              colDefs.push({name: key, type: 'tag'});
               addTag(obj);
               var label = (obj.label || key);
               var tag = containsTag(obj);
@@ -331,21 +324,19 @@ fdView.factory('QueryService', ['$http', 'configuration', function ($http, confi
               if (hasTargets(obj)) {
                 createTargets(obj);
               }
-              
+
               if (hasAliases(obj)) {
                 _.each(obj.aliases, function (alias) {
-                  var a = { 
-                    id: alias.code, 
-                    code: alias.code, 
-                    description: alias.description, 
+                  var a = {
+                    id: alias.code,
+                    code: alias.code,
+                    description: alias.description,
                     type: 'alias'
                   };
                   graph.nodes.push({data: a});
                   connect(tag.id, a.id);
                 })
               }
-            } else {
-              colDefs.push({name: key, type: 'coldef'});
             }
             if (hasEntityLinks(obj)) {
               _.each(obj.entityLinks, function (entity) {
