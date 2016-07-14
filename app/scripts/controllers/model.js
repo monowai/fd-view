@@ -20,8 +20,8 @@
 
 'use strict';
 
-fdView.controller('ModelCtrl', ['$scope', '$window', '$rootScope', '$uibModal', 'QueryService', 'ContentModel', '$state', '$http', '$timeout', '$compile', 'configuration',
-  function ($scope, $window, $rootScope, $uibModal, QueryService, ContentModel, $state, $http, $timeout, $compile, configuration) {
+fdView.controller('ModelCtrl', ['$scope', '$window', '$rootScope', '$uibModal', 'modalService', 'QueryService', 'ContentModel', '$state', '$http', '$timeout', '$compile', 'configuration',
+  function ($scope, $window, $rootScope, $uibModal, modalService, QueryService, ContentModel, $state, $http, $timeout, $compile, configuration) {
     //$state.transitionTo('import.load');
 
     QueryService.general('fortress').then(function (data) {
@@ -179,8 +179,18 @@ fdView.controller('ModelCtrl', ['$scope', '$window', '$rootScope', '$uibModal', 
 
     $scope.deleteModel = function (model) {
       if (model) {
-        ContentModel.deleteModel(model).then(function () {
-          $scope.cplist.splice(model.$index, 1);
+        modalService.showModal({
+          size: 'sm'
+        },
+        {
+          obj: model,
+          title: 'Delete...',
+          text: 'Warning! You are about to delete the Content Model - "'+model.documentType+'". Do you want to proceed?'
+        }).then(function () {
+          ContentModel.deleteModel(model).then(function (res) {
+            $rootScope.$broadcast('event:status-ok', res.statusText);
+            $scope.cplist.splice(model.$index, 1);
+          });
         });
       }
     };
