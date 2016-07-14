@@ -145,7 +145,7 @@ fdView.controller('ModelCtrl', ['$scope', '$window', '$rootScope', '$uibModal', 
       });
     };
 
-    $scope.editProfile = function (model) {
+    $scope.editModel = function (model) {
       if (model) {
         ContentModel.getModel(model).then(function () {
           $state.go('contentModel');
@@ -173,6 +173,14 @@ fdView.controller('ModelCtrl', ['$scope', '$window', '$rootScope', '$uibModal', 
               0, 0, 0, 0, 0, false, false, false, false, 0, null);
             a.dispatchEvent(e);
           }
+        });
+      }
+    };
+
+    $scope.deleteModel = function (model) {
+      if (model) {
+        ContentModel.deleteModel(model).then(function () {
+          $scope.cplist.splice(model.$index, 1);
         });
       }
     };

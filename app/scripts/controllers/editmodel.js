@@ -473,7 +473,7 @@ fdView.controller('EditColdefCtrl',['$scope','$uibModalInstance', 'modalService'
       $scope.entity = contentModel.documentType.name;
     });
     $scope.tags = tags;
-    
+
     $scope.isAlias = !!$scope.cd.$$alias;
 
     $scope.openAsTag = coldef.openAsTag;
@@ -494,6 +494,33 @@ fdView.controller('EditColdefCtrl',['$scope','$uibModalInstance', 'modalService'
       } else {
         delete $scope.cd.$$alias;
       }
+    };
+
+    $scope.addTarget = function (scope) {
+      var tag = scope.$modelValue || scope;
+
+      modalService.show({
+        templateUrl: 'create-tag.html',
+        controller: ['$scope','$uibModalInstance','active', function ($scope,$uibModalInstance,active) {
+          $scope.active = active.label || active.name || active;
+          $scope.canConnect = [active];
+
+          $scope.cancel = $uibModalInstance.dismiss;
+          $scope.ok = function (isValid) {
+            if (isValid) {
+              $uibModalInstance.close($scope.elem, $scope.active);
+            }
+          };
+        }],
+        resolve: {
+          active: function() {
+            return tag;
+          }
+        }
+      }).then(function (res) {
+        if (!tag.targets) tag.targets = [];
+        tag.targets.push(res);
+      });
     };
 
     $scope.editProperty = function (properties, property) {

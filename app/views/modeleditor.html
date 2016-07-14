@@ -432,17 +432,17 @@
                   </div>
                 </div>
                 <div class="col-md-5 form-group">
-                  <label for="pSource" class="control-label col-xs-4">Source</label>
+                  <label for="tSource" class="control-label col-xs-4">Source</label>
                   <div class="input-group col-xs-8">
-                    <select id="pSource" name="pSource" class="form-control" ng-model="p.source" ng-options="c.name as c.name for c in columns">
+                    <select id="tSource" name="pSource" class="form-control" ng-model="p.source" ng-options="c.name as c.name for c in columns">
                       <option value="" disabled selected>{{name}}</option>
                     </select>
                   </div>
                 </div>
                 <div class="col-md-6">
-                  <label for="pTarget" class="control-label col-xs-3">Set as</label>
+                  <label for="tTarget" class="control-label col-xs-3">Set as</label>
                   <div class="input-group col-xs-9">
-                    <input id="pTarget" name="pTarget" type="text" class="form-control" ng-model="p.target"/>
+                    <input id="tTarget" name="pTarget" type="text" class="form-control" ng-model="p.target"/>
                       <span class="input-group-btn">
                         <button type="button" class="btn btn-default" ng-click="editProperty(p)" uib-tooltip="Edit"><i class="fa fa-edit"></i></button>
                       </span>
@@ -529,10 +529,14 @@
             </div>
             <div class="col-md-4">
               <fieldset>
-                <legend>Target Tags</legend>
-                <div class="control-group">
+                <legend>Target Tags  &nbsp;<button type="button" class="btn btn-sm btn-primary" uib-tooltip="Add new" ng-click="addTarget(cd)"><i class="fa fa-plus"></i></button></legend>
 
+                <div ui-tree>
+                  <ol ui-tree-nodes="" ng-model="cd.targets" id="tree-root">
+                    <li ng-repeat="tag in cd.targets" ui-tree-node ng-include="'targets_renderer.html'"></li>
+                  </ol>
                 </div>
+
               </fieldset>
             </div>
 
@@ -713,6 +717,25 @@
   </form>
 </script>
 
+<!-- Nested tags template -->
+<script type="text/ng-template" id="targets_renderer.html">
+  <div ui-tree-handle class="tree-node tree-node-content">
+    <button type="button" class="btn btn-box-tool btn-xs" ng-if="tag.targets && tag.targets.length > 0" data-nodrag ng-click="toggle(this)">
+      <i class="glyphicon" ng-class="{'glyphicon-chevron-right': collapsed,'glyphicon-chevron-down': !collapsed}"></i></button>
+    <div class="tools pull-right">
+      <button class="btn btn-box-tool" uib-tooltip="Add new" data-nodrag ng-click="addTarget(this)">
+        <i class="glyphicon glyphicon-plus"></i></button>
+      <button type="button" class="btn btn-box-tool" uib-tooltip="Delete" data-nodrag ng-click="remove(this)">
+        <i class="glyphicon glyphicon-remove"></i></button>
+    </div>
+    {{tag.label}}
+  </div>
+  <ol ui-tree-nodes="" ng-model="tag.targets" ng-class="{hidden: collapsed}">
+    <li ng-repeat="tag in tag.targets" ui-tree-node ng-include="'targets_renderer.html'">
+    </li>
+  </ol>
+</script>
+
 <script type="text/ng-template" id="edit-property.html">
   <div class="modal-header">
     <button type="button" class="close" data-dismiss="modal" aria-label="Close" ng-click="cancel()">
@@ -732,8 +755,8 @@
         </div>
         <div class="col-md-6">
           <div class="form-group">
-            <label for="target">Set as</label>
-            <input id="target" name="target" type="text" class="form-control" ng-model="property.target"/>
+            <label for="prTarget">Set as</label>
+            <input id="prTarget" name="target" type="text" class="form-control" ng-model="property.target"/>
           </div>
         </div>
         <div class="col-md-6">
@@ -821,9 +844,9 @@
         </div>
       </div>
       <div class="form-group">
-        <label for="label" class="col-sm-3 control-label">Label: </label>
+        <label for="tagLabel" class="col-sm-3 control-label">Label: </label>
         <div class="col-sm-8">
-          <textarea id="label" name="label" class="form-control" ng-model="elem.label" ng-class="{'has-error': newTag.label.$invalid && !newTag.label.$pristine}" rows="1" required></textarea>
+          <textarea id="tagLabel" name="label" class="form-control" ng-model="elem.label" ng-class="{'has-error': newTag.label.$invalid && !newTag.label.$pristine}" rows="1" required></textarea>
         </div>
       </div>
       <div class="form-group">

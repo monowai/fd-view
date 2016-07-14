@@ -208,6 +208,9 @@ fdView.factory('QueryService', ['$http', 'configuration', function ($http, confi
             });
         }
       },
+      deleteModel: function (model) {
+        return $http.delete(configuration.engineUrl() + '/api/v1/model/' + model.key);
+      },
       getDefault: function (data) {
         var payload;
         if(_.isEmpty(cp.content)) {
