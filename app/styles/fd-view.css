@@ -213,6 +213,14 @@ h4.paragraph-header {
   border: 1px solid #ccc ;
 }
 
+.box-filter {
+  width: 150px;
+}
+
+.box-controls {
+  padding: 5px;
+}
+
 .cursor {
   cursor: move;
 }

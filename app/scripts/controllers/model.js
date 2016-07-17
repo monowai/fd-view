@@ -20,8 +20,8 @@
 
 'use strict';
 
-fdView.controller('ModelCtrl', ['$scope', '$window', '$rootScope', '$uibModal', 'modalService', 'QueryService', 'ContentModel', '$state', '$http', '$timeout', '$compile', 'configuration',
-  function ($scope, $window, $rootScope, $uibModal, modalService, QueryService, ContentModel, $state, $http, $timeout, $compile, configuration) {
+fdView.controller('ModelCtrl', ['$scope', '$window', '$rootScope', '$filter', '$uibModal', 'modalService', 'QueryService', 'ContentModel', '$state', '$http', '$timeout', '$compile', 'configuration',
+  function ($scope, $window, $rootScope, $filter, $uibModal, modalService, QueryService, ContentModel, $state, $http, $timeout, $compile, configuration) {
     //$state.transitionTo('import.load');
 
     QueryService.general('fortress').then(function (data) {
@@ -153,18 +153,42 @@ fdView.controller('ModelCtrl', ['$scope', '$window', '$rootScope', '$uibModal', 
       }
     };
 
-    $scope.downloadModel = function (model) {
-      if (model) {
-        ContentModel.getModel(model).then(function (res) {
-          var data = JSON.stringify(res.data.contentModel);
-          var blob = new Blob([data], {type: 'text/json'});
-          var filename = model.documentType+'.json';
+    $scope.selected = [];
+    $scope.selectModel = function (key) {
+      var idx = $scope.selected.indexOf(key);
+      if (idx > -1) {
+        $scope.selected.splice(idx, 1)
+      } else {
+        $scope.selected.push(key);
+      }
+    };
+
+    $scope.selectAll = function () {
+      var filtered = $filter('filter')($scope.cplist, $scope.fortress),
+          listToSelect = (!!filtered && filtered.length > 0) ? filtered : $scope.cplist;
+      if ($scope.selected.length!==listToSelect.length) {
+        $scope.selected = _.map(listToSelect, function (m) {
+          return m.key;
+        });
+        $scope.allSelected = true;
+      } else {
+        $scope.selected = [];
+        $scope.allSelected = false;
+      }
+    };
+
+    $scope.downloadModel = function (keys) {
+      if (!!keys) {
+        ContentModel.downloadModel(keys).then(function (res) {
+          var data = JSON.stringify(res.data),
+              blob = new Blob([data], {type: 'text/json'}),
+              filename = keys[0]+'.json';
           if (window.navigator && window.navigator.msSaveOrOpenBlob) {
             window.navigator.msSaveOrOpenBlob(blob, filename);
           }
           else{
             var e = document.createEvent('MouseEvents'),
-              a = document.createElement('a');
+                a = document.createElement('a');
 
             a.download = filename;
             a.href = window.URL.createObjectURL(blob);
@@ -177,24 +201,27 @@ fdView.controller('ModelCtrl', ['$scope', '$window', '$rootScope', '$uibModal', 
       }
     };
 
-    $scope.deleteModel = function (model) {
-      if (model) {
+    $scope.deleteModel = function (keys) {
+      if (!!keys && keys.length>0) {
         modalService.showModal({
           size: 'sm'
         },
         {
-          obj: model,
           title: 'Delete...',
-          text: 'Warning! You are about to delete the Content Model - "'+model.documentType+'". Do you want to proceed?'
+          text: 'Warning! You are about to delete the Content Model(s). Do you want to proceed?'
         }).then(function () {
-          ContentModel.deleteModel(model).then(function (res) {
-            $rootScope.$broadcast('event:status-ok', res.statusText);
-            $scope.cplist.splice(model.$index, 1);
+          _.each(keys, function (key) {
+            ContentModel.deleteModel(key).then(function () {
+              $scope.cplist = _.reject($scope.cplist, function (m) {
+                return m.key === key;
+              });
+            });
           });
+          $rootScope.$broadcast('event:status-ok', 'Done!');
         });
       }
+      $scope.selected = [];
     };
-
   }]);
 
 

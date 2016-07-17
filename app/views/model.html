@@ -40,9 +40,10 @@
           <div class="box">
             <div class="box-header">
               <h3 class="box-title">Manage Content Models - {{profile.companyName}}</h3>
+
               <div class="box-tools">
-                <div class="input-group input-group-sm" style="width: 150px;">
-                  <select class="form-control" id="fortress"  ng-model="fortress" ng-options="f.name as f.name for f in fortresses" ng-change="console.log(fortress);">
+                <div class="input-group input-group-sm box-filter">
+                  <select class="form-control" id="fortress"  ng-model="fortress" ng-options="f.name as f.name for f in fortresses">
                     <option value="" selected>Data Provider</option>
                   </select>
                   <!--<div class="input-group-btn">-->
@@ -53,22 +54,35 @@
             </div>
             <!-- /.box-header -->
             <div class="box-body table-responsive no-padding">
+              <div class="box-controls">
+                <!--<button type="button" class="btn btn-default btn-sm" uib-tooltip="Select all" ng-click="selectAll()"><i class="fa" ng-class="allSelected ? 'fa-check-square-o' : 'fa-square-o'"></i></button>-->
+                <button type="button" class="btn btn-sm btn-primary" uib-tooltip="Create new" ng-click="createProfile()"><i class="fa fa-plus"></i></button>
+                <button type="button" class="btn btn-default btn-sm" uib-tooltip="Open from file" ng-click="openFile()"><i class="fa fa-upload"></i></button>
+                <button type="button" class="btn btn-default btn-sm" uib-tooltip="Save to file" ng-click="downloadModel(selected)"><i class="fa fa-download"></i></button>
+                <button type="button" class="btn btn-default btn-sm" uib-tooltip="Delete selected" ng-click="deleteModel(selected)"><i class="fa fa-trash-o"></i></button>
+              </div>
               <table class="table table-hover">
                 <tbody><tr>
+                  <td>
+                    <input type="checkbox" uib-tooltip="Select all" ng-checked="allSelected" ng-click="selectAll()"/>
+                  </td>
                   <th>Data Provider</th>
                   <th>Type</th>
                   <th>Description</th>
                   <th>Action</th>
                 </tr>
-                <tr ng-repeat="cp in cplist | filter:fortress:cp.fortress">
+                <tr ng-repeat="cp in cplist | filter:fortress.toString()" ng-click="selectModel(cp.key)">
+                  <td>
+                    <input type="checkbox" value="{{cp.key}}" ng-checked="selected.indexOf(cp.key)>-1"/>
+                  </td>
                   <td>{{cp.fortress}}</td>
                   <td>{{cp.documentType}}</td>
                   <td>{{cp.name}}</td>
                   <td>
                     <div class="tools">
                       <button type="button" class="btn btn-box-tool" uib-tooltip="Edit" ng-click="editModel(cp)"><i class="fa fa-lg fa-edit"></i></button>
-                      <button type="button" class="btn btn-box-tool" uib-tooltip="Save to disk" ng-click="downloadModel(cp)"><i class="fa fa-lg fa-download"></i></button>
-                      <button type="button" class="btn btn-box-tool" uib-tooltip="Delete" ng-click="deleteModel(cp)"><i class="fa fa-lg fa-trash-o"></i></button>
+                      <button type="button" class="btn btn-box-tool" uib-tooltip="Save to disk" ng-click="downloadModel([cp.key])"><i class="fa fa-lg fa-download"></i></button>
+                      <button type="button" class="btn btn-box-tool" uib-tooltip="Delete" ng-click="deleteModel([cp.key])"><i class="fa fa-lg fa-trash-o"></i></button>
                     </div>
                   </td>
                 </tr>
@@ -76,7 +90,7 @@
             </div>
             <!-- /.box-body -->
             <div class="box-footer">
-              <button class="btn btn-sm btn-primary" uib-tooltip="Create Profile" ng-click="createProfile()"><i class="fa fa-plus"></i></button>
+
             </div>
           </div>
         </div> <!-- /tab-pane-->
