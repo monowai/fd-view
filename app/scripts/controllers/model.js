@@ -132,7 +132,6 @@ fdView.controller('ModelCtrl', ['$scope', '$window', '$rootScope', '$filter', '$
 
           $scope.createEmpty = function(isValid, model) {
             if (isValid) {
-              model.tagsOnly = $scope.tags;
               ContentModel.createEmpty(model);
               $uibModalInstance.close(model);
             }

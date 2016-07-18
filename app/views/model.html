@@ -110,34 +110,34 @@
             <label for="description"> Description</label>
             <input type="text" id="description" name="description" class="form-control" ng-model="new.name" ng-required="true" />
           </div>
-          <div class="form-group" ng-show="tags">
+          <div class="form-group" ng-show="new.tagModel">
             <label for="code"> Code</label>
-            <input type="text" id="code" name="code" class="form-control" ng-model="new.code" ng-required="tags"/>
+            <input type="text" id="code" name="code" class="form-control" ng-model="new.code" ng-required="new.tagModel"/>
           </div>
         </div>
         <div class="col-md-8">
           <div class="form-group">
             <div class="checkbox">
               <label>
-                <input type="checkbox" ng-model="tags"> Tags only?
+                <input type="checkbox" ng-model="new.tagModel"> Tags only?
               </label>
             </div>
           </div>
           <div class="form-group">
             <label for="new-fortress"> Data Provider</label>
             <div class="input-group">
-              <select class="form-control" id="new-fortress"  ng-model="new.fortress.name" ng-options="f.name as f.name for f in fortresses" ng-change="selectFortress(new.fortress.name)" ng-disabled="tags" ng-required="!tags"></select>
+              <select class="form-control" id="new-fortress"  ng-model="new.fortress.name" ng-options="f.name as f.name for f in fortresses" ng-change="selectFortress(new.fortress.name)" ng-disabled="new.tagModel" ng-required="!new.tagModel"></select>
               <div class="input-group-btn">
-                <button type="button" class="btn btn-primary" ng-click="createFortress()"  ng-disabled="tags"><i class="fa fa-plus"></i></button>
+                <button type="button" class="btn btn-primary" ng-click="createFortress()"  ng-disabled="new.tagModel"><i class="fa fa-plus"></i></button>
               </div>
             </div>
           </div>
           <div class="form-group">
             <label for="new-type"> Document Type</label>
               <div class="input-group">
-                <select class="form-control" id="new-type" ng-model="new.documentType.name" ng-options="d.name as d.name for d in documents" ng-disabled="tags" ng-required="!tags"></select>
+                <select class="form-control" id="new-type" ng-model="new.documentType.name" ng-options="d.name as d.name for d in documents" ng-disabled="new.tagModel" ng-required="!new.tagModel"></select>
                 <div class="input-group-btn">
-                  <button type="button" class="btn btn-primary" ng-click="createType(new.fortress)" ng-disabled="tags"><i class="fa fa-plus"></i></button>
+                  <button type="button" class="btn btn-primary" ng-click="createType(new.fortress)" ng-disabled="new.tagModel"><i class="fa fa-plus"></i></button>
                 </div>
               </div>
           </div>

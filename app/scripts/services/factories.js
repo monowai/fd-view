@@ -160,8 +160,8 @@ fdView.factory('QueryService', ['$http', 'configuration', function ($http, confi
         return cp;
       },
       createEmpty: function (content) {
-        cpFortress = content.fortress ? content.fortress.name : undefined;
-        cpType = content.documentType ? content.documentType.name : undefined;
+        cpFortress = content.fortress ? content.fortress.name : '';
+        cpType = content.documentType ? content.documentType.name : '';
         code = content.code;
         cp = content;
         cp.content = {};
@@ -216,7 +216,7 @@ fdView.factory('QueryService', ['$http', 'configuration', function ($http, confi
       },
       getDefault: function (data) {
         var payload;
-        if(_.isEmpty(cp.content)) {
+        if(cp.tagModel) {
           payload = data;
         } else {
           payload = angular.extend({contentModel: cp}, data);
@@ -238,8 +238,6 @@ fdView.factory('QueryService', ['$http', 'configuration', function ($http, confi
           };
 
           var isTagModel = function (model) {
-            if (!model.documentName && !model.documentType)
-              model.tagModel = true;
             return model.tagModel;
           };
 
@@ -304,7 +302,8 @@ fdView.factory('QueryService', ['$http', 'configuration', function ($http, confi
           var root = {};
 
           if (!isTagModel(cp)) {
-            root = createEntity(cp.documentName || cp.documentType.name || 'Name Missing!');
+            var entityName = !!cp.documentType ? cp.documentType.name : 'Name Missing!';
+            root = createEntity(cp.documentName || entityName);
             graph.nodes.push({data: root});
           }
 
@@ -363,9 +362,8 @@ fdView.factory('QueryService', ['$http', 'configuration', function ($http, confi
       updateModel: function (profile) {
         cp = profile;
         if (cp.code) code = cp.code;
-        if (!cp.documentType) cp.tagModel = true;
-        cpType = cp.documentType.name || cpType;
-        cpFortress = cp.fortress.name || cpFortress;
+        cpType = !!cp.documentType ? cp.documentType.name : cpType;
+        cpFortress = !!cp.fortress ? cp.fortress.name : cpFortress;
       },
       saveModel: function () {
         var url;
