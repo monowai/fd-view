@@ -222,80 +222,23 @@ fdView.controller('ModelCtrl', ['$scope', '$window', '$rootScope', '$filter', '$
       }
       $scope.selected = [];
     };
-  }]);
 
-
-fdView.controller('LoadProfileCtrl', ['$scope', '$uibModal', 'QueryService', 'ContentModel', '$state', '$http', '$timeout', '$compile', 'configuration',
-  function ($scope, $uibModal, QueryService, ContentModel, $state, $http, $timeout, $compile, configuration) {
-
-    QueryService.general('fortress').then(function (data) {
-      $scope.fortresses = data;
-    });
-
-    $scope.fortress = ContentModel.getFortress();
-    $scope.type = ContentModel.getDocType();
-
-    $scope.selectFortress = function(fortress) {
-      var query = [fortress];
-      QueryService.query('documents', query).then(function (data) {
-        $scope.documents = data;
-        if(data.length>0) {
-          $scope.type = $scope.documents[0].name;
-          $scope.selectModel($scope.type);
-        }
-      });
-    };
-
-    $scope.selectModel = function (type) {
-      ContentModel.getModel($scope.fortress, type)
-        .success(function (data) {
-          $scope.contentModel = data;
-          $scope.modelGraph = model2graph();
-        })
-        .error(function(){
-          $scope.noModel = true;
-        });
-    };
-
-    var model2graph = function () {
-      return ContentModel.graphModel();
-    };
-
-    $scope.checkProfile = function() {
-      if (!$scope.fortress) {
-        $uibModal.open({
-          templateUrl: 'error-modal.html',
-          size: 'sm',
-          controller: function($scope, $uibModalInstance){
-            $scope.missing = 'Data Provider';
-            $scope.ok = $uibModalInstance.dismiss;
+    $scope.openFile = function (ele) {
+      var reader = new FileReader();
+      reader.onload = function(onLoadEvent) {
+        var fileContent = onLoadEvent.target.result,
+            models = JSON.parse(fileContent);
+        ContentModel.uploadModel(models).then(function (res) {
+          $rootScope.$broadcast('event:status-ok', res.statusText);
+          if (models.length === 1) {
+            ContentModel.updateModel(models[0]);
+            $state.go('contentModel');
+          } else {
+            $scope.cplist = $scope.cplist.concat(res.data);
           }
         });
-      } else if (!$scope.type) {
-        $uibModal.open({
-          templateUrl: 'error-modal.html',
-          size: 'sm',
-          controller: function($scope, $uibModalInstance){
-            $scope.missing = 'Data Type';
-            $scope.ok = $uibModalInstance.dismiss;
-          }
-        });
-      } /*else if (!$scope.csvContent) {
-       $uibModal.open({
-       templateUrl: 'error-modal.html',
-       size: 'sm',
-       controller: function($scope, $uibModalInstance){
-       $scope.missing = 'CSV file';
-       $scope.ok = $uibModalInstance.dismiss;
-       }
-       });
-       }*/ else {
-        $state.go('import.edit', {keys: $scope.keys});
-      }
-    };
-
-    $scope.reset = function(){
-      $state.reload();
+      };
+      reader.readAsText(ele.files[0]);
     };
 
   }]);

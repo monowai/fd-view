@@ -357,10 +357,15 @@ fdView.factory('QueryService', ['$http', 'configuration', function ($http, confi
           return graph;
         }
       },
+      uploadModel: function (models) {
+        return $http.post(configuration.engineUrl()+'/api/v1/model/', models)
+      },
       updateModel: function (profile) {
         cp = profile;
         if (cp.code) code = cp.code;
         if (!cp.documentType) cp.tagModel = true;
+        cpType = cp.documentType.name || cpType;
+        cpFortress = cp.fortress.name || cpFortress;
       },
       saveModel: function () {
         var url;

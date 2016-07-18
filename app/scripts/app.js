@@ -196,7 +196,6 @@ var fdView = angular.module('fdView', [
       // Call when the 403 response is returned by the server
       $rootScope.$on('event:auth-notAuthorized',
         function (event,data) {
-          // $rootScope.msg = 'Your user account has no access to business information';
           toastr.error(data.message, 'Error');
         }
       );
@@ -236,7 +235,6 @@ var fdView = angular.module('fdView', [
       // Call when the user logs out
       $rootScope.$on('event:auth-loginCancelled',
         function () {
-          // $rootScope.msg = 'Logged out';
           $state.go('login');
           toastr.success('Successfully logged out...');
         }
@@ -245,7 +243,6 @@ var fdView = angular.module('fdView', [
       // Call when the user logs out
       $rootScope.$on('event:auth-session-timeout',
         function () {
-          $rootScope.msg = 'Session expired';
           $state.go('login');
         }
       );
