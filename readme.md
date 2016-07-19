@@ -1,5 +1,10 @@
-fd-view is the visualization, search and comparison layer to the FlockData API.
+fd-view provides 
+  * support for reverse engineering data into content models.
+  * data management over Neo4j and ElasticSearch
+  * analytical views
 
+
+## Build from source
 ## Dependencies :
 * NodeJS
 
