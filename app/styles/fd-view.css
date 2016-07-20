@@ -18,6 +18,10 @@
  *  along with FlockData.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+.logo-lg img {
+  max-width: 100%;
+}
+
 .fd-user-timeline {
     color: #3276b1;
 }

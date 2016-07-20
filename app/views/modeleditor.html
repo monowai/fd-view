@@ -38,9 +38,9 @@
       <div class="nav-tabs-custom">
         <ul class="nav nav-tabs pull-right">
           <li uib-tooltip="Source"><a href data-target="#json" data-toggle="tab" ng-click="checkModel()"><i class="fa fa-lg fa-edit"></i></a></li>
-          <li uib-tooltip="Model Settings"><a href data-target="#settings" data-toggle="tab"><i class="fa fa-lg fa-cog"></i></a></li>
-          <li uib-tooltip="Data"><a href data-target="#sample" data-toggle="tab"><i class="fa fa-lg fa-file-text"></i></a></li>
           <li uib-tooltip="Structure" class="active"><a href data-target="#structure" data-toggle="tab" ng-click="updateModel()"><i class="fa fa-lg fa-sitemap"></i></a></li>
+          <li uib-tooltip="Data"><a href data-target="#sample" data-toggle="tab"><i class="fa fa-lg fa-file-text"></i></a></li>
+          <li uib-tooltip="Model Settings"><a href data-target="#settings" data-toggle="tab"><i class="fa fa-lg fa-cog"></i></a></li>
           <li uib-dropdown>
             <a href id="action-menu" uib-dropdown-toggle>
             Action <span class="caret"></span></a>
@@ -53,116 +53,9 @@
             </ul>
           </li>
 
-          <li class="pull-left header"><i class="fa fa-share-alt"></i> Edit Content Model - {{contentModel.documentType.name}}</li>
+          <li class="pull-left header"><i class="fa fa-share-alt"></i> Edit Content Model - {{name}} <i ng-hide="saved()">(not saved)</i> </li>
         </ul>
         <div class="tab-content">
-          <div id="structure" class="tab-pane fade active in">
-            <div class="col-md-2 col-xs-6">
-              <div class="form-group" >
-                <label class="control-label">Layout</label>
-                <div class="pull-right">
-                  <select ng-model="layout" ng-options="l.name for l in layouts"></select>
-                </div>
-              </div>
-
-              <label class="control-label">Create</label>
-
-              <button id="coldef" class="btn btn-sm btn-block btn-default" ng-click="createColumn()">Calculated Column</button>
-              <button id="tag" class="btn btn-sm btn-block btn-warning" draggable options="{opacity: .5,revert: true}" ng-click="createTag()">Tag</button>
-              <button id="alias" class="btn btn-sm btn-block btn-info" draggable options="{opacity: .5,revert: true}" ng-click="createAlias()">Alias</button>
-              <button id="entity" class="btn btn-sm btn-block btn-primary" draggable droppable="buttonDrop" options="{opacity: .5,revert: true}" ng-click="createEntitylink()">Entity Link</button>
-
-              <label uib-dropdown>
-                <a href id="list-menu" uib-dropdown-toggle>
-                  {{list}} <span class="caret"></span></a>
-                <ul class="dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="list-menu">
-                  <li role="menuitem"><a href ng-click="list='Columns'">Columns</a></li>
-                  <li role="menuitem"><a href ng-click="list='Tags'">Tags</a></li>
-                </ul>
-              </label>
-              <!--<label class="control-label">Columns</label>-->
-              <div ng-height="400" class="scroll-col" ng-show="list==='Columns'">
-                <div class="btn-toolbar" id="Columns">
-                  <button id="{{col}}" class="btn btn-xs" ng-class="{'btn-warning' : val.tag, 'btn-primary': !val.tag, 'dim': !val.persistent, 'btn-success':val.callerRef, 'bg-aqua': !!val.$$alias}"
-                          draggable options="{opacity: .5,revert: true}" style="margin: 2px;" ng-repeat="(col, val) in contentModel.content" ng-click="showColDef(col)">{{col}}</button>
-                </div>
-              </div>
-              <div ng-height="400" class="scroll-col" ng-show="list==='Tags'">
-                <div class="btn-toolbar" id="Tags">
-                  <button id="{{tag.id}}" class="btn btn-xs btn-warning" draggable options="{opacity: .5,revert: true}" style="margin: 2px;" ng-repeat="tag in tags" ng-click="showColDef(tag.id,true)">{{tag.label}}</button>
-                </div>
-              </div>
-            </div>
-            <div class="col-md-10" droppable="handleDrop">
-              <cytoscape elements="modelGraph" layout="layout" styles="styles" selected-nodes="nodes" ng-height="180"></cytoscape>
-            </div>
-          </div>
-
-          <!-- View Data Sample -->
-          <div id="sample" class="tab-pane fade">
-            <div ng-if="!dataSample">
-              <div class="row">
-                <div class="col-sm-3">
-                  <fieldset>
-                    <legend>Upload <button type="submit" class="btn btn-primary pull-right" ng-click="getDefault()" ng-disabled="!csvContent" ng-show="!!csvContent"><i class="fa fa-bolt"></i>&nbsp; Create Default</button></legend>
-                    <div class="row">
-
-                      <div class="form-group">
-                        <label for="data-delim" class="col-xs-4 control-label">Delimiter</label>
-                        <div class="col-xs-7">
-                          <input type="text" class="form-control" id="data-delim" ng-model="delim">
-                        </div>
-                      </div>
-
-                      <div class="col-sm-6">
-                        <div class="form-group">
-                          <div class="checkbox">
-                            <label>
-                              <input type="checkbox" ng-model="ignoreEmpty"> <b>Ignore empty Cols</b>
-                            </label>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="col-sm-6">
-                        <div class="form-group">
-                          <div class="checkbox">
-                            <label>
-                              <input type="checkbox" ng-model="hasHeader"> <b>Has Header</b>
-                            </label>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </fieldset>
-                </div>
-                <div class="col-sm-9">
-                  <div class="well well-sm">
-                    <div class="row">
-                      <div class="col-md-12">
-                        <div class="file-box" file-box="loadFile($fileContent, $fileName)"></div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="hscroll-table fader" ng-show="!!dataSample">
-              <table id="datasample" class="table table-bordered table-hover">
-                <thead>
-                  <tr>
-                    <th class="col coldef" ng-repeat="(k,v) in dataSample[0]" ng-click="showColDef(k)" ng-class="{'tag': contentModel.content[k].tag, 'bg-green': contentModel.content[k].callerRef, 'bg-aqua': !!contentModel.content[k].$$alias, 'dim': !contentModel.content[k].persistent}"><span>{{k}}</span></th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr ng-repeat="d in dataSample">
-                    <td ng-repeat="(k,v) in d">{{v}}</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-            <p ng-show="dataSample.length>49"><i>* Only first 50 rows are displayed</i></p>
-          </div>
-
           <!-- General model settings-->
           <div id="settings" class="tab-pane fade">
             <div class="col-md-6">
@@ -234,6 +127,120 @@
               </div>
             </div>
 
+            <div class="col-md-6" ng-show="canSave()">
+              <label class="control-label">Next: </label>
+              <button type="button" class="btn btn-success" ng-click="sampleData()">Upload Sample</button>
+              <button type="button" class="btn btn-primary" ng-click="updateModel()">Edit Structure</button>
+            </div>
+
+          </div>
+
+          <!-- View Data Sample -->
+          <div id="sample" class="tab-pane fade">
+            <div ng-if="!dataSample">
+              <div class="row">
+                <div class="col-sm-3">
+                  <fieldset>
+                    <legend>Upload <button type="submit" class="btn btn-primary pull-right" ng-click="getDefault()" ng-disabled="!csvContent" ng-show="!!csvContent"><i class="fa fa-bolt"></i>&nbsp; Create Default</button></legend>
+                    <div class="row">
+
+                      <div class="form-group">
+                        <label for="data-delim" class="col-xs-4 control-label">Delimiter</label>
+                        <div class="col-xs-7">
+                          <input type="text" class="form-control" id="data-delim" ng-model="delim">
+                        </div>
+                      </div>
+
+                      <div class="col-sm-6">
+                        <div class="form-group">
+                          <div class="checkbox">
+                            <label>
+                              <input type="checkbox" ng-model="ignoreEmpty"> <b>Ignore empty Cols</b>
+                            </label>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-sm-6">
+                        <div class="form-group">
+                          <div class="checkbox">
+                            <label>
+                              <input type="checkbox" ng-model="hasHeader"> <b>Has Header</b>
+                            </label>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </fieldset>
+                </div>
+                <div class="col-sm-9">
+                  <div class="well well-sm">
+                    <div class="row">
+                      <div class="col-md-12">
+                        <div class="file-box" file-box="loadFile($fileContent, $fileName)"></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="hscroll-table fader" ng-show="!!dataSample">
+              <table id="datasample" class="table table-bordered table-hover">
+                <thead>
+                <tr>
+                  <th class="col coldef" ng-repeat="(k,v) in dataSample[0]" ng-click="showColDef(k)" ng-class="{'tag': contentModel.content[k].tag, 'bg-green': contentModel.content[k].callerRef, 'bg-aqua': !!contentModel.content[k].$$alias, 'dim': !contentModel.content[k].persistent}"><span>{{k}}</span></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="d in dataSample">
+                  <td ng-repeat="(k,v) in d">{{v}}</td>
+                </tr>
+                </tbody>
+              </table>
+            </div>
+            <p ng-show="dataSample.length>49"><i>* Only first 50 rows are displayed</i></p>
+          </div>
+
+          <!-- Model structure -->
+          <div id="structure" class="tab-pane fade active in">
+            <div class="col-md-2 col-xs-6">
+              <div class="form-group" >
+                <label class="control-label">Layout</label>
+                <div class="pull-right">
+                  <select ng-model="layout" ng-options="l.name for l in layouts"></select>
+                </div>
+              </div>
+
+              <label class="control-label">Create</label>
+
+              <button id="coldef" class="btn btn-sm btn-block btn-default" ng-click="createColumn()">Calculated Column</button>
+              <button id="tag" class="btn btn-sm btn-block btn-warning" draggable options="{opacity: .5,revert: true}" ng-click="createTag()">Tag</button>
+              <button id="alias" class="btn btn-sm btn-block btn-info" draggable options="{opacity: .5,revert: true}" ng-click="createAlias()">Alias</button>
+              <button id="entity" class="btn btn-sm btn-block btn-primary" draggable droppable="buttonDrop" options="{opacity: .5,revert: true}" ng-click="createEntitylink()">Entity Link</button>
+
+              <label uib-dropdown>
+                <a href id="list-menu" uib-dropdown-toggle>
+                  {{list}} <span class="caret"></span></a>
+                <ul class="dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="list-menu">
+                  <li role="menuitem"><a href ng-click="list='Columns'">Columns</a></li>
+                  <li role="menuitem"><a href ng-click="list='Tags'">Tags</a></li>
+                </ul>
+              </label>
+              <!--<label class="control-label">Columns</label>-->
+              <div ng-height="400" class="scroll-col" ng-show="list==='Columns'">
+                <div class="btn-toolbar" id="Columns">
+                  <button id="{{col}}" class="btn btn-xs" ng-class="{'btn-warning' : val.tag, 'btn-primary': !val.tag, 'dim': !val.persistent, 'btn-success':val.callerRef, 'bg-aqua': !!val.$$alias}"
+                          draggable options="{opacity: .5,revert: true}" style="margin: 2px;" ng-repeat="(col, val) in contentModel.content" ng-click="showColDef(col)">{{col}}</button>
+                </div>
+              </div>
+              <div ng-height="400" class="scroll-col" ng-show="list==='Tags'">
+                <div class="btn-toolbar" id="Tags">
+                  <button id="{{tag.id}}" class="btn btn-xs btn-warning" draggable options="{opacity: .5,revert: true}" style="margin: 2px;" ng-repeat="tag in tags" ng-click="showColDef(tag.id,true)">{{tag.label}}</button>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-10" droppable="handleDrop">
+              <cytoscape elements="modelGraph" layout="layout" styles="styles" selected-nodes="nodes" ng-height="180"></cytoscape>
+            </div>
           </div>
 
           <!-- Edit JSON -->
@@ -475,8 +482,7 @@
               <div class="form-group">
                 <label for="tagCode" class="control-label col-xs-2">Code</label>
                 <div class="col-xs-10">
-                  <!--<textarea id="tagCode" name="tagCode" rows="1" class="form-control" ng-model="cd.code" placeholder="Defaults to column data value" autofocus></textarea>-->
-                  <textcomplete id="tagCode" name="tagCode" message="cd.code" columns="columns" placeholder="Defaults to column data value"></textcomplete>
+                  <textarea id="tagCode" name="tagCode" rows="1" class="form-control" ng-model="cd.code" placeholder="Defaults to column data value" textcomplete="columns" autofocus></textarea>
                 </div>
               </div>
               <div class="form-group">

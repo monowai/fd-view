@@ -22,7 +22,6 @@
 
 fdView.controller('ModelCtrl', ['$scope', '$window', '$rootScope', '$filter', '$uibModal', 'modalService', 'QueryService', 'ContentModel', '$state', '$http', '$timeout', '$compile', 'configuration',
   function ($scope, $window, $rootScope, $filter, $uibModal, modalService, QueryService, ContentModel, $state, $http, $timeout, $compile, configuration) {
-    //$state.transitionTo('import.load');
 
     QueryService.general('fortress').then(function (data) {
       $scope.fortresses = data;
@@ -33,123 +32,7 @@ fdView.controller('ModelCtrl', ['$scope', '$window', '$rootScope', '$filter', '$
     });
 
     $scope.createProfile = function () {
-      $uibModal.open({
-        templateUrl: 'create-profile.html',
-        scope: $scope,
-        controller: ['$uibModalInstance', function ($uibModalInstance) {
-          $scope.new = {};
-
-          $scope.cancel = $uibModalInstance.dismiss;
-
-          $scope.selectFortress = function(fortress) {
-            var query = [fortress];
-            QueryService.query('documents', query).then(function (data) {
-              $scope.documents = data;
-              if(data.length>0) {
-                $scope.new.documentType = $scope.documents[0];
-              }
-            });
-          };
-
-          $scope.createFortress = function() {
-            $uibModal.open({
-              templateUrl: 'create-fortress-modal.html',
-              resolve: {
-                timezones: function() {
-                  return $http.get(configuration.engineUrl() + '/api/v1/fortress/timezones').then(function (response) {
-                    return response.data;
-                  })
-                }
-              },
-              controller: ['$scope','$uibModalInstance','timezones',function($scope, $uibModalInstance, timezones) {
-                $scope.searchable = true;
-                $scope.timezones = timezones;
-                $scope.timezone = moment.tz.guess();
-                $scope.close = $uibModalInstance.dismiss;
-                $scope.save = function() {
-                  var newFortress = {
-                    name: $scope.name,
-                    searchEnabled: $scope.searchable,
-                    storeEnabled: $scope.versionable,
-                    timeZone: $scope.timezone
-                  };
-                  $http.post(configuration.engineUrl()+'/api/v1/fortress/', newFortress).then(function(response){
-                    $rootScope.$broadcast('event:status-ok', response.statusText);
-                    $uibModalInstance.close(newFortress);
-                  });
-                };
-              }]
-            }).result.then(function(newDP){
-              $scope.fortresses.push(newDP);
-              $scope.new.fortress = newDP;
-              $scope.documents = [];
-            });
-          };
-
-          $scope.createType = function(f) {
-            if(!f) {return;}
-            $uibModal.open({
-              templateUrl: 'create-type-modal.html',
-              size: 'sm',
-              resolve: {
-                fortress: function() {
-                  return f.name.toLowerCase().replace(/\s+/g, '');
-                }
-              },
-              controller: ['$scope','$uibModalInstance','fortress', function($scope, $uibModalInstance, fortress) {
-                $scope.searchable = false;
-                $scope.versionable = false;
-                $scope.close = $uibModalInstance.dismiss;
-                $scope.save = function(name) {
-                  // -- waiting for end point added
-                  // var newType = {
-                  //   name: $scope.name,
-                  //   searchEnabled: $scope.searchable,
-                  //   storeEnabled: $scope.versionable
-                  // };
-                  // $http.post(configuration.engineUrl()+'/api/v1/fortress/'+fortress+'/docs/',newType).then(function(response){
-                  //   $uibModalInstance.close(response.data);
-                  // });
-                  $http({
-                    method: 'PUT',
-                    url: configuration.engineUrl() + '/api/v1/fortress/' +fortress+'/'+name,
-                    dataType: 'raw',
-                    headers: {
-                      'Content-Type': 'application/json'
-                    },
-                    data: ''
-                  }).then(function(response){
-                    $rootScope.$broadcast('event:status-ok', response.statusText);
-                    $uibModalInstance.close(response.data);
-                  });
-                };
-              }]
-            }).result.then(function(newDocType){
-              $scope.documents.push(newDocType);
-              $scope.new.documentType = newDocType;
-            });
-          };
-
-          $scope.createEmpty = function(isValid, model) {
-            if (isValid) {
-              ContentModel.createEmpty(model);
-              $uibModalInstance.close(model);
-            }
-          }
-        }]
-      }).result.then(function (model) {
-        if (model) {
-          $state.go('contentModel');
-        }
-      });
-    };
-
-    $scope.editModel = function (model) {
-      if (model) {
-        ContentModel.getModel(model).then(function () {
-          $state.go('contentModel');
-        });
-      }
+      $state.go('contentModel');
     };
 
     $scope.selected = [];

@@ -177,18 +177,19 @@ fdView.factory('QueryService', ['$http', 'configuration', function ($http, confi
       getDocType: function () {
         if (cpType) { return cpType; }
       },
-      getModel: function (profile) {
-        if (!profile || (profile.fortress===cpFortress && profile.documentType===cpType && cp!=={}) || (!profile.fortress && cp.length>0)) {
+      getModel: function (modelKey) {
+        if (!modelKey) {
           var deferred = $q.defer();
           deferred.resolve(cp);
           return deferred.promise;
         } else {
-          if (profile.fortress!==cpFortress) cpFortress=profile.fortress;
-          if (profile.documentType!==cpType) cpType=profile.documentType;
-
-          return $http.get(configuration.engineUrl() + '/api/v1/model/' + profile.key)
+          return $http.get(configuration.engineUrl() + '/api/v1/model/' + modelKey)
             .success(function (data) {
               cp = data.contentModel;
+              if (!cp.tagModel) {
+                cpFortress = cp.fortress.name;
+                cpType = cp.documentType.name;
+              }
               tags = [];
               _.chain(cp.content)
                 .filter(function (c) {

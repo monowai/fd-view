@@ -36,7 +36,6 @@ var fdView = angular.module('fdView', [
   'http-auth-interceptor',
   'ab.graph.matrix.directives',
   'ng.jsoneditor',
-  // 'smartArea',
   'monospaced.elastic',
   'ngTextcomplete',
   'ui.tree'
@@ -106,7 +105,7 @@ var fdView = angular.module('fdView', [
         }
       })
       .state('contentModel', {
-        url: '/edit',
+        url: '/edit/:modelKey',
         templateUrl: 'views/modeleditor.html',
         controller: 'EditModelCtrl',
         data: {

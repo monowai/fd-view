@@ -20,22 +20,31 @@
 
 'use strict';
 
-fdView.controller('EditModelCtrl', ['$scope', '$window', 'toastr', '$uibModal', 'QueryService', 'ContentModel', '$state', '$http', '$timeout', 'modalService', 'configuration',
-  function ($scope, $window, toastr, $uibModal, QueryService, ContentModel, $state, $http, $timeout, modalService, configuration) {
+fdView.controller('EditModelCtrl', ['$scope', '$stateParams', '$window', 'toastr', '$uibModal', 'QueryService', 'ContentModel', '$state', '$http', '$timeout', 'modalService', 'configuration',
+  function ($scope, $stateParams, $window, toastr, $uibModal, QueryService, ContentModel, $state, $http, $timeout, modalService, configuration) {
 
-    var originalModel = {};
-    ContentModel.getModel().then(function (res) {
-      $scope.contentModel = res;//.data.contentModel;
-      originalModel = angular.copy(res);
-      $scope.modelGraph = ContentModel.graphModel();
-      $scope.tags = ContentModel.getTags();
-      $scope.list = 'Columns';
-      if ($scope.modelGraph.nodes.length===1) {
-        $timeout(function () {
-          $scope.$broadcast('cytoscapeFitOne');
-        }, 10);
-      }
-    });
+    var originalModel = { content:{} };
+    $scope.list = 'Columns';
+
+    if (!$stateParams.modelKey) {
+      $scope.model = {};
+      $scope.name = 'New model';
+      $scope.contentModel = angular.copy(originalModel);
+      angular.element('[data-target="#settings"]').tab('show');
+    } else {
+      ContentModel.getModel($stateParams.modelKey).then(function (res) {
+        $scope.contentModel = res.data.contentModel;
+        $scope.name = $scope.contentModel.documentType.name || 'Tag Model';
+        originalModel = angular.copy($scope.contentModel);
+        $scope.modelGraph = ContentModel.graphModel();
+        $scope.tags = ContentModel.getTags();
+        if ($scope.modelGraph.nodes.length === 1) {
+          $timeout(function () {
+            $scope.$broadcast('cytoscapeFitOne');
+          }, 10);
+        }
+      });
+    }
 
     $scope.editorOptions = {
       mode: "tree",
@@ -46,23 +55,46 @@ fdView.controller('EditModelCtrl', ['$scope', '$window', 'toastr', '$uibModal', 
       $scope.editor = instance;
     };
 
+    $scope.saved = function () {
+      return angular.equals(originalModel, $scope.contentModel);
+    };
+
+    $scope.canSave = function () {
+      if (!$scope.contentModel) return false;
+      if (!$scope.contentModel.fortress || !$scope.contentModel.documentType) {
+        return !!$scope.contentModel.tagModel;
+      } else {
+        return !!$scope.contentModel.fortress.name && !!$scope.contentModel.documentType.name;
+      }
+    };
+
+    $scope.sampleData = function () {
+      angular.element('[data-target="#sample"]').tab('show');
+    };
+
     $scope.save = function () {
       var model = $scope.editor.get();
       ContentModel.updateModel(model);
-      ContentModel.saveModel()
-        .success(function (res) {
-          toastr.success(res.statusText, 'Success');
-          angular.element('[data-target="#structure"]').tab('show');
-          $scope.modelGraph = ContentModel.graphModel();
-          originalModel = angular.copy(model);
-          $scope.tags = ContentModel.getTags();
-          $timeout(function () {
-            $scope.$broadcast('cytoscapeReset');
-          }, 500);
-        })
-        .error(function (res) {
-          toastr.error(res.message, 'Error');
-        });
+      if ($scope.canSave()) {
+        ContentModel.saveModel()
+          .success(function (res) {
+            toastr.success(res.statusText, 'Success');
+            angular.element('[data-target="#structure"]').tab('show');
+            $scope.modelGraph = ContentModel.graphModel();
+            originalModel = angular.copy(model);
+            $scope.tags = ContentModel.getTags();
+            $scope.name = $scope.contentModel.documentType.name || 'Tag Model';
+            $timeout(function () {
+              $scope.$broadcast('cytoscapeReset');
+            }, 500);
+          })
+          .error(function (res) {
+            toastr.error(res.message, 'Error');
+          });
+      } else {
+        toastr.warning('Model, cannot be saved. Please check your model configuration!', 'Error');
+        angular.element('[data-target="#settings"]').tab('show');
+      }
     };
 
     $scope.updateModel = function () {
@@ -208,7 +240,6 @@ fdView.controller('EditModelCtrl', ['$scope', '$window', 'toastr', '$uibModal', 
       }).result.then(function (res) {
         if(selected==='root') {
           $scope.contentModel.content[res.name] = res;
-          // $scope.colDefs.push({name: res.name, type: 'tag'});
         } else {
           if(!selected.targets) {
             selected.targets = [];
@@ -218,9 +249,7 @@ fdView.controller('EditModelCtrl', ['$scope', '$window', 'toastr', '$uibModal', 
         ContentModel.updateModel($scope.contentModel);
         $scope.modelGraph = ContentModel.graphModel();
         $scope.tags = ContentModel.getTags();
-
       });
-
     };
 
     $scope.createColumn = function () {
@@ -399,6 +428,7 @@ fdView.controller('EditModelCtrl', ['$scope', '$window', 'toastr', '$uibModal', 
         toastr.warning('File is not loaded', 'Warning');
       }
       $scope.dataSample = data.slice(0,200);
+      ContentModel.updateModel($scope.contentModel);
       ContentModel.getDefault({rows: $scope.dataSample}).success(function (res) {
         toastr.success('Data is loaded', 'Success');
         $scope.model = {};
@@ -429,7 +459,7 @@ fdView.controller('EditModelCtrl', ['$scope', '$window', 'toastr', '$uibModal', 
 
     $scope.$on('$stateChangeStart', function (event, next, current) {
       if (next.controller != "EditModelCtrl") {
-        if (!angular.equals($scope.contentModel, originalModel)) {
+        if (!$scope.saved()) {
           event.preventDefault();
           var discardDefaults = {
             size: 'sm'
