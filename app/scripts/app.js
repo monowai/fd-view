@@ -113,7 +113,6 @@ var fdView = angular.module('fdView', [
         }
       })
       .state('admin', {
-        abstract: true,
         url: '/admin',
         templateUrl: 'views/admin.html',
         controller: 'AdminCtrl',
@@ -122,7 +121,7 @@ var fdView = angular.module('fdView', [
         }
       })
       .state('admin.health', {
-        url: '',
+        url: '/health',
         templateUrl: 'views/admin-health.html'
       })
       .state('admin.fortress', {

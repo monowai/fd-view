@@ -36,7 +36,49 @@
   <!-- Default box -->
   <div class="row">
     <div class="col-md-12">
-      <ui-view></ui-view>
+      <ui-view>
+        <div class="row">
+          <div class="col-sm-6">
+            <div class="small-box bg-gray-active">
+              <div class="inner">
+                <h3>Data Providers</h3>
+
+                <p>Manage fortresses and document types</p>
+              </div>
+              <div class="icon">
+                <i class="fa fa-database"></i>
+              </div>
+              <a ui-sref=".fortress" class="small-box-footer">Proceed <i class="fa fa-arrow-circle-right"></i></a>
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="small-box bg-gray-active">
+              <div class="inner">
+                <h3>User Management</h3>
+
+                <p>View and edit user details</p>
+              </div>
+              <div class="icon">
+                <i class="fa fa-user"></i>
+              </div>
+              <a ui-sref=".user" class="small-box-footer">Proceed <i class="fa fa-arrow-circle-right"></i></a>
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="small-box bg-gray-active">
+              <div class="inner">
+                <h3>Health</h3>
+
+                <p>Check state of the database and services</p>
+              </div>
+              <div class="icon">
+                <i class="fa fa-dashboard"></i>
+              </div>
+              <a ui-sref=".health" class="small-box-footer">Proceed <i class="fa fa-arrow-circle-right"></i></a>
+            </div>
+          </div>
+        </div>
+      </ui-view>
     </div>
   </div>
 </section>

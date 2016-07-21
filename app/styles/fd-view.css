@@ -428,3 +428,7 @@ tr.angular-ui-tree-empty {
   -moz-box-sizing: border-box;
   box-sizing: border-box;
 }
+
+.small-box.bg-gray-active {
+  color: #f9f9f9;
+}
