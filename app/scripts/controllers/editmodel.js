@@ -23,16 +23,35 @@
 fdView.controller('EditModelCtrl', ['$scope', '$stateParams', '$window', 'toastr', '$uibModal', 'QueryService', 'ContentModel', '$state', '$http', '$timeout', 'modalService', 'configuration',
   function ($scope, $stateParams, $window, toastr, $uibModal, QueryService, ContentModel, $state, $http, $timeout, modalService, configuration) {
 
-    var originalModel = { content:{} };
+    var originalModel = { content:{} },
+        allModels =[];
     $scope.list = 'Columns';
 
-    if (!$stateParams.modelKey) {
-      $scope.model = {};
-      $scope.name = 'New model';
-      $scope.contentModel = angular.copy(originalModel);
-      angular.element('[data-target="#settings"]').tab('show');
-    } else {
-      ContentModel.getModel($stateParams.modelKey).then(function (res) {
+    QueryService.general('fortress').then(function (data) {
+      $scope.fortresses = data;
+    });
+
+    ContentModel.getAll().then(function (res) {
+      allModels = res.data;
+    });
+
+    $scope.getDoctypes = function (fortress) {
+      if (fortress) {
+        QueryService.query('documents', [fortress]).then(function (data) {
+          $scope.documents = data;
+        });
+      }
+    };
+
+    $scope.findModel = function (model) {
+      $scope.modelToLoad = _.find(allModels, function (m) {
+        return m.fortress === model.fortress.name && m.documentType === model.documentType.name;
+      });
+    };
+
+    $scope.loadModel = function (key) {
+      ContentModel.getModel(key).then(function (res) {
+        toastr.success(res.statusText,'Success');
         $scope.contentModel = res.data.contentModel;
         $scope.name = $scope.contentModel.documentType.name || 'Tag Model';
         originalModel = angular.copy($scope.contentModel);
@@ -43,7 +62,17 @@ fdView.controller('EditModelCtrl', ['$scope', '$stateParams', '$window', 'toastr
             $scope.$broadcast('cytoscapeFitOne');
           }, 10);
         }
+        if (!!$scope.modelToLoad) { delete $scope.modelToLoad}
       });
+    };
+
+    if (!$stateParams.modelKey) {
+      $scope.model = {};
+      $scope.name = 'New model';
+      $scope.contentModel = angular.copy(originalModel);
+      angular.element('[data-target="#settings"]').tab('show');
+    } else {
+      $scope.loadModel($stateParams.modelKey);
     }
 
     $scope.editorOptions = {
@@ -64,7 +93,7 @@ fdView.controller('EditModelCtrl', ['$scope', '$stateParams', '$window', 'toastr
       if (!$scope.contentModel.fortress || !$scope.contentModel.documentType) {
         return !!$scope.contentModel.tagModel;
       } else {
-        return !!$scope.contentModel.fortress.name && !!$scope.contentModel.documentType.name;
+        return !!$scope.contentModel.fortress.name && !!$scope.contentModel.documentType.name || $scope.contentModel.tagModel;
       }
     };
 
@@ -98,8 +127,8 @@ fdView.controller('EditModelCtrl', ['$scope', '$stateParams', '$window', 'toastr
     };
 
     $scope.updateModel = function () {
-      if (!!$scope.model && !angular.equals($scope.model, $scope.contentModel)) {
-        angular.element('[data-target="#structure"]').tab('show');
+      angular.element('[data-target="#structure"]').tab('show');
+      if (!angular.equals($scope.model, $scope.contentModel)) {
         ContentModel.updateModel($scope.contentModel);
         $scope.modelGraph = ContentModel.graphModel();
         $scope.tags = ContentModel.getTags();

@@ -61,11 +61,13 @@
             <div class="col-md-6">
               <div class="form-group">
                 <label class="control-label">Fortress:</label>
-                <input type="text" class="form-control input-sm" ng-model="contentModel.fortress.name" placeholder="Data Provider">
+                <input type="text" class="form-control input-sm" ng-model="contentModel.fortress.name" placeholder="Data Provider" uib-typeahead="f.name as f.name for f in fortresses | filter:$viewValue">
               </div>
               <div class="form-group" ng-show="!contentModel.tagModel">
                 <label class="control-label">Document Type:</label>
-                <input type="text" class="form-control input-sm" ng-model="contentModel.documentType.name" placeholder="Document Type">
+                <input type="text" class="form-control input-sm" placeholder="Document Type"
+                       ng-model="contentModel.documentType.name" ng-focus="getDoctypes(contentModel.fortress.name)"
+                       uib-typeahead="d.name for d in documents | filter:$viewValue" typeahead-on-select="findModel(contentModel)">
               </div>
               <div class="form-group">
                 <label class="control-label">Description:</label>
@@ -128,9 +130,14 @@
             </div>
 
             <div class="col-md-6" ng-show="canSave()">
-              <label class="control-label">Next: </label>
+              <label class="control-label">Next: </label><br>
               <button type="button" class="btn btn-success" ng-click="sampleData()">Upload Sample</button>
               <button type="button" class="btn btn-primary" ng-click="updateModel()">Edit Structure</button>
+            </div>
+
+            <div class="col-md-6" ng-show="!!modelToLoad">
+              <label class="control-label">This model already exists!</label><br>
+              <button type="button" class="btn btn-success" ng-click="loadModel(modelToLoad.key)">Load Existing</button>
             </div>
 
           </div>
@@ -516,7 +523,7 @@
                 </div>
               </div>
               <div class="form-group">
-                <label for="valIfNull" class="control-label col-xs-3">If null, set Code to</label>
+                <label for="valIfNull" class="control-label col-xs-3">If not found, set Code to</label>
                 <div class="col-xs-9">
                   <input id="valIfNull" name="valIfNull" type="text" class="form-control" ng-model="cd.notFound"/>
                 </div>

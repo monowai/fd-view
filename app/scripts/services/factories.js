@@ -82,8 +82,7 @@ fdView.factory('QueryService', ['$http', 'configuration', function ($http, confi
 )
 .factory('ContentModel', ['$http', '$q', 'configuration',
   function ($http, $q, configuration) {
-    var cplist = [],        // list of all content models in the database
-        cp = {},            // actual content model
+    var cp = {},            // actual content model
         cpGraph = {},       // latest graph visualization of the content model
         cpFortress, cpType, // fortress and doctype of the current content model
         code,               // code for tag only model
@@ -110,10 +109,7 @@ fdView.factory('QueryService', ['$http', 'configuration', function ($http, confi
 
     return {
       getAll: function () {
-        return $http.get(configuration.engineUrl() + '/api/v1/model/')
-          .success(function (data) {
-            angular.copy(data, cplist);
-          });
+        return $http.get(configuration.engineUrl() + '/api/v1/model/');
       },
       getTags: function () {
         return tags;

@@ -23,15 +23,21 @@
 fdView.controller('AdminCtrl', ['$scope', '$state', '$http', 'configuration',
   function ($scope, $state, $http, configuration) {
 
+    $scope.health = {title: 'Health'};
     $http.get(configuration.engineUrl() + '/api/v1/admin/health').then(function (res) {
       $scope.fdhealth = res.data;
+      $scope.health.state = res.data;
     });
 
+    $scope.user = {
+      title: 'System User',
+      state: $scope.profile
+    };
   }]);
 
 fdView.controller('AdminFortressCtrl', ['$scope', '$rootScope', 'QueryService', 'AuthenticationSharedService', '$state', '$http', '$timeout', 'modalService', 'configuration', 'USER_ROLES',
   function ($scope, $rootScope, QueryService, AuthenticationSharedService, $state, $http, $timeout, modalService, configuration, USER_ROLES) {
-    
+
     QueryService.general('fortress').then(function (data) {
       $scope.fortresses = data;
     });
@@ -186,7 +192,7 @@ fdView.controller('AdminFortressCtrl', ['$scope', '$rootScope', 'QueryService', 
     }
   }]);
 
-fdView.controller('AdminUserCtrl', ['$scope', '$rootScope', '$uibModal', 'QueryService', 'AuthenticationSharedService', '$state', '$http', '$timeout', 'configuration', 'USER_ROLES',
-  function ($scope, $rootScope, $uibModal, QueryService, AuthenticationSharedService, $state, $http, $timeout, configuration, USER_ROLES) {
-
-  }]);
+// fdView.controller('AdminUserCtrl', ['$scope', '$rootScope', '$uibModal', 'QueryService', 'AuthenticationSharedService', '$state', '$http', '$timeout', 'configuration', 'USER_ROLES',
+//   function ($scope, $rootScope, $uibModal, QueryService, AuthenticationSharedService, $state, $http, $timeout, configuration, USER_ROLES) {
+//
+//   }]);

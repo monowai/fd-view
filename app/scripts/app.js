@@ -122,7 +122,7 @@ var fdView = angular.module('fdView', [
       })
       .state('admin.health', {
         url: '/health',
-        templateUrl: 'views/admin-health.html'
+        template: '<fd-info-box info="health"></fd-info-box>'
       })
       .state('admin.fortress', {
         url: '/fortress',
@@ -131,8 +131,8 @@ var fdView = angular.module('fdView', [
       })
       .state('admin.user', {
         url: '/user',
-        templateUrl: 'admin-user.html',
-        controller: 'AdminUserCtrl'
+        template: '<fd-info-box info="user"></fd-info-box>'//,
+        // controller: 'AdminUserCtrl'
       })
       .state('settings', {
         url: '/settings',
