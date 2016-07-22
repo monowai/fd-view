@@ -53,7 +53,7 @@ fdView.controller('EditModelCtrl', ['$scope', '$stateParams', '$window', 'toastr
       ContentModel.getModel(key).then(function (res) {
         toastr.success(res.statusText,'Success');
         $scope.contentModel = res.data.contentModel;
-        $scope.name = $scope.contentModel.documentType.name || 'Tag Model';
+        $scope.name = $scope.contentModel.code || $scope.contentModel.documentType.name;
         originalModel = angular.copy($scope.contentModel);
         $scope.modelGraph = ContentModel.graphModel();
         $scope.tags = ContentModel.getTags();
@@ -112,7 +112,7 @@ fdView.controller('EditModelCtrl', ['$scope', '$stateParams', '$window', 'toastr
             $scope.modelGraph = ContentModel.graphModel();
             originalModel = angular.copy(model);
             $scope.tags = ContentModel.getTags();
-            $scope.name = $scope.contentModel.documentType.name || 'Tag Model';
+            $scope.name = $scope.contentModel.code || $scope.contentModel.documentType.name;
             $timeout(function () {
               $scope.$broadcast('cytoscapeReset');
             }, 500);
