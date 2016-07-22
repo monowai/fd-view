@@ -516,6 +516,46 @@ angular.module('fdView.directives', [])
           </div>\
         </div>'
     };
-  });
+  })
+  .directive('fortressInput', ['QueryService', function (QueryService) {
+    return {
+      restrict: 'AE',
+      replace: true,
+      scope: {
+        model: '=',
+        class: '@'
+      },
+      template: '<input type="text" class="form-control {{class}}" ng-model="model" placeholder="Data Provider" uib-typeahead="f.name as f.name for f in fortresses | filter:$viewValue">',
+      link: function (scope, element, attrs) {
+        QueryService.general('fortress').then(function (data) {
+          scope.fortresses = data;
+        });
+      }
+    };
+  }])
+  .directive('doctypeInput', ['QueryService', function (QueryService) {
+    return {
+      restrict: 'AE',
+      replace: true,
+      scope: {
+        model: '=',
+        class: '@',
+        fortress: '=',
+        onSelect: '&'
+      },
+      template: '<input type="text" class="form-control {{class}}" placeholder="Document Type" \
+        ng-model="model" ng-focus="getDoctypes()" \
+        uib-typeahead="d.name for d in documents | filter:$viewValue" typeahead-on-select="onSelect()">',
+      link: function (scope, element, attrs) {
+        scope.getDoctypes = function () {
+          if (scope.fortress) {
+            QueryService.query('documents', [scope.fortress]).then(function (data) {
+              scope.documents = data;
+            });
+          }
+        };
+      }
+    };
+  }]);
 
 // Directives

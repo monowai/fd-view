@@ -61,13 +61,11 @@
             <div class="col-md-6">
               <div class="form-group">
                 <label class="control-label">Fortress:</label>
-                <input type="text" class="form-control input-sm" ng-model="contentModel.fortress.name" placeholder="Data Provider" uib-typeahead="f.name as f.name for f in fortresses | filter:$viewValue">
+                <fortress-input model="contentModel.fortress.name" class="input-sm"></fortress-input>
               </div>
               <div class="form-group" ng-show="!contentModel.tagModel">
                 <label class="control-label">Document Type:</label>
-                <input type="text" class="form-control input-sm" placeholder="Document Type"
-                       ng-model="contentModel.documentType.name" ng-focus="getDoctypes(contentModel.fortress.name)"
-                       uib-typeahead="d.name for d in documents | filter:$viewValue" typeahead-on-select="findModel(contentModel)">
+                <doctype-input model="contentModel.documentType.name" class="input-sm" fortress="contentModel.fortress.name" on-select="findModel(contentModel)"></doctype-input>
               </div>
               <div class="form-group">
                 <label class="control-label">Description:</label>
@@ -687,8 +685,12 @@
                     </th>
                   </tr>
                   <tr ng-repeat="e in cd.entityLinks">
-                    <td class="col-xs-4"><input ng-model="e.fortress" ng-required="true" type="text" placeholder="Fortress name"></td>
-                    <td class="col-xs-4"><input ng-model="e.documentName" ng-required="true" type="text" placeholder="Document name"></td>
+                    <td class="col-xs-4">
+                      <fortress-input model="e.fortress" ng-required="true"></fortress-input>
+                    </td>
+                    <td class="col-xs-4">
+                      <doctype-input model="e.documentName" fortress="e.fortress" ng-required="true"></doctype-input>
+                    </td>
                     <td class="col-xs-3"><input ng-model="e.relationshipName" ng-required="true" type="text" placeholder="Relationship name"></td>
                     <td>
                       <span class="input-group-btn">
@@ -909,15 +911,15 @@
     <div class="modal-body">
       <div class="row">
         <div class="form-group">
-          <label for="fortress" class="col-sm-3 control-label">Fortress: </label>
+          <label class="col-sm-3 control-label">Fortress: </label>
           <div class="col-sm-8" ng-class="{'has-error': elink.fortress.$invalid && !elink.fortress.$pristine}">
-            <input id="fortress" name="fortress" type="text" class="form-control" ng-model="obj.fortress" required autofocus/>
+            <fortress-input name="fortress" model="obj.fortress" required autofocus></fortress-input>
           </div>
         </div>
         <div class="form-group">
-          <label for="docname" class="col-sm-3 control-label">Document Name: </label>
+          <label class="col-sm-3 control-label">Document Name: </label>
           <div class="col-sm-8" ng-class="{'has-error': elink.docname.$invalid && !elink.docname.$pristine}">
-            <input id="docname" name="docname" type="text" class="form-control" ng-model="obj.documentName" required />
+            <doctype-input name="docname" model="obj.documentName" fortress="obj.fortress" required></doctype-input>
           </div>
         </div>
         <div class="form-group">
@@ -929,7 +931,7 @@
         <div class="form-group">
           <label for="col" class="col-sm-3 control-label">Source Datacolumn</label>
           <div class="col-sm-6" ng-class="{'has-error': elink.col.$invalid && !elink.col.$pristine}">
-            <select id="col" name="col" class="form-control" ng-model="obj.col" ng-options="s.name as s.name for s in colDefs" required></select>
+            <select id="col" name="col" class="form-control" ng-model="obj.col" ng-options="c for c in colDefs" required></select>
           </div>
         </div>
       </div>

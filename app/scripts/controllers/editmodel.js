@@ -23,29 +23,17 @@
 fdView.controller('EditModelCtrl', ['$scope', '$stateParams', '$window', 'toastr', '$uibModal', 'QueryService', 'ContentModel', '$state', '$http', '$timeout', 'modalService', 'configuration',
   function ($scope, $stateParams, $window, toastr, $uibModal, QueryService, ContentModel, $state, $http, $timeout, modalService, configuration) {
 
-    var originalModel = { content:{} },
-        allModels =[];
+    var originalModel = { content:{} };
+
     $scope.list = 'Columns';
 
-    QueryService.general('fortress').then(function (data) {
-      $scope.fortresses = data;
-    });
-
-    ContentModel.getAll().then(function (res) {
-      allModels = res.data;
-    });
-
-    $scope.getDoctypes = function (fortress) {
-      if (fortress) {
-        QueryService.query('documents', [fortress]).then(function (data) {
-          $scope.documents = data;
-        });
-      }
-    };
-
     $scope.findModel = function (model) {
-      $scope.modelToLoad = _.find(allModels, function (m) {
-        return m.fortress === model.fortress.name && m.documentType === model.documentType.name;
+      var allModels = [];
+      ContentModel.getAll().then(function (res) {
+        allModels = res.data;
+        $scope.modelToLoad = _.find(allModels, function (m) {
+          return m.fortress === model.fortress.name && m.documentType === model.documentType.name;
+        });
       });
     };
 
