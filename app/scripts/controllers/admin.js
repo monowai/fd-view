@@ -30,7 +30,7 @@ fdView.controller('AdminCtrl', ['$scope', '$state', '$http', 'configuration',
     });
 
     $scope.user = {
-      title: 'System User',
+      title: 'Profile',
       state: $scope.profile
     };
   }]);
@@ -105,6 +105,12 @@ fdView.controller('AdminFortressCtrl', ['$scope', '$rootScope', 'QueryService', 
 
     $scope.rebuildFortress = function (f) {
       $http.post(configuration.engineUrl()+'/api/v1/admin/'+f.code+'/rebuild').then(function (res) {
+        $rootScope.$broadcast('event:status-ok', res.statusText);
+      });
+    };
+
+    $scope.rebuildFortressDoc = function (f,d) {
+      $http.post(configuration.engineUrl()+'/api/v1/admin/'+f.code+'/'+d.name+'/rebuild').then(function (res) {
         $rootScope.$broadcast('event:status-ok', res.statusText);
       });
     };

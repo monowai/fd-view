@@ -157,7 +157,7 @@ angular.module('fdView.directives', [])
                   '<input type="file" id="file" class="box-file">'+
                   '<label for="file" align="center"><strong>'+
                   '<i class="fa fa-cloud-download"></i> Click</strong>'+
-                  '<span> to choose a CSV file, or drop it here</span>.</label></div>'+
+                  '<span> to select a delimited file, or drop it here</span>.</label></div>'+
                   '<div class="file-box-success"><strong>Done!</strong>&nbsp;{{fileName}} is loaded</div>',
         link: function(scope, element, attrs) {
           var fn = $parse(attrs.fileBox);

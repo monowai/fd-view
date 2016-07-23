@@ -77,12 +77,14 @@ fdView.controller('EditModelCtrl', ['$scope', '$stateParams', '$window', 'toastr
     };
 
     $scope.canSave = function () {
-      if (!$scope.contentModel) return false;
-      if (!$scope.contentModel.fortress || !$scope.contentModel.documentType) {
-        return !!$scope.contentModel.tagModel;
-      } else {
-        return !!$scope.contentModel.fortress.name && !!$scope.contentModel.documentType.name || $scope.contentModel.tagModel;
+      //if (!$scope.contentModel) return false;
+      if ($scope.contentModel && $scope.contentModel.fortress && $scope.contentModel.documentType){
+      // if (!$scope.contentModel.fortress || !$scope.contentModel.documentType) {
+        return true;
+      } else if ($scope.tagModel && $scope.contentModel.code ) {
+        return true;
       }
+      return false;
     };
 
     $scope.sampleData = function () {

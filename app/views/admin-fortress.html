@@ -49,7 +49,7 @@
             <div class="col-md-12">
               <div class="box-tools pull-right">
                 <button type="button" class="btn btn-box-tool" uib-tooltip="Analyze" ng-click="analyzeDocType(d)"><i class="fa fa-lg fa-search"></i></button>
-                <button type="button" class="btn btn-box-tool" uib-tooltip="Reindex" ng-click="rebuildDocType(d)" ng-if="isAdmin()"><i class="fa fa-lg fa-recycle"></i></button>
+                <button type="button" class="btn btn-box-tool" uib-tooltip="Reindex" ng-click="rebuildFortressDoc(fortress, d)" ng-if="isAdmin()"><i class="fa fa-lg fa-recycle"></i></button>
                 <button type="button" class="btn btn-box-tool" uib-tooltip="Delete" ng-click="deleteDocType(fortress, d)" ng-if="isAdmin()"><i class="fa fa-lg fa-trash"></i></button>
               </div>
               <h4><b>Document Type: </b><a ng-click="editType(d)" href="#">{{d.name}}</a></h4>
