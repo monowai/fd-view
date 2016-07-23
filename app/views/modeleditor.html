@@ -39,16 +39,16 @@
         <ul class="nav nav-tabs pull-right">
           <li uib-tooltip="Model Settings"><a href data-target="#settings" data-toggle="tab"><i class="fa fa-lg fa-cog"></i></a></li>
           <li uib-tooltip="Source"><a href data-target="#json" data-toggle="tab" ng-click="checkModel()"><i class="fa fa-lg fa-edit"></i></a></li>
-          <li uib-tooltip="Structure" class="active"><a href data-target="#structure" data-toggle="tab" ng-click="updateModel()"><i class="fa fa-lg fa-sitemap"></i></a></li>
-          <li uib-tooltip="Data"><a href data-target="#sample" data-toggle="tab"><i class="fa fa-lg fa-file-text"></i></a></li>
+          <li uib-tooltip="Structure" class="active" ng-show="canSave()"><a href data-target="#structure" data-toggle="tab" ng-click="updateModel()"><i class="fa fa-lg fa-sitemap"></i></a></li>
+          <li uib-tooltip="Data" ng-show="canSave()"><a href data-target="#sample" data-toggle="tab"><i class="fa fa-lg fa-file-text"></i></a></li>
           <li uib-dropdown>
             <a href id="action-menu" uib-dropdown-toggle>
             Action <span class="caret"></span></a>
             <ul class="dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="action-menu">
-              <li role="menuitem"><a href ng-click="save()">Save</a></li>
-              <li role="menuitem"><a href ng-click="validate()">Validate</a></li>
+              <li role="menuitem" ng-show="canSave()"><a href ng-click="save()">Save</a></li>
+              <li role="menuitem" ng-show="dataSample"><a href ng-click="validate()">Validate</a></li>
               <li role="menuitem" ng-show="!!csvContent || !!dataSample"><a href ng-click="cleanSample()">Reload Sample</a></li>
-              <li class="divider"></li>
+              <li class="divider" ng-show="canSave()"></li>
               <li role="menuitem"><a href ng-click="cancel()">Cancel</a></li>
             </ul>
           </li>
@@ -62,15 +62,15 @@
               <div class="form-group">
                 <div class="checkbox">
                   <label>
-                    <input type="checkbox" id="tagModel" name="tagModel" ng-model="contentModel.tagModel"> Tag model
+                    <input type="checkbox" id="tagModel" name="tagModel" ng-model="contentModel.tagModel" ng-change="cleanTagModel()"> Tag model
                   </label>
                 </div>
               </div>
-              <div class="form-group">
+              <div class="form-group" ng-hide="contentModel.tagModel">
                 <label class="control-label">Fortress:</label>
                 <fortress-input model="contentModel.fortress.name" class="input-sm"></fortress-input>
               </div>
-              <div class="form-group" ng-show="!contentModel.tagModel">
+              <div class="form-group" ng-hide="contentModel.tagModel">
                 <label class="control-label">Document Type:</label>
                 <doctype-input model="contentModel.documentType.name" class="input-sm" fortress="contentModel.fortress.name" on-select="findModel(contentModel)"></doctype-input>
               </div>
@@ -89,14 +89,14 @@
                   </label>
                 </div>
               </div>
-              <div class="form-group">
+              <div class="form-group" ng-hide="contentModel.tagModel">
                 <div class="checkbox">
                   <label>
                     <input type="checkbox" id="archiveTags" name="archiveTags" ng-model="contentModel.archiveTags"> Archive tags
                   </label>
                 </div>
               </div>
-              <div class="form-group">
+              <div class="form-group" ng-hide="contentModel.tagModel">
                 <div class="checkbox">
                   <label>
                     <input type="checkbox" id="entityOnly" name="entityOnly" ng-model="contentModel.entityOnly"> Entity only
@@ -121,13 +121,13 @@
                 <label class="control-label">Pre-parse Expression:</label>
                 <input type="text" class="form-control input-sm" ng-model="contentModel.preParseRowExp" placeholder="Pre-parse row expression">
               </div>
-              <div class="form-group">
+              <div class="form-group" ng-hide="contentModel.tagModel">
                 <label class="control-label">Segment Expression:</label>
                 <input type="text" class="form-control input-sm" ng-model="contentModel.segmentExpression" placeholder="Segment expression">
               </div>
             </div>
 
-            <div class="col-md-6" ng-show="canSave()">
+            <div class="col-md-6 fader" ng-show="canSave()">
               <label class="control-label">Next: </label><br>
               <button type="button" class="btn btn-success" ng-click="sampleData()">Upload Sample</button>
               <button type="button" class="btn btn-primary" ng-click="updateModel()">Edit Structure</button>

@@ -37,6 +37,13 @@ fdView.controller('EditModelCtrl', ['$scope', '$stateParams', '$window', 'toastr
       });
     };
 
+    $scope.cleanTagModel = function () {
+      if ($scope.contentModel.tagModel) {
+        if ($scope.contentModel.fortress) delete $scope.contentModel.fortress;
+        if ($scope.contentModel.documentType) delete $scope.contentModel.documentType;
+      }
+    };
+
     $scope.loadModel = function (key) {
       ContentModel.getModel(key).then(function (res) {
         toastr.success(res.statusText,'Success');
@@ -77,11 +84,9 @@ fdView.controller('EditModelCtrl', ['$scope', '$stateParams', '$window', 'toastr
     };
 
     $scope.canSave = function () {
-      //if (!$scope.contentModel) return false;
       if ($scope.contentModel && $scope.contentModel.fortress && $scope.contentModel.documentType){
-      // if (!$scope.contentModel.fortress || !$scope.contentModel.documentType) {
         return true;
-      } else if ($scope.tagModel && $scope.contentModel.code ) {
+      } else if ($scope.contentModel.tagModel && $scope.contentModel.code && $scope.contentModel.name) {
         return true;
       }
       return false;
