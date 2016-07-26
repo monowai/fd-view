@@ -280,7 +280,7 @@ th.col.tag {
 th.col.caller-ref {
   font-style: italic;
 }
-th.col.alias {
+th.col.alias, .btn-alias {
   background-color: #f7bf65;
 }
 th.col>span {

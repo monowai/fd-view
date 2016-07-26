@@ -217,9 +217,10 @@ angular.module('fdView.directives', [])
         onChange: '=',
         nodeClick: '=',
         navigatorContainerId: '@',
-        contextMenuCommands: '='
+        contextMenuCommands: '=',
+        onEdge: '&?'
       },
-      link: function(scope, element, attributes, controller) {
+      link: function(scope, element, attrs, controller) {
         scope.$watchGroup(['elements', 'styles', 'layout'], function(newValues, oldValues, scope) {
           var safe = true;
           for ( var i in newValues)
@@ -251,6 +252,41 @@ angular.module('fdView.directives', [])
                     addLayout.run();
                   }
                 };
+
+                // the default values for edgehandles plugin:
+                var defaults = {
+                  preview: false, // whether to show added edges preview before releasing selection
+                  stackOrder: 4, // Controls stack order of edgehandles canvas element by setting it's z-index
+                  handleSize: 10, // the size of the edge handle put on nodes
+                  handleColor: '#ff0000', // the colour of the handle and the line drawn from it
+                  handleLineType: 'ghost', // can be 'ghost' for real edge, 'straight' for a straight line, or 'draw' for a draw-as-you-go line
+                  handleLineWidth: 1, // width of handle line in pixels
+                  handleNodes: 'node[type!="alias"]', // selector/filter function for whether edges can be made from a given node
+                  hoverDelay: 150, // time spend over a target node before it is considered a target selection
+                  cxt: false, // whether cxt events trigger edgehandles (useful on touch)
+                  enabled: !!scope.onEdge, // whether to start the extension in the enabled state
+                  toggleOffOnLeave: false, // whether an edge is cancelled by leaving a node (true), or whether you need to go over again to cancel (false; allows multiple edges in one pass)
+                  edgeType: function( sourceNode, targetNode ) {
+                    // can return 'flat' for flat edges between nodes or 'node' for intermediate node between them
+                    // returning null/undefined means an edge can't be added between the two nodes
+                    return 'flat';
+                  },
+                  loopAllowed: function( node ) {
+                    // for the specified node, return whether edges from itself to itself are allowed
+                    return false;
+                  },
+                  nodeLoopOffset: -50, // offset for edgeType: 'node' loops
+
+
+                  complete: function( sourceNode, targetNode, addedEntities ) {
+                    // fired when edgehandles is done and entities are added
+                    scope.onEdge({source: sourceNode[0]._private.data,
+                                  target: targetNode[0]._private.data});
+                  },
+                };
+
+                cy.edgehandles( defaults );
+
                 // Tap
                 cy.on('tap', function(event) {
                   if (event.cyTarget === cy)

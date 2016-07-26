@@ -192,7 +192,7 @@
               <table id="datasample" class="table table-bordered table-hover">
                 <thead>
                 <tr>
-                  <th class="col coldef" ng-repeat="(k,v) in dataSample[0]" ng-click="showColDef(k)" ng-class="{'tag': contentModel.content[k].tag, 'bg-green': contentModel.content[k].callerRef, 'bg-aqua': !!contentModel.content[k].$$alias, 'dim': !contentModel.content[k].persistent}"><span>{{k}}</span></th>
+                  <th class="col coldef" ng-repeat="(k,v) in dataSample[0]" ng-click="showColDef(k)" ng-class="{'tag': contentModel.content[k].tag, 'bg-green': contentModel.content[k].callerRef, 'btn-alias': !!contentModel.content[k].$$alias, 'dim': contentModel.content[k].persistent===false}"><span>{{k}}</span></th>
                 </tr>
                 </thead>
                 <tbody>
@@ -219,7 +219,7 @@
 
               <button id="coldef" class="btn btn-sm btn-block btn-default" ng-click="createColumn()">Calculated Column</button>
               <button id="tag" class="btn btn-sm btn-block btn-warning" draggable options="{opacity: .5,revert: true}" ng-click="createTag()">Tag</button>
-              <button id="alias" class="btn btn-sm btn-block btn-info" draggable options="{opacity: .5,revert: true}" ng-click="createAlias()">Alias</button>
+              <button id="alias" class="btn btn-sm btn-block btn-alias" draggable options="{opacity: .5,revert: true}" ng-click="createAlias()">Alias</button>
               <button id="entity" class="btn btn-sm btn-block btn-primary" draggable droppable="buttonDrop" options="{opacity: .5,revert: true}" ng-click="createEntitylink()">Entity Link</button>
 
               <label uib-dropdown>
@@ -233,7 +233,7 @@
               <!--<label class="control-label">Columns</label>-->
               <div ng-height="400" class="scroll-col" ng-show="list==='Columns'">
                 <div class="btn-toolbar" id="Columns">
-                  <button id="{{col}}" class="btn btn-xs" ng-class="{'btn-warning' : val.tag, 'btn-primary': !val.tag, 'dim': !val.persistent, 'btn-success':val.callerRef, 'bg-aqua': !!val.$$alias}"
+                  <button id="{{col}}" class="btn btn-xs" ng-class="{'btn-warning' : val.tag, 'btn-primary': !val.tag, 'dim': val.persistent===false, 'btn-success':val.callerRef, 'btn-alias': !!val.$$alias}"
                           draggable options="{opacity: .5,revert: true}" style="margin: 2px;" ng-repeat="(col, val) in contentModel.content" ng-click="showColDef(col)">{{col}}</button>
                 </div>
               </div>
@@ -244,7 +244,7 @@
               </div>
             </div>
             <div class="col-md-10" droppable="handleDrop">
-              <cytoscape elements="modelGraph" layout="layout" styles="styles" selected-nodes="nodes" ng-height="180"></cytoscape>
+              <cytoscape elements="modelGraph" layout="layout" styles="styles" selected-nodes="nodes" ng-height="180" on-edge="nodeLink(source, target)"></cytoscape>
             </div>
           </div>
 
@@ -336,7 +336,7 @@
                 <div class="col-xs-4 col-sm-2">
                   <div class="checkbox">
                     <label>
-                      <input type="checkbox" id="isTag" name="isTag" ng-model="cd.tag"> <b>Tag</b>
+                      <input type="checkbox" id="isTag" name="isTag" ng-model="cd.tag" ng-change="convertToTag(cd)"> <b>Tag</b>
                     </label>
                   </div>
                 </div>
@@ -453,7 +453,7 @@
                 <div class="col-md-5 form-group">
                   <label for="tSource" class="control-label col-xs-4">Source</label>
                   <div class="input-group col-xs-8">
-                    <select id="tSource" name="pSource" class="form-control" ng-model="p.source" ng-options="c.name as c.name for c in columns">
+                    <select id="tSource" name="pSource" class="form-control" ng-model="p.source" ng-options="c as c for c in columns">
                       <option value="" disabled selected>{{name}}</option>
                     </select>
                   </div>
@@ -526,7 +526,7 @@
                   <input id="valIfNull" name="valIfNull" type="text" class="form-control" ng-model="cd.notFound"/>
                 </div>
               </div>
-              <div class="form-group" ng-show="!cd.tag || !!cd.relationship">
+              <div class="form-group" ng-show="openAsTag || !!cd.relationship">
                 <label for="relationship" class="control-label col-xs-3">Relationship name</label>
                 <div class="col-xs-9 col-sm-7">
                   <!--<input id="relationship" name="relationship" type="text" class="form-control" ng-model="cd.relationship"/>-->
@@ -566,7 +566,7 @@
                   <div class="col-md-6 form-group">
                     <label for="pSource" class="control-label col-xs-4">Source</label>
                     <div class="input-group col-xs-8">
-                      <select id="pSource" name="pSource" class="form-control" ng-model="p.source" ng-options="c.name as c.name for c in columns">
+                      <select id="pSource" name="pSource" class="form-control" ng-model="p.source" ng-options="c as c for c in columns">
                         <option value="" disabled selected>{{name}}</option>
                       </select>
                     </div>

@@ -162,11 +162,6 @@ fdView.factory('QueryService', ['$http', 'configuration', function ($http, confi
         cp = content;
         cp.content = {};
       },
-      createDefault: function (fortress, doctype) {
-        angular.copy(fortress, cpFortress);
-        angular.copy(doctype, cpType);
-        return $http.post(configuration.engineUrl() + '/api/v1/model/default/');
-      },
       getFortress: function () {
         if (cpFortress) { return cpFortress; }
       },
@@ -212,12 +207,8 @@ fdView.factory('QueryService', ['$http', 'configuration', function ($http, confi
         return $http.delete(configuration.engineUrl() + '/api/v1/model/' + key);
       },
       getDefault: function (data) {
-        var payload;
-        if(cp.tagModel) {
-          payload = data;
-        } else {
-          payload = angular.extend({contentModel: cp}, data);
-        }
+        var payload = angular.extend({contentModel: cp}, data);
+
         return $http.post(configuration.engineUrl() + '/api/v1/model/default', payload)
           .success(function (res) {
             cp.content = res.content;

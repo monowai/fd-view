@@ -79,15 +79,38 @@ fdView.controller('EditModelCtrl', ['$scope', '$stateParams', '$window', 'toastr
       $scope.editor = instance;
     };
 
+    var cleanTarget = function (tag) {
+      if (tag.entytyTagLinks) delete tag.entityTagLinks;
+      if (tag.tag) delete tag.tag;
+      if (tag.target) delete tag.target;
+      if (tag.dataType) delete tag.dataType;
+      if (tag.persistent) delete tag.persistent;
+      if (tag.storeNull) delete tag.storeNull;
+    };
+
+    $scope.nodeLink = function (source, target) {
+      // console.log(source);
+      if (source.type==='tag') {
+        var sourceTag = ContentModel.findTag(source.id),
+          targetTag = ContentModel.findTag(target.id);
+        if (!sourceTag.targets) sourceTag.targets = [];
+        cleanTarget(targetTag);
+        sourceTag.targets.push(angular.copy(targetTag));
+        delete $scope.contentModel.content[targetTag.code];
+      }
+    };
+
     $scope.saved = function () {
       return angular.equals(originalModel, $scope.contentModel);
     };
 
     $scope.canSave = function () {
-      if ($scope.contentModel && $scope.contentModel.fortress && $scope.contentModel.documentType){
-        return true;
-      } else if ($scope.contentModel.tagModel && $scope.contentModel.code && $scope.contentModel.name) {
-        return true;
+      if ($scope.contentModel) {
+        if ($scope.contentModel.fortress && $scope.contentModel.documentType) {
+          return true;
+        } else if ($scope.contentModel.tagModel && $scope.contentModel.code && $scope.contentModel.name) {
+          return true;
+        }
       }
       return false;
     };
@@ -404,24 +427,6 @@ fdView.controller('EditModelCtrl', ['$scope', '$stateParams', '$window', 'toastr
       });
     };
 
-    $scope.handleDrop = function (component, board, event) {
-      var
-        droppableDocumentOffset = $(board).offset(),
-        left = (event.x || event.clientX) - droppableDocumentOffset.left - (component.clientWidth / 2) + $window.pageXOffset,
-        top = (event.y || event.clientY) - droppableDocumentOffset.top - (component.clientHeight / 2) + $window.pageYOffset,
-      // type = component.attributes['data-type'].value,
-        name = component.id,
-      // name = selectedComponents.getElementName(type),
-      // componentInstance = allComponents[type],
-      // isBinary = component.attributes['data-binary'].value === 'true',
-        rect;
-
-      console.log(event);
-
-      $scope.createNew(component);
-
-    };
-
     $scope.delim=',';
     $scope.hasHeader=true;
 
@@ -532,7 +537,7 @@ fdView.controller('EditColdefCtrl',['$scope','$uibModalInstance', 'modalService'
 
     $scope.openAsTag = coldef.openAsTag;
     $scope.caption = coldef.openAsTag ? 'Tag Input' : 'Column Definition';
-    $scope.tab = coldef.tag || coldef.openAsTag ? 1 : 0;
+    $scope.tab = $scope.cd.tag || coldef.openAsTag ? 1 : 0;
 
     $scope.dataTypes = ['string','number','date'];
     $scope.dateFormats = ['timestamp','epoc','custom'];
@@ -541,6 +546,15 @@ fdView.controller('EditColdefCtrl',['$scope','$uibModalInstance', 'modalService'
       $scope.cd.customDate = $scope.cd.dateFormat;
       $scope.cd.dateFormat = 'custom';
     }
+
+    $scope.convertToTag = function () {
+      if ($scope.cd.tag) {
+        if ($scope.cd.dataType) delete $scope.cd.dataType;
+        if ($scope.cd.persistent) delete $scope.cd.persistent;
+        if ($scope.cd.storeNull) delete $scope.cd.storeNull;
+        $scope.tab = 1;
+      }
+    };
 
     $scope.toggleAlias = function (alias) {
       if (alias) {
