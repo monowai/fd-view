@@ -534,6 +534,7 @@ angular.module('fdView.directives', [])
     return {
       restrict: 'AE',
       replace: true,
+      transclude: true,
       scope: {
         info: '='
       },
@@ -541,6 +542,7 @@ angular.module('fdView.directives', [])
         <div class="box box-default">\
           <div class="box-header with-border">\
             <h3 class="box-title">{{info.title}}</h3>\
+            <ng-transclude></ng-transclude>\
           </div>\
           <div class="box-body">\
             <dl class="dl-horizontal">\

@@ -131,7 +131,7 @@ var fdView = angular.module('fdView', [
       })
       .state('admin.user', {
         url: '/user',
-        template: '<fd-info-box info="user"></fd-info-box>'//,
+        template: '<fd-info-box info="user"><button class="btn btn-warning pull-right" ng-click="editProfile(profile)" ng-show="allowEdit(profile)">Edit</button></fd-info-box>'//,
         // controller: 'AdminUserCtrl'
       })
       .state('settings', {

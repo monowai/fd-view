@@ -20,8 +20,8 @@
 
 'use strict';
 
-fdView.controller('AdminCtrl', ['$scope', '$state', '$http', 'configuration',
-  function ($scope, $state, $http, configuration) {
+fdView.controller('AdminCtrl', ['$scope', '$state', '$rootScope', '$http', 'modalService', 'configuration',
+  function ($scope, $state, $rootScope, $http, modalService, configuration) {
 
     $scope.health = {title: 'Health'};
     $http.get(configuration.engineUrl() + '/api/v1/admin/health').then(function (res) {
@@ -32,6 +32,26 @@ fdView.controller('AdminCtrl', ['$scope', '$state', '$http', 'configuration',
     $scope.user = {
       title: 'Profile',
       state: $scope.profile
+    };
+
+    $scope.allowEdit = function (profile) {
+      return profile.userRoles.indexOf('ROLE_FD_ADMIN')>-1 && !profile.apiKey;
+    };
+
+    $scope.editProfile = function (profile) {
+      modalService.show({
+        templateUrl: 'edit-user.html'
+      }, {obj: profile, disable:true}).then(function (res) {
+        $http.post(configuration.engineUrl() + '/api/v1/profiles/',
+          {login: res.login,
+            name: res.name,
+            companyName: res.companyName,
+            userEmail: res.userEmail
+          }).then(function (response) {
+            $rootScope.$broadcast('event:status-ok', response.statusText);
+            angular.extend(profile, response.data);
+          });
+      });
     };
   }]);
 
