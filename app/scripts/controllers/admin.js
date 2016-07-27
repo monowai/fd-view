@@ -46,7 +46,7 @@ fdView.controller('AdminCtrl', ['$scope', '$state', '$rootScope', '$http', 'moda
           {login: res.login,
             name: res.name,
             companyName: res.companyName,
-            userEmail: res.userEmail
+            email: res.email
           }).then(function (response) {
             $rootScope.$broadcast('event:status-ok', response.statusText);
             angular.extend(profile, response.data);
