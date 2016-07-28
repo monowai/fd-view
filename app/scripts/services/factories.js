@@ -308,7 +308,7 @@ fdView.factory('QueryService', ['$http', 'configuration', function ($http, confi
               if(!_.isEmpty(root)) {
                 if (!!obj.entityTagLinks) {
                   _.each(obj.entityTagLinks, function (link) {
-                    connect(root.id, tag.id, link.relationshipName, obj.reverse, link.geo ? 'geo' : undefined);
+                    connect(root.id, tag.id, link.relationshipName, link.reverse, link.geo ? 'geo' : undefined);
                   })
                 } else {
                   connect(root.id, tag.id, obj.relationship, obj.reverse);
