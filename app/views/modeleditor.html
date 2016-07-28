@@ -76,7 +76,8 @@
               </div>
               <div class="form-group" ng-show="contentModel.tagModel">
                 <label class="control-label">Code:</label>
-                <input type="text" class="form-control input-sm" ng-model="contentModel.code" placeholder="Code">
+                <input type="text" class="form-control input-sm" ng-model="contentModel.code" placeholder="Code" ng-focus="getAllModels()"
+                       uib-typeahead="m.code for m in tagModels | filter:$viewValue" typeahead-on-select="findModel(contentModel)" />
               </div>
               <div class="form-group">
                 <label class="control-label">Description:</label>

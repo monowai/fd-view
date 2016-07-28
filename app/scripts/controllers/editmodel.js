@@ -27,20 +27,41 @@ fdView.controller('EditModelCtrl', ['$scope', '$stateParams', '$window', 'toastr
 
     $scope.list = 'Columns';
 
-    $scope.findModel = function (model) {
-      var allModels = [];
-      ContentModel.getAll().then(function (res) {
-        allModels = res.data;
-        $scope.modelToLoad = _.find(allModels, function (m) {
-          return m.fortress === model.fortress.name && m.documentType === model.documentType.name;
+    $scope.allModels = [];
+    $scope.getAllModels = function () {
+      return ContentModel.getAll().then(function (res) {
+        $scope.allModels = res.data;
+        $scope.tagModels = _.filter(res.data, function (m) {
+          return m.documentType==='TagModel';
         });
       });
+    };
+
+    $scope.findModel = function (model) {
+      function findModel(model) {
+        return _.find($scope.allModels, function (m) {
+          if (model.tagModel) {
+            return m.code === model.code;
+          } else {
+            return m.fortress === model.fortress.name && m.documentType === model.documentType.name;
+          }
+        });
+      }
+
+      if ($scope.allModels.length===0) {
+        $scope.getAllModels().then(function () {
+          $scope.modelToLoad = findModel(model);
+        });
+      } else {
+        $scope.modelToLoad = findModel(model);
+      }
     };
 
     $scope.cleanTagModel = function () {
       if ($scope.contentModel.tagModel) {
         if ($scope.contentModel.fortress) delete $scope.contentModel.fortress;
         if ($scope.contentModel.documentType) delete $scope.contentModel.documentType;
+        if ($scope.modelToLoad) delete $scope.modelToLoad;
       }
     };
 
@@ -126,6 +147,7 @@ fdView.controller('EditModelCtrl', ['$scope', '$stateParams', '$window', 'toastr
     };
 
     $scope.sampleData = function () {
+      if ($scope.modelToLoad) $scope.loadModel($scope.modelToLoad.key);
       angular.element('[data-target="#sample"]').tab('show');
     };
 
@@ -155,6 +177,7 @@ fdView.controller('EditModelCtrl', ['$scope', '$stateParams', '$window', 'toastr
     };
 
     $scope.updateModel = function () {
+      if ($scope.modelToLoad) $scope.loadModel($scope.modelToLoad.key);
       angular.element('[data-target="#structure"]').tab('show');
       if (!angular.equals($scope.model, $scope.contentModel)) {
         ContentModel.updateModel($scope.contentModel);
