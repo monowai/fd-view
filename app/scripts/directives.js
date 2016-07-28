@@ -563,7 +563,8 @@ angular.module('fdView.directives', [])
         model: '=',
         class: '@'
       },
-      template: '<input type="text" class="form-control {{class}}" ng-model="model" placeholder="Data Provider" uib-typeahead="f.name as f.name for f in fortresses | filter:$viewValue">',
+      template: '<input type="text" class="form-control {{class}}" ng-model="model" placeholder="Data Provider" \
+        uib-typeahead="f.name as f.name for f in fortresses | filter:$viewValue">',
       link: function (scope, element, attrs) {
         QueryService.general('fortress').then(function (data) {
           scope.fortresses = data;
@@ -594,6 +595,26 @@ angular.module('fdView.directives', [])
         };
       }
     };
+  }])
+  .directive('tagInput', ['QueryService', function (QueryService) {
+    return {
+      restrict: 'AE',
+      replace: true,
+      scope: {
+        model: '=',
+        class: '@',
+        onSelect: '&'
+      },
+      template: '<input type="text" class="form-control {{class}}" placeholder="Label" \
+          ng-model="model" ng-focus="getTags()" autocomplete="off" \
+          uib-typeahead="t.label for t in tags | filter:$viewValue" typeahead-on-select="onSelect()">',
+      link: function (scope, element, attrs) {
+        scope.getTags = function () {
+          QueryService.general('tag').then(function (data) {
+            scope.tags = data;
+          });
+        };
+      }
+    };
   }]);
-
 // Directives
