@@ -301,6 +301,7 @@ fdView.factory('QueryService', ['$http', 'configuration', function ($http, confi
               var label = (obj.label || key);
               var tag = containsTag(obj);
               if(!tag) {
+                obj.code = obj.code || key;
                 tag = createTag(obj.$$id || addTag(obj), {label: label, code: obj.code});
                 graph.nodes.push({data: tag});
               }

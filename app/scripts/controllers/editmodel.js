@@ -82,21 +82,31 @@ fdView.controller('EditModelCtrl', ['$scope', '$stateParams', '$window', 'toastr
     var cleanTarget = function (tag) {
       if (tag.entytyTagLinks) delete tag.entityTagLinks;
       if (tag.tag) delete tag.tag;
-      if (tag.target) delete tag.target;
+      if (tag.target || typeof tag.target === 'string') delete tag.target;
       if (tag.dataType) delete tag.dataType;
       if (tag.persistent) delete tag.persistent;
       if (tag.storeNull) delete tag.storeNull;
+      return tag;
     };
 
     $scope.nodeLink = function (source, target) {
-      // console.log(source);
-      if (source.type==='tag') {
-        var sourceTag = ContentModel.findTag(source.id),
-          targetTag = ContentModel.findTag(target.id);
-        if (!sourceTag.targets) sourceTag.targets = [];
-        cleanTarget(targetTag);
-        sourceTag.targets.push(angular.copy(targetTag));
-        delete $scope.contentModel.content[targetTag.code];
+      if (source.type==='tag' && target.type==='tag') {
+        modalService.show({
+          templateUrl: 'link-tags.html'
+        },{disable: true, source: source, target: target})
+          .then(function (res) {
+            var sourceTag = ContentModel.findTag(source.id),
+                targetTag = angular.copy(ContentModel.findTag(target.id));
+            if (!sourceTag.targets) sourceTag.targets = [];
+            angular.extend(targetTag, res);
+            sourceTag.targets.push(cleanTarget(targetTag));
+            ContentModel.updateModel($scope.contentModel);
+            $scope.modelGraph = ContentModel.graphModel();
+          });
+      } else if (source.type==='entity' && target.type==='tag') {
+        $scope.showColDef(target.id,true,source);
+      } else {
+        $scope.modelGraph = ContentModel.graphModel();
       }
     };
 
@@ -381,13 +391,14 @@ fdView.controller('EditModelCtrl', ['$scope', '$stateParams', '$window', 'toastr
       });
     };
 
-    $scope.showColDef = function (key, tag) {
+    $scope.showColDef = function (key, tag, link) {
       var cp = ContentModel.getCurrent();
       var col = {};
       if (tag) {
         var t = ContentModel.findTag(key);
         col[t.label] = t;
         col.openAsTag = true;
+        col.link = link;
       } else {
         col = _.pick(cp.content, key);
       }
@@ -547,6 +558,17 @@ fdView.controller('EditColdefCtrl',['$scope','$uibModalInstance', 'modalService'
       $scope.cd.dateFormat = 'custom';
     }
 
+    $scope.addEntityRel = function () {
+      if (!$scope.cd.entityTagLinks) $scope.cd.entityTagLinks= [];
+      $scope.cd.entityTagLinks.push({relationshipName: 'name'});
+    };
+
+
+    if (coldef.link) {
+      $scope.tab = 2; // EntityTagLinks
+      $scope.addEntityRel();
+    }
+
     $scope.convertToTag = function () {
       if ($scope.cd.tag) {
         if ($scope.cd.dataType) delete $scope.cd.dataType;
@@ -624,11 +646,6 @@ fdView.controller('EditColdefCtrl',['$scope','$uibModalInstance', 'modalService'
           properties.push(res);
         }
       });
-    };
-
-    $scope.addEntityRel = function () {
-      if (!$scope.cd.entityTagLinks) $scope.cd.entityTagLinks= [];
-      $scope.cd.entityTagLinks.push({relationshipName: 'name'});
     };
 
     $scope.addProperty = function (obj) {

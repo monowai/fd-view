@@ -113,8 +113,7 @@ fdView.controller('ModelCtrl', ['$scope', '$window', '$rootScope', '$filter', '$
         ContentModel.uploadModel(models).then(function (res) {
           $rootScope.$broadcast('event:status-ok', res.statusText);
           if (models.length === 1) {
-            ContentModel.updateModel(models[0]);
-            $state.go('contentModel');
+            $state.go('contentModel', {modelKey: res.data[0].key});
           } else {
             $scope.cplist = $scope.cplist.concat(res.data);
           }
