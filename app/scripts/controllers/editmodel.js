@@ -653,12 +653,17 @@ fdView.controller('EditColdefCtrl',['$scope','$uibModalInstance', 'modalService'
     $scope.editProperty = function (properties, property) {
       modalService.show({
         templateUrl: 'edit-property.html',
-        controller: ['$scope', '$uibModalInstance','property','columns','col', function ($scope, $uibModalInstance, property,columns,col) {
+        controller: ['$scope', '$uibModalInstance','property','contentModel','col', function ($scope, $uibModalInstance, property,contentModel,col) {
           $scope.dataTypes = ['string','number','date'];
           if (!!property) $scope.property = property;
 
-          $scope.columns = columns;
+          $scope.columns = contentModel.content;
           $scope.column = col;
+
+          $scope.setProperties = function (col) {
+            $scope.property.dataType = contentModel.content[col].dataType;
+            $scope.property.storeNull = contentModel.content[col].storeNull;
+          };
 
           $scope.cancel = $uibModalInstance.dismiss;
           $scope.ok = function (p) {
@@ -669,8 +674,8 @@ fdView.controller('EditColdefCtrl',['$scope','$uibModalInstance', 'modalService'
           property: function () {
             return property;
           },
-          columns: function () {
-            return $scope.columns;
+          contentModel: function () {
+            return contentModel;
           },
           col: function () {
             return $scope.name;

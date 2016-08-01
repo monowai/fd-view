@@ -765,7 +765,8 @@
         <div class="col-md-6">
           <div class="form-group">
             <label for="source">Source</label>
-            <select id="source" name="source" class="form-control" ng-model="property.source" ng-options="c as c for c in columns">
+            <select id="source" name="source" class="form-control" ng-model="property.source"
+                    ng-options="col as col for (col,val) in columns" ng-change="setProperties(property.source)">
               <option value='' disabled selected>{{column}}</option>
             </select>
           </div>
