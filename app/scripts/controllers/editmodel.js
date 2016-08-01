@@ -578,12 +578,20 @@ fdView.controller('EditColdefCtrl',['$scope','$uibModalInstance', 'modalService'
     $scope.tab = $scope.cd.tag || $scope.openAsTag ? 1 : 0;
 
     $scope.dataTypes = ['string','number','date'];
-    $scope.dateFormats = ['timestamp','epoc','custom'];
+    $scope.dateFormats = ['Automatic','timestamp','epoc','custom'];
 
     if (!!$scope.cd.dateFormat && $scope.dateFormats.indexOf($scope.cd.dateFormat) < 0) {
       $scope.cd.customDate = $scope.cd.dateFormat;
       $scope.cd.dateFormat = 'custom';
     }
+
+    $scope.checkFormat = function () {
+      if ($scope.cd.dataType === 'date') $scope.cd.dateFormat = $scope.cd.dateFormat || 'Automatic';
+      if ($scope.cd.dataType !== 'date' && $scope.cd.dateFormat) { // Clean up on change
+        delete $scope.cd.dateFormat;
+        if ($scope.cd.customDate) delete $scope.cd.customDate;
+      }
+    };
 
     $scope.addEntityRel = function () {
       if (!$scope.cd.entityTagLinks) $scope.cd.entityTagLinks= [];

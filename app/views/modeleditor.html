@@ -286,7 +286,7 @@
               <div class="form-group">
                 <label for="dataType" class="col-sm-3 control-label">Data Type: </label>
                 <div class="col-sm-9">
-                  <select id="dataType" class="form-control" ng-model="cd.dataType" ng-options="dt as dt for dt in dataTypes">
+                  <select id="dataType" class="form-control" ng-model="cd.dataType" ng-options="dt as dt for dt in dataTypes" ng-change="checkFormat()">
                   </select>
                 </div>
               </div>
