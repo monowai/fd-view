@@ -125,7 +125,7 @@ fdView.controller('EditModelCtrl', ['$scope', '$stateParams', '$window', 'toastr
             $scope.modelGraph = ContentModel.graphModel();
           });
       } else if (source.type==='entity' && target.type==='tag') {
-        $scope.showColDef(target.id,true,source);
+        $scope.showColDef(target.id, {openAsTag: true, link: source});
       } else {
         $scope.modelGraph = ContentModel.graphModel();
       }
@@ -414,14 +414,16 @@ fdView.controller('EditModelCtrl', ['$scope', '$stateParams', '$window', 'toastr
       });
     };
 
-    $scope.showColDef = function (key, tag, link) {
-      var cp = ContentModel.getCurrent();
-      var col = {};
-      if (tag) {
+    $scope.showColDef = function (key, options) {
+      var cp = ContentModel.getCurrent(),
+          col = {};
+
+      options.openAsTag = options.openAsTag || false;
+      if (options.openAsTag) {
         var t = ContentModel.findTag(key);
         col[t.label] = t;
-        col.openAsTag = true;
-        col.link = link;
+        // col.openAsTag = true;
+        col.options = options;
       } else {
         col = _.pick(cp.content, key);
       }
@@ -439,7 +441,7 @@ fdView.controller('EditModelCtrl', ['$scope', '$stateParams', '$window', 'toastr
           }
         }
       }).result.then(function (res) {
-        if (tag) {
+        if (options.openAsTag) {
           var t = col[Object.keys(col)[0]];
           _.extend(t, res);
         } else {
@@ -569,9 +571,11 @@ fdView.controller('EditColdefCtrl',['$scope','$uibModalInstance', 'modalService'
 
     $scope.isAlias = !!$scope.cd.$$alias;
 
-    $scope.openAsTag = coldef.openAsTag;
-    $scope.caption = coldef.openAsTag ? 'Tag Input' : 'Column Definition';
-    $scope.tab = $scope.cd.tag || coldef.openAsTag ? 1 : 0;
+    if (coldef.options) {
+      $scope.openAsTag = coldef.options.openAsTag;
+    }
+    $scope.caption = $scope.openAsTag ? 'Tag Input' : 'Column Definition';
+    $scope.tab = $scope.cd.tag || $scope.openAsTag ? 1 : 0;
 
     $scope.dataTypes = ['string','number','date'];
     $scope.dateFormats = ['timestamp','epoc','custom'];
@@ -583,11 +587,10 @@ fdView.controller('EditColdefCtrl',['$scope','$uibModalInstance', 'modalService'
 
     $scope.addEntityRel = function () {
       if (!$scope.cd.entityTagLinks) $scope.cd.entityTagLinks= [];
-      $scope.cd.entityTagLinks.push({relationshipName: 'name'});
+      $scope.cd.entityTagLinks.push({relationshipName: 'Undefined'});
     };
 
-
-    if (coldef.link) {
+    if (coldef.options && coldef.options.link) {
       $scope.tab = 2; // EntityTagLinks
       $scope.addEntityRel();
     }
@@ -613,26 +616,37 @@ fdView.controller('EditColdefCtrl',['$scope','$uibModalInstance', 'modalService'
       var tag = scope.$modelValue || scope;
 
       modalService.show({
-        templateUrl: 'create-tag.html',
-        controller: ['$scope','$uibModalInstance','active', function ($scope,$uibModalInstance,active) {
+        templateUrl: 'create-target.html',
+        controller: ['$scope','$uibModalInstance','active', 'tags', function ($scope,$uibModalInstance,active, tags) {
           $scope.active = active.label || active.name || active;
-          $scope.canConnect = [active];
+          $scope.canConnect = [];
+          _.each(tags, function (t) {
+            if (t.id !== active.$$id) $scope.canConnect.push(t);
+          });
 
+          $scope.checkElem = function () {
+            if ($scope.elem) delete $scope.elem;
+          };
           $scope.cancel = $uibModalInstance.dismiss;
           $scope.ok = function (isValid) {
             if (isValid) {
-              $uibModalInstance.close($scope.elem, $scope.active);
+              var target = $scope.elem || $scope.target;
+              $uibModalInstance.close({target:target, relationship: $scope.rel});
             }
           };
         }],
         resolve: {
           active: function() {
             return tag;
+          },
+          tags: function () {
+            return tags;
           }
         }
       }).then(function (res) {
         if (!tag.targets) tag.targets = [];
-        tag.targets.push(res);
+        var target = res.target.id ? ContentModel.findTag(res.target.id) : res.target;
+        tag.targets.push(angular.extend(target, res.relationship));
       });
     };
 

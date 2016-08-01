@@ -306,12 +306,10 @@ fdView.factory('QueryService', ['$http', 'configuration', function ($http, confi
                 graph.nodes.push({data: tag});
               }
               if(!_.isEmpty(root)) {
-                if (!!obj.entityTagLinks) {
+                if (obj.entityTagLinks) {
                   _.each(obj.entityTagLinks, function (link) {
                     connect(root.id, tag.id, link.relationshipName, link.reverse, link.geo ? 'geo' : undefined);
-                  })
-                } else {
-                  connect(root.id, tag.id, obj.relationship, obj.reverse);
+                  });
                 }
               }
 

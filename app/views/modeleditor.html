@@ -235,13 +235,13 @@
               <div ng-height="400" class="scroll-col" ng-show="list==='Columns'">
                 <div class="btn-toolbar" id="Columns">
                   <button id="{{col}}" class="btn btn-xs" ng-class="{'btn-warning' : val.tag, 'btn-primary': !val.tag, 'dim': val.persistent===false, 'btn-success':val.callerRef, 'btn-alias': !!val.$$alias}"
-                          draggable options="{opacity: .5,revert: true}" style="margin: 2px;" ng-repeat="(col, val) in contentModel.content" ng-click="showColDef(col)" uib-tooltip="{{val.label}}">{{col}}</button>
+                          draggable options="{opacity: .5,revert: true}" style="margin: 2px;" ng-repeat="(col, val) in contentModel.content" ng-click="showColDef(col, {})" uib-tooltip="{{val.label}}">{{col}}</button>
                 </div>
               </div>
               <div ng-height="400" class="scroll-col" ng-show="list==='Tags'">
                 <div class="btn-toolbar" id="Tags">
                   <button id="{{tag.id}}" class="btn btn-xs label btn-warning" draggable options="{opacity: .5,revert: true}" style="margin: 2px;"
-                          ng-repeat="tag in tags" ng-click="showColDef(tag.id,true)">{{tag.label}}</button>
+                          ng-repeat="tag in tags" ng-click="showColDef(tag.id,{openAsTag: true})">{{tag.label}}</button>
                 </div>
               </div>
             </div>
@@ -590,7 +590,7 @@
             </div>
           </div>
         </uib-tab>
-        <uib-tab heading="Relationships" ng-show="cd.tag">
+        <uib-tab heading="Relationships" ng-show="cd.tag" ng-hide="!entity">
           <div class="row">
             <div class="col-md-12" ng-show="cd.tag">
               <fieldset>
@@ -668,7 +668,7 @@
             </div>
           </div>
         </uib-tab>
-        <uib-tab heading="Entity Links">
+        <uib-tab heading="Entity Links" ng-hide="!entity">
           <div class="row">
             <div class="col-md-12">
               <fieldset>
@@ -903,6 +903,70 @@
   </form>
 </script>
 
+<script type="text/ng-template" id="create-target.html">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close" ng-click="cancel()">
+      <span aria-hidden="true">&times;</span></button>
+    <h4 class="modal-title">Connect Tag</h4>
+  </div>
+  <form name="targetForm" role="form" class="form-horizontal" ng-submit="ok(targetForm.$valid)" novalidate>
+    <div class="modal-body">
+
+      <h4>Choose Tag to target:</h4>
+      <div class="form-group">
+        <label for="existing" class="col-sm-3 control-label">Target: </label>
+        <div class="col-sm-8">
+          <div class="input-group">
+            <select id="existing" name="existing" class="form-control" ng-options="t as t.label for t in canConnect" ng-model="target" ng-change="checkElem()"></select>
+            <span class="input-group-btn">
+              <button type="button" class="btn btn-default" ng-click="target=null"><i class="fa fa-trash"></i></button>
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <h4>Or create a New one:</h4>
+      <div class="form-group">
+        <label for="tgtName" class="col-sm-3 control-label">Name: </label>
+        <div class="col-sm-8">
+          <textarea id="tgtName" name="name" class="form-control" ng-model="elem.name" rows="1" ng-disabled="target" ng-required="!target" autofocus></textarea>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="tgtCode" class="col-sm-3 control-label">Code: </label>
+        <div class="col-sm-8">
+          <textarea id="tgtCode" name="code" class="form-control" ng-model="elem.code" ng-class="{'has-error': targetForm.code.$invalid && !targetForm.code.$pristine}" rows="1" ng-disabled="target" ng-required="!target"></textarea>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="tgtLabel" class="col-sm-3 control-label">Label: </label>
+        <div class="col-sm-8">
+          <textarea id="tgtLabel" name="label" class="form-control" ng-model="elem.label" ng-class="{'has-error': targetForm.label.$invalid && !targetForm.label.$pristine}" rows="1" ng-disabled="target" ng-required="!target"></textarea>
+        </div>
+      </div>
+      <h4>Details:</h4>
+      <div class="form-group">
+        <label for="tgtRelationship" class="col-sm-3 control-label">Relationship: </label>
+        <div class="col-sm-6">
+          <textarea id="tgtRelationship" name="relationship" class="form-control" ng-model="rel.relationship" rows="1"></textarea>
+        </div>
+        <div class="col-sm-3">
+          <div class="checkbox">
+            <label>
+              <input type="checkbox" id="tgtReverse" name="reverse" ng-model="rel.reverse"> <b>Reverse</b>
+            </label>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-default pull-left" ng-click="cancel('cancel')">Cancel</button>
+      <button type="submit" class="btn btn-primary" ng-disabled="targetForm.$invalid"><i class="fa fa-bolt"></i>&nbsp; Ok</button>
+    </div>
+  </form>
+</script>
+
 <script type="text/ng-template" id="create-entitylink.html">
   <div class="modal-header">
     <button type="button" class="close" data-dismiss="modal" aria-label="Close" ng-click="close()">
@@ -992,7 +1056,7 @@
     <div class="modal-body">
       <div class="row">
         <div class="col-md-12"><h4>Tag
-          <span class="label bg-yellow">{{modalOptions.source.code}}</span> is targeting tag <span class="label bg-yellow">{{modalOptions.target.code}}</span>
+          <span class="label bg-yellow">{{modalOptions.source.label}}</span> is targeting tag <span class="label bg-yellow">{{modalOptions.target.label}}</span>
           </h4>
         </div>
       </div>
