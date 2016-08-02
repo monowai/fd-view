@@ -193,7 +193,7 @@
               <table id="datasample" class="table table-bordered table-hover">
                 <thead>
                 <tr>
-                  <th class="col coldef" ng-repeat="(k,v) in dataSample[0]" ng-click="showColDef(k)" ng-class="{'tag': contentModel.content[k].tag, 'bg-green': contentModel.content[k].callerRef, 'btn-alias': !!contentModel.content[k].$$alias, 'dim': contentModel.content[k].persistent===false}"><span>{{k}}</span></th>
+                  <th class="col coldef" ng-repeat="(k,v) in dataSample[0]" ng-click="showColDef(k,{})" ng-class="{'tag': contentModel.content[k].tag, 'bg-green': contentModel.content[k].callerRef, 'btn-alias': !!contentModel.content[k].$$alias, 'dim': contentModel.content[k].persistent===false}"><span>{{k}}</span></th>
                 </tr>
                 </thead>
                 <tbody>
@@ -235,7 +235,7 @@
               <div ng-height="400" class="scroll-col" ng-show="list==='Columns'">
                 <div class="btn-toolbar" id="Columns">
                   <button id="{{col}}" class="btn btn-xs" ng-class="{'btn-warning' : val.tag, 'btn-primary': !val.tag, 'dim': val.persistent===false, 'btn-success':val.callerRef, 'btn-alias': !!val.$$alias}"
-                          draggable options="{opacity: .5,revert: true}" style="margin: 2px;" ng-repeat="(col, val) in contentModel.content" ng-click="showColDef(col, {})" uib-tooltip="{{val.label}}">{{col}}</button>
+                          draggable options="{opacity: .5,revert: true}" style="margin: 2px;" ng-repeat="(col, val) in contentModel.content" ng-click="showColDef(col, {})" uib-tooltip="{{val.code}}">{{col}}</button>
                 </div>
               </div>
               <div ng-height="400" class="scroll-col" ng-show="list==='Tags'">
@@ -441,7 +441,7 @@
           </fieldset>
 
           <fieldset ng-show="!cd.tag">
-            <legend>Properties to set into Object &nbsp;<button type="button" class="btn btn-sm btn-primary" uib-tooltip="Add new" ng-click="addProperty(cd)"><i class="fa fa-plus"></i></button></legend>
+            <legend>Properties to set into DocType &nbsp;<button type="button" class="btn btn-sm btn-primary" uib-tooltip="Add new" ng-click="addProperty(cd)"><i class="fa fa-plus"></i></button></legend>
 
             <div class="row" ng-repeat="p in cd.properties">
               <div class="col-md-12">
@@ -661,7 +661,7 @@
             </div>
           </div>
         </uib-tab>
-        <uib-tab heading="Entity Links" ng-hide="!entity">
+        <uib-tab heading="Entity Links" ng-hide="!entity || !cd.callerRef">
           <div class="row">
             <div class="col-md-12">
               <fieldset>

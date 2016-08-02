@@ -282,7 +282,7 @@ angular.module('fdView.directives', [])
                     // fired when edgehandles is done and entities are added
                     scope.onEdge({source: sourceNode[0]._private.data,
                                   target: targetNode[0]._private.data});
-                  },
+                  }
                 };
 
                 cy.edgehandles( defaults );

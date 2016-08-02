@@ -53,12 +53,14 @@
           <div class="col-md-6">
             <div class="form-group">
               <label for="fortress">Fortress</label>
-              <input id="fortress" class="form-control" type="text" placeholder="Fortress" ng-model="fortress"/>
+              <fortress-input id="fortress" model="fortress"></fortress-input>
             </div>
           </div>
           <div class="col-md-6">
             <label for="types">Types</label>
-            <tags-input id="types" type="text" placeholder="Types..." ng-model="types"></tags-input>
+            <tags-input id="types" type="text" placeholder="Types..." ng-model="types" key-property="name" display-property="name">
+              <auto-complete source="loadTypes(fortress)" min-length="1"></auto-complete>
+            </tags-input>
           </div>
         </div><!-- /.box-body -->
         <div class="box-footer">
