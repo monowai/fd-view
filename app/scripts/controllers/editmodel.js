@@ -579,6 +579,7 @@ fdView.controller('EditColdefCtrl',['$scope','$uibModalInstance', 'modalService'
       contentModel = res;
       $scope.columns = Object.keys(contentModel.content);
       $scope.entity = res.tagModel ? '' : contentModel.documentType.name;
+      $scope.tagModel = res.tagModel;
     });
     $scope.tags = tags;
 
