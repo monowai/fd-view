@@ -416,17 +416,18 @@ fdView.controller('EditModelCtrl', ['$scope', '$stateParams', '$window', 'toastr
 
     $scope.showColDef = function (key, options) {
       var cp = ContentModel.getCurrent(),
-          col = {};
+          col = {},
+          tag;
 
       options.openAsTag = options.openAsTag || false;
       if (options.openAsTag) {
         var t = ContentModel.findTag(key);
         col[t.label] = t;
-        // col.openAsTag = true;
         col.options = options;
       } else {
         col = _.pick(cp.content, key);
       }
+      tag = t || col[key];
       $uibModal.open({
         backdrop: 'static',
         templateUrl: 'edit-coldef.html',
@@ -441,9 +442,21 @@ fdView.controller('EditModelCtrl', ['$scope', '$stateParams', '$window', 'toastr
           }
         }
       }).result.then(function (res) {
-        if (options.openAsTag) {
-          var t = col[Object.keys(col)[0]];
-          _.extend(t, res);
+        if (res.$$id) {
+          _.each(cp.content, function (cd) {
+            function checkAndUpdate(tag) {
+              if (tag.$$id === res.$$id) {
+                return _.extend(tag, res);
+              }
+              if (tag.targets) _.each(tag.targets, function (t) {
+                checkAndUpdate(t);
+              })
+            }
+            if (cd.tag) {
+              checkAndUpdate(cd);
+            }
+          });
+
         } else {
           cp.content[key] = res;
         }

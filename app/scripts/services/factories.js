@@ -155,19 +155,6 @@ fdView.factory('QueryService', ['$http', 'configuration', function ($http, confi
       getCurrent: function () {
         return cp;
       },
-      createEmpty: function (content) {
-        cpFortress = content.fortress ? content.fortress.name : '';
-        cpType = content.documentType ? content.documentType.name : '';
-        code = content.code;
-        cp = content;
-        cp.content = {};
-      },
-      getFortress: function () {
-        if (cpFortress) { return cpFortress; }
-      },
-      getDocType: function () {
-        if (cpType) { return cpType; }
-      },
       getModel: function (modelKey) {
         if (!modelKey) {
           var deferred = $q.defer();
@@ -182,21 +169,6 @@ fdView.factory('QueryService', ['$http', 'configuration', function ($http, confi
                 cpType = cp.documentType.name;
               }
               tags = [];
-              _.chain(cp.content)
-                .filter(function (c) {
-                  return !!c.tag;
-                })
-                .each(function (t) {
-                  addTag(t);
-                  var tagTargets = function (tag) {
-                    if (!!tag.targets && tag.targets.length > 0)
-                      _(tag.targets).each(function (tg) {
-                        addTag(tg);
-                        tagTargets(tg);
-                      });
-                  };
-                  tagTargets(t);
-                });
             });
         }
       },
@@ -217,7 +189,6 @@ fdView.factory('QueryService', ['$http', 'configuration', function ($http, confi
       graphModel: function () {
         if (!_.isEmpty(cp)) {
           var graph = {nodes: [], edges: []};
-          tags = [];
 
           var createEntity = function (name, data) {
             var entity = new Object({id: name, name: name, type: 'entity'});
@@ -270,19 +241,21 @@ fdView.factory('QueryService', ['$http', 'configuration', function ($http, confi
             var t = graph.nodes[_.findIndex(graph.nodes,function(o){
               return _.isMatch(o.data,{type: 'tag', label: tag.label, code: tag.code});
             })];
-            if (!!t)
-              return t.data;
+            if (!!t) return t.data;
             else return false;
           };
 
           var createTargets = function (tag) {
             _.each(tag.targets, function (target) {
-              addTag(target);
-              var t = createTag(target.$$id  || addTag(target), {label: target.label, code: target.code});
-              if(!containsTag(t)) {
+              var tgData = {label: target.label, code: target.code};
+              var t = containsTag(tgData);
+              if(!t) {
+                t = createTag(target.$$id  || addTag(target), tgData);
                 graph.nodes.push({data: t});
-                connect(tag.$$id, t.id, target.relationship, target.reverse);
+              } else {
+                target.$$id = t.id;
               }
+              connect(tag.$$id, t.id, target.relationship, target.reverse);
               if (hasTargets(target)) createTargets(target);
             })
           };
@@ -297,14 +270,13 @@ fdView.factory('QueryService', ['$http', 'configuration', function ($http, confi
 
           _.each(cp.content, function (obj, key) {
             if (isTag(obj)) {
-              addTag(obj);
               var label = (obj.label || key);
               var tag = containsTag(obj);
               if(!tag) {
                 obj.code = obj.code || key;
                 tag = createTag(obj.$$id || addTag(obj), {label: label, code: obj.code});
                 graph.nodes.push({data: tag});
-              }
+              } else obj.$$id = tag.id;
               if(!_.isEmpty(root)) {
                 if (obj.entityTagLinks) {
                   _.each(obj.entityTagLinks, function (link) {
