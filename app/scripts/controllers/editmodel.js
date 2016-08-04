@@ -615,12 +615,16 @@ fdView.controller('EditColdefCtrl',['$scope','$uibModalInstance', 'modalService'
       $scope.addEntityRel();
     }
 
-    $scope.convertToTag = function () {
-      if ($scope.cd.tag) {
-        if ($scope.cd.dataType) delete $scope.cd.dataType;
-        if ($scope.cd.persistent) delete $scope.cd.persistent;
-        if ($scope.cd.storeNull) delete $scope.cd.storeNull;
+    $scope.convertTag = function (tag) {
+      if (tag.tag) {
+        if (tag.dataType) delete tag.dataType;
+        if (tag.persistent) delete tag.persistent;
+        if (tag.storeNull) delete tag.storeNull;
         $scope.tab = 1;
+      } else {
+        if (tag.$$id) delete tag.$$id;
+        if (tag.targets) delete tag.targets;
+        if (tag.entityTagLinks) delete tag.entityTagLinks;
       }
     };
 
