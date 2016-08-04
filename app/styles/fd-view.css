@@ -246,7 +246,7 @@ select:invalid {
 }
 
 td > input {
-  padding: 6px 12px;
+  /*padding: 6px 12px;*/
   width: 100%;
   border: 1px solid #fff;
 }
