@@ -524,11 +524,9 @@ fdView.controller('EditModelCtrl', ['$scope', '$stateParams', '$window', 'toastr
       if ($scope.dataSample) delete $scope.dataSample;
     };
 
-    $scope.validate = function(){
-      // $http.put(configuration.engineUrl() + '/api/v1/fortress/' + someProfile.fortressName+'/'+someProfile.documentType.name).then(function (response) {
-      //   console.log(response.data);
-      //   return response.data;
-      // });
+    $scope.validate = function(data){
+      ContentModel.updateModel($scope.contentModel);
+      ContentModel.validate(data);
     };
 
     $scope.cancel = function () {

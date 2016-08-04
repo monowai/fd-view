@@ -186,6 +186,14 @@ fdView.factory('QueryService', ['$http', 'configuration', function ($http, confi
             cp.content = res.content;
           });
       },
+      validate: function (data) {
+        var payload = {contentModel: cp, rows: data};
+
+        return $http.post(configuration.engineUrl() + '/api/v1/model/validate', payload)
+          .success(function (res) {
+            console.log(res);
+          });
+      },
       graphModel: function () {
         if (!_.isEmpty(cp)) {
           var graph = {nodes: [], edges: []};

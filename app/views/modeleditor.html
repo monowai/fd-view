@@ -46,7 +46,7 @@
             Action <span class="caret"></span></a>
             <ul class="dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="action-menu">
               <li role="menuitem" ng-show="canSave()"><a href ng-click="save()">Save</a></li>
-              <li role="menuitem" ng-show="dataSample"><a href ng-click="validate()">Validate</a></li>
+              <li role="menuitem" ng-show="dataSample"><a href ng-click="validate(dataSample)">Validate</a></li>
               <li role="menuitem" ng-show="!!csvContent || !!dataSample"><a href ng-click="cleanSample()">Reload Sample</a></li>
               <li class="divider" ng-show="canSave()"></li>
               <li role="menuitem"><a href ng-click="cancel()">Cancel</a></li>
@@ -440,8 +440,8 @@
             </div>
           </fieldset>
 
-          <fieldset ng-show="!cd.tag">
-            <legend>Properties to set into DocType &nbsp;<button type="button" class="btn btn-sm btn-primary" uib-tooltip="Add new" ng-click="addProperty(cd)"><i class="fa fa-plus"></i></button></legend>
+          <fieldset ng-show="!cd.tag && !tagModel">
+            <legend>Properties to set into {{entity}} &nbsp;<button type="button" class="btn btn-sm btn-primary" uib-tooltip="Add new" ng-click="addProperty(cd)"><i class="fa fa-plus"></i></button></legend>
 
             <div class="row" ng-repeat="p in cd.properties">
               <div class="col-md-12">
