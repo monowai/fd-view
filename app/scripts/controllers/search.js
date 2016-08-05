@@ -54,8 +54,8 @@ fdView.controller('LeftBarCtrl', ['$scope', '$rootScope', 'ProfileService',
 );
 
 // New Search Controller
-fdView.controller('MetaHeaderCtrl', ['$scope', 'EntityService', '$uibModal', 'configuration',
-  function ($scope, EntityService, $uibModal, configuration) {
+fdView.controller('MetaHeaderCtrl', ['$scope', 'EntityService', '$uibModal', 'QueryService', 'configuration',
+  function ($scope, EntityService, $uibModal, QueryService, configuration) {
     //ToDo: Why do I need to Explore functions?
     $scope.advancedSearch = false;
     $scope.searchResultFound = false;
@@ -79,6 +79,12 @@ fdView.controller('MetaHeaderCtrl', ['$scope', 'EntityService', '$uibModal', 'co
 
     $scope.showAdvancedSearch = function () {
       $scope.advancedSearch = !$scope.advancedSearch;
+    };
+
+    $scope.loadTypes = function (fortress) {
+      if (fortress) {
+        return QueryService.query('documents', [fortress]);
+      }
     };
 
     $scope.search = function (searchText, company, fortress, types) {

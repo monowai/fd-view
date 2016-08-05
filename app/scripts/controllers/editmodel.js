@@ -125,7 +125,7 @@ fdView.controller('EditModelCtrl', ['$scope', '$stateParams', '$window', 'toastr
             $scope.modelGraph = ContentModel.graphModel();
           });
       } else if (source.type==='entity' && target.type==='tag') {
-        $scope.showColDef(target.id,true,source);
+        $scope.showColDef(target.id, {openAsTag: true, link: source});
       } else {
         $scope.modelGraph = ContentModel.graphModel();
       }
@@ -414,17 +414,20 @@ fdView.controller('EditModelCtrl', ['$scope', '$stateParams', '$window', 'toastr
       });
     };
 
-    $scope.showColDef = function (key, tag, link) {
-      var cp = ContentModel.getCurrent();
-      var col = {};
-      if (tag) {
+    $scope.showColDef = function (key, options) {
+      var cp = ContentModel.getCurrent(),
+          col = {},
+          tag;
+
+      options.openAsTag = options.openAsTag || false;
+      if (options.openAsTag) {
         var t = ContentModel.findTag(key);
         col[t.label] = t;
-        col.openAsTag = true;
-        col.link = link;
+        col.options = options;
       } else {
         col = _.pick(cp.content, key);
       }
+      tag = t || col[key];
       $uibModal.open({
         backdrop: 'static',
         templateUrl: 'edit-coldef.html',
@@ -439,9 +442,21 @@ fdView.controller('EditModelCtrl', ['$scope', '$stateParams', '$window', 'toastr
           }
         }
       }).result.then(function (res) {
-        if (tag) {
-          var t = col[Object.keys(col)[0]];
-          _.extend(t, res);
+        if (res.$$id) {
+          _.each(cp.content, function (cd) {
+            function checkAndUpdate(tag) {
+              if (tag.$$id === res.$$id) {
+                return _.extend(tag, res);
+              }
+              if (tag.targets) _.each(tag.targets, function (t) {
+                checkAndUpdate(t);
+              })
+            }
+            if (cd.tag) {
+              checkAndUpdate(cd);
+            }
+          });
+
         } else {
           cp.content[key] = res;
         }
@@ -509,11 +524,32 @@ fdView.controller('EditModelCtrl', ['$scope', '$stateParams', '$window', 'toastr
       if ($scope.dataSample) delete $scope.dataSample;
     };
 
-    $scope.validate = function(){
-      // $http.put(configuration.engineUrl() + '/api/v1/fortress/' + someProfile.fortressName+'/'+someProfile.documentType.name).then(function (response) {
-      //   console.log(response.data);
-      //   return response.data;
-      // });
+    $scope.validate = function(data){
+      ContentModel.updateModel($scope.contentModel);
+      ContentModel.validate(data).then(function (res) {
+        $scope.validationResult = res.data;
+        $scope.rows = $scope.contentModel.tagModel ? res.data.tags : res.data.entity;
+      });
+      angular.element('[data-target="#validate"]').tab('show');
+    };
+
+    $scope.showResult = function ($index) {
+      $scope.rowResult = $scope.rows[$index];
+      $scope.rowResult.message = $scope.validationResult.message[$index];
+
+      $scope.loadViewer = function (instance) {
+        $scope.resultViewer = instance;
+      };
+    };
+
+    $scope.trackResult = function (validResult) {
+      var payload = $scope.contentModel.tagModel ? validResult.tags[0] : validResult.entity;
+      payload=_.map(payload, function (e) {
+        return e;
+      });
+      $http.put(configuration.engineUrl()+'/api/v1/track/', payload).then(function (res) {
+        toastr.success(res.statusText, 'Success');
+      })
     };
 
     $scope.cancel = function () {
@@ -564,40 +600,54 @@ fdView.controller('EditColdefCtrl',['$scope','$uibModalInstance', 'modalService'
       contentModel = res;
       $scope.columns = Object.keys(contentModel.content);
       $scope.entity = res.tagModel ? '' : contentModel.documentType.name;
+      $scope.tagModel = res.tagModel;
     });
     $scope.tags = tags;
 
     $scope.isAlias = !!$scope.cd.$$alias;
 
-    $scope.openAsTag = coldef.openAsTag;
-    $scope.caption = coldef.openAsTag ? 'Tag Input' : 'Column Definition';
-    $scope.tab = $scope.cd.tag || coldef.openAsTag ? 1 : 0;
+    if (coldef.options) {
+      $scope.openAsTag = coldef.options.openAsTag;
+    }
+    $scope.caption = $scope.openAsTag ? 'Tag Input' : 'Column Definition';
+    $scope.tab = $scope.cd.tag || $scope.openAsTag ? 1 : 0;
 
     $scope.dataTypes = ['string','number','date'];
-    $scope.dateFormats = ['timestamp','epoc','custom'];
+    $scope.dateFormats = ['Automatic','timestamp','epoc','custom'];
 
     if (!!$scope.cd.dateFormat && $scope.dateFormats.indexOf($scope.cd.dateFormat) < 0) {
       $scope.cd.customDate = $scope.cd.dateFormat;
       $scope.cd.dateFormat = 'custom';
     }
 
-    $scope.addEntityRel = function () {
-      if (!$scope.cd.entityTagLinks) $scope.cd.entityTagLinks= [];
-      $scope.cd.entityTagLinks.push({relationshipName: 'name'});
+    $scope.checkFormat = function () {
+      if ($scope.cd.dataType === 'date') $scope.cd.dateFormat = $scope.cd.dateFormat || 'Automatic';
+      if ($scope.cd.dataType !== 'date' && $scope.cd.dateFormat) { // Clean up on change
+        delete $scope.cd.dateFormat;
+        if ($scope.cd.customDate) delete $scope.cd.customDate;
+      }
     };
 
+    $scope.addEntityRel = function () {
+      if (!$scope.cd.entityTagLinks) $scope.cd.entityTagLinks= [];
+      $scope.cd.entityTagLinks.push({relationshipName: 'Undefined'});
+    };
 
-    if (coldef.link) {
+    if (coldef.options && coldef.options.link) {
       $scope.tab = 2; // EntityTagLinks
       $scope.addEntityRel();
     }
 
-    $scope.convertToTag = function () {
-      if ($scope.cd.tag) {
-        if ($scope.cd.dataType) delete $scope.cd.dataType;
-        if ($scope.cd.persistent) delete $scope.cd.persistent;
-        if ($scope.cd.storeNull) delete $scope.cd.storeNull;
+    $scope.convertTag = function (tag) {
+      if (tag.tag) {
+        if (tag.dataType) delete tag.dataType;
+        if (tag.persistent) delete tag.persistent;
+        if (tag.storeNull) delete tag.storeNull;
         $scope.tab = 1;
+      } else {
+        if (tag.$$id) delete tag.$$id;
+        if (tag.targets) delete tag.targets;
+        if (tag.entityTagLinks) delete tag.entityTagLinks;
       }
     };
 
@@ -613,38 +663,54 @@ fdView.controller('EditColdefCtrl',['$scope','$uibModalInstance', 'modalService'
       var tag = scope.$modelValue || scope;
 
       modalService.show({
-        templateUrl: 'create-tag.html',
-        controller: ['$scope','$uibModalInstance','active', function ($scope,$uibModalInstance,active) {
+        templateUrl: 'create-target.html',
+        controller: ['$scope','$uibModalInstance','active', 'tags', function ($scope,$uibModalInstance,active, tags) {
           $scope.active = active.label || active.name || active;
-          $scope.canConnect = [active];
+          $scope.canConnect = [];
+          _.each(tags, function (t) {
+            if (t.id !== active.$$id) $scope.canConnect.push(t);
+          });
 
+          $scope.checkElem = function () {
+            if ($scope.elem) delete $scope.elem;
+          };
           $scope.cancel = $uibModalInstance.dismiss;
           $scope.ok = function (isValid) {
             if (isValid) {
-              $uibModalInstance.close($scope.elem, $scope.active);
+              var target = $scope.elem || $scope.target;
+              $uibModalInstance.close({target:target, relationship: $scope.rel});
             }
           };
         }],
         resolve: {
           active: function() {
             return tag;
+          },
+          tags: function () {
+            return tags;
           }
         }
       }).then(function (res) {
         if (!tag.targets) tag.targets = [];
-        tag.targets.push(res);
+        var target = res.target.id ? ContentModel.findTag(res.target.id) : res.target;
+        tag.targets.push(angular.extend(target, res.relationship));
       });
     };
 
     $scope.editProperty = function (properties, property) {
       modalService.show({
         templateUrl: 'edit-property.html',
-        controller: ['$scope', '$uibModalInstance','property','columns','col', function ($scope, $uibModalInstance, property,columns,col) {
+        controller: ['$scope', '$uibModalInstance','property','contentModel','col', function ($scope, $uibModalInstance, property,contentModel,col) {
           $scope.dataTypes = ['string','number','date'];
           if (!!property) $scope.property = property;
 
-          $scope.columns = columns;
+          $scope.columns = contentModel.content;
           $scope.column = col;
+
+          $scope.setProperties = function (col) {
+            $scope.property.dataType = contentModel.content[col].dataType;
+            $scope.property.storeNull = contentModel.content[col].storeNull;
+          };
 
           $scope.cancel = $uibModalInstance.dismiss;
           $scope.ok = function (p) {
@@ -655,8 +721,8 @@ fdView.controller('EditColdefCtrl',['$scope','$uibModalInstance', 'modalService'
           property: function () {
             return property;
           },
-          columns: function () {
-            return $scope.columns;
+          contentModel: function () {
+            return contentModel;
           },
           col: function () {
             return $scope.name;

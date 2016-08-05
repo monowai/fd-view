@@ -282,10 +282,26 @@ angular.module('fdView.directives', [])
                     // fired when edgehandles is done and entities are added
                     scope.onEdge({source: sourceNode[0]._private.data,
                                   target: targetNode[0]._private.data});
-                  },
+                  }
                 };
 
                 cy.edgehandles( defaults );
+
+                // QTip
+                cy.elements().qtip({
+                  content: function(){ return this[0]._private.data.code },
+                  position: {
+                    my: 'top center',
+                    at: 'bottom center'
+                  },
+                  style: {
+                    classes: 'qtip-bootstrap',
+                    tip: {
+                      width: 16,
+                      height: 8
+                    }
+                  }
+                });
 
                 // Tap
                 cy.on('tap', function(event) {
@@ -322,10 +338,10 @@ angular.module('fdView.directives', [])
                   }
                 });
                 cy.on('cxttapstart', 'node', function (event) {
-                  console.log(event);
+                  // console.log(event);
                 });
                 cy.on('mouseup', function (event) {
-                  console.log(event);
+                  // console.log(event);
                 });
                 cy.on('drop',function (event) {
                   console.log(event);
