@@ -526,7 +526,30 @@ fdView.controller('EditModelCtrl', ['$scope', '$stateParams', '$window', 'toastr
 
     $scope.validate = function(data){
       ContentModel.updateModel($scope.contentModel);
-      ContentModel.validate(data);
+      ContentModel.validate(data).then(function (res) {
+        $scope.validationResult = res.data;
+        $scope.rows = $scope.contentModel.tagModel ? res.data.tags : res.data.entity;
+      });
+      angular.element('[data-target="#validate"]').tab('show');
+    };
+
+    $scope.showResult = function ($index) {
+      $scope.rowResult = $scope.rows[$index];
+      $scope.rowResult.message = $scope.validationResult.message[$index];
+
+      $scope.loadViewer = function (instance) {
+        $scope.resultViewer = instance;
+      };
+    };
+
+    $scope.trackResult = function (validResult) {
+      var payload = $scope.contentModel.tagModel ? validResult.tags[0] : validResult.entity;
+      payload=_.map(payload, function (e) {
+        return e;
+      });
+      $http.put(configuration.engineUrl()+'/api/v1/track/', payload).then(function (res) {
+        toastr.success(res.statusText, 'Success');
+      })
     };
 
     $scope.cancel = function () {

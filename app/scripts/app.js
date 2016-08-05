@@ -170,7 +170,7 @@ var fdView = angular.module('fdView', [
       // Call when the the client is confirmed
       $rootScope.$on('event:auth-loginConfirmed', function () {
         $rootScope.authenticated = true;
-        if (!$rootScope.account.apiKey) {
+        if (!$rootScope.account.apiKey && Session.userRoles.indexOf('ROLE_FD_ADMIN')>-1) {
           $state.go('admin.user');
         } else if ($state.is('login')) {
           $state.go('welcome');

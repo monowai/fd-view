@@ -41,13 +41,15 @@
           <li uib-tooltip="Source"><a href data-target="#json" data-toggle="tab" ng-click="checkModel()"><i class="fa fa-lg fa-edit"></i></a></li>
           <li uib-tooltip="Structure" class="active" ng-show="canSave()"><a href data-target="#structure" data-toggle="tab" ng-click="updateModel()"><i class="fa fa-lg fa-sitemap"></i></a></li>
           <li uib-tooltip="Data" ng-show="canSave()"><a href data-target="#sample" data-toggle="tab"><i class="fa fa-lg fa-file-text"></i></a></li>
+          <li uib-tooltip="Validation" ng-show="validationResult"><a href data-target="#validate" data-toggle="tab"><i class="fa fa-lg fa-check-square-o"></i></a></li>
           <li uib-dropdown>
             <a href id="action-menu" uib-dropdown-toggle>
             Action <span class="caret"></span></a>
             <ul class="dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="action-menu">
               <li role="menuitem" ng-show="canSave()"><a href ng-click="save()">Save</a></li>
               <li role="menuitem" ng-show="dataSample"><a href ng-click="validate(dataSample)">Validate</a></li>
-              <li role="menuitem" ng-show="!!csvContent || !!dataSample"><a href ng-click="cleanSample()">Reload Sample</a></li>
+              <li role="menuitem" ng-show="validationResult"><a href ng-click="trackResult(validationResult)">Track</a></li>
+              <li role="menuitem" ng-show="csvContent || dataSample"><a href ng-click="cleanSample()">Reload Sample</a></li>
               <li class="divider" ng-show="canSave()"></li>
               <li role="menuitem"><a href ng-click="cancel()">Cancel</a></li>
             </ul>
@@ -253,6 +255,50 @@
           <!-- Edit JSON -->
           <div id="json" class="tab-pane fade">
             <div ng-jsoneditor="onEditorLoad" ng-model="contentModel" options="editorOptions" ng-height="180"></div>
+          </div>
+
+          <div id="validate" class="tab-pane fade">
+            <div class="row">
+              <div ng-class="rowResult ? 'col-md-6' : 'col-md-12'">
+                <table id="validRes" class="table table-bordered table-hover">
+                  <thead>
+                  <tr ng-if="!contentModel.tagModel">
+                    <th>Code</th>
+                    <th>Name</th>
+                    <th>Description</th>
+                  </tr>
+                  <tr ng-if="contentModel.tagModel">
+                    <th>#</th>
+                    <th>Message</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr ng-if="!contentModel.tagModel" ng-repeat="row in rows" ng-click="showResult($index)">
+                    <td>{{row.code}}</td>
+                    <td>{{row.name}}</td>
+                    <td>{{row.description}}</td>
+                  </tr>
+                  <tr ng-if="contentModel.tagModel" ng-repeat="row in rows" ng-click="showResult($index)">
+                    <td>{{$index}}</td>
+                    <td>{{validationResult.message[$index]}}</td>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="col-md-6" ng-show="rowResult">
+                <div class="row" ng-show="rowResult.message">
+                  <div class="col-md-2"><h4>Message:</h4></div>
+                  <div class="col-md-10">
+                    <div class="well">{{rowResult.message}}</div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-12" ng-if="rowResult">
+                    <div ng-jsoneditor="loadViewer" ng-model="rowResult" options="{mode:'tree'}" ng-height="240"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
 
         </div>

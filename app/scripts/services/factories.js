@@ -86,7 +86,8 @@ fdView.factory('QueryService', ['$http', 'configuration', function ($http, confi
         cpGraph = {},       // latest graph visualization of the content model
         cpFortress, cpType, // fortress and doctype of the current content model
         code,               // code for tag only model
-        tags = [];          // list of tags
+        tags = [],          // list of tags
+        validationResult;
 
     var addTag = function (tag) {
       tag.$$id = tag.$$id || _.uniqueId('tag_');
@@ -191,7 +192,8 @@ fdView.factory('QueryService', ['$http', 'configuration', function ($http, confi
 
         return $http.post(configuration.engineUrl() + '/api/v1/model/validate', payload)
           .success(function (res) {
-            console.log(res);
+            validationResult = res;
+            return validationResult;
           });
       },
       graphModel: function () {
