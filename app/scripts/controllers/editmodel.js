@@ -748,6 +748,12 @@ fdView.controller('EditColdefCtrl',['$scope','$uibModalInstance', 'modalService'
       $scope.cd.entityLinks.push({});
     };
 
+    $scope.entityParentSelected = function (links) {
+      return !!_.find(links,function (el) {
+        return el.parent;
+      })
+    };
+
     $scope.cancel = function () {
       if (angular.equals($scope.cd, coldef[$scope.name])) {
         $uibModalInstance.dismiss();

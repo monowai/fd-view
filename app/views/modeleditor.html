@@ -716,6 +716,7 @@
                 </legend>
                 <table class="table" ng-show="cd.entityLinks.length>0">
                   <tr>
+                    <th><i class="fa fa-external-link" uib-tooltip="Parent"></i></th>
                     <th>Fortress</th>
                     <th>Document Name</th>
                     <th>Relationship</th>
@@ -726,6 +727,7 @@
                     </th>
                   </tr>
                   <tr ng-repeat="e in cd.entityLinks">
+                    <td><label><input type="checkbox" ng-model="e.parent" uib-tooltip="Parent" ng-disabled="!e.parent && entityParentSelected(cd.entityLinks)"> </label></td>
                     <td class="col-xs-4">
                       <fortress-input model="e.fortress" ng-required="true"></fortress-input>
                     </td>

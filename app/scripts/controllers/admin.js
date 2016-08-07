@@ -187,7 +187,8 @@ fdView.controller('AdminFortressCtrl', ['$scope', '$rootScope', 'QueryService', 
           }
         }).then(function(response) {
           $rootScope.$broadcast('event:status-ok', response.message);
-          $scope.documents.splice($scope.documents.indexOf(dt), 1);
+          // $scope.documents.splice($scope.documents.indexOf(dt), 1);
+          $scope.selectFortress(f);
         });
       });
     };
