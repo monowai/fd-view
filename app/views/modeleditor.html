@@ -807,7 +807,7 @@
       <span aria-hidden="true">&times;</span></button>
     <h4 class="modal-title">Edit Property</h4>
   </div>
-  <form ng-submit="ok(property)">
+  <form name="propertyForm" ng-submit="ok(property)">
     <div class="modal-body">
       <div class="row">
         <div class="col-md-6">
@@ -849,10 +849,18 @@
             </div>
           </div>
         </div>
+        <div class="col-md-6" ng-show="property.dataType==='date'">
+          <div class="form-group">
+            <label for="pDateFormat" class="col-sm-3 control-label">Date Format: </label>
+            <div class="col-sm-9">
+              <input type="text" id="pDateFormat" class="form-control" ng-model="property.dateFormat" uib-typeahead="df for df in ['Automatic','timestamp','epoc']" uib-tooltip="Automatic, timestamp, epoc or cusom (like 'yyyy-MM-dd)" ng-required="property.dataType==='date'">
+            </div>
+          </div>
+        </div>
       </div>
     </div>
     <div class="modal-footer">
-      <button type="submit" class="btn btn-primary" ng-click="ok(property)"><i class="fa fa-bolt"></i>&nbsp; Ok</button>
+      <button type="submit" class="btn btn-primary" ng-click="ok(property)" ng-disabled="!propertyForm.$valid"><i class="fa fa-bolt"></i>&nbsp; Ok</button>
       <button type="button" class="btn btn-default pull-left" ng-click="cancel()">Cancel</button>
     </div>
   </form>

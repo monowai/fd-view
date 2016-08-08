@@ -708,8 +708,10 @@ fdView.controller('EditColdefCtrl',['$scope','$uibModalInstance', 'modalService'
           $scope.column = col;
 
           $scope.setProperties = function (col) {
-            $scope.property.dataType = contentModel.content[col].dataType;
-            $scope.property.storeNull = contentModel.content[col].storeNull;
+            var cd = contentModel.content[col];
+            $scope.property.dataType = cd.dataType;
+            $scope.property.storeNull = cd.storeNull;
+            if (cd.dataType==='date') $scope.property.dateFormat = cd.dateFormat;
           };
 
           $scope.cancel = $uibModalInstance.dismiss;
