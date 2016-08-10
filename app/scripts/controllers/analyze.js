@@ -59,16 +59,15 @@ fdView.controller('AnalyzeCtrl', ['$scope', 'QueryService', '$window', '$timeout
     addOptions();
 
     $scope.selectFortress = function () {
-      QueryService.query('documents', $scope.fortress).then(function (data) {
+      QueryService.doc($scope.fortress).then(function (data) {
         $scope.documents = data;
-
       });
       $scope.concepts = [];
       $scope.fromRlxs = [];
       $scope.toRlxs = [];
     };
     $scope.selectDocument = function () {
-      QueryService.query('concepts', $scope.document).then(function (data) {
+      QueryService.concept('/', $scope.document).then(function (data) {
         var conceptMap = _.flatten(_.pluck(data, 'concepts'));
         $scope.concepts = _.uniq(conceptMap, function (c) {
           return c.name;
@@ -87,7 +86,7 @@ fdView.controller('AnalyzeCtrl', ['$scope', 'QueryService', '$window', '$timeout
     };
 
     $scope.selectConcept = function () {
-      QueryService.query('relationships', $scope.document).then(function (data) {
+      QueryService.concept('/relationships', $scope.document).then(function (data) {
         var conceptMap = _.filter(_.flatten(_.pluck(data, 'concepts')), function (c) {
           return _.contains($scope.concept, c.name);
         });

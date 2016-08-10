@@ -67,10 +67,9 @@ fdView.controller('AdminFortressCtrl', ['$scope', '$rootScope', 'QueryService', 
     };
 
     $scope.selectFortress = function(f) {
-      var query = [f.name];
       $scope.typeOpen = true;
       $scope.fortress = f;
-      QueryService.query('documents', query).then(function (data) {
+      QueryService.doc(f.name).then(function (data) {
         $scope.documents = data;
         $scope.isOpen = false;
       });

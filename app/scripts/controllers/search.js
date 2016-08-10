@@ -20,39 +20,6 @@
 
 'use strict';
 
-fdView.controller('HeaderCtrl', ['$scope', '$rootScope', 'AuthenticationSharedService',
-  function ($scope, $rootScope, AuthenticationSharedService) {
-
-    $scope.search = function () {
-      $rootScope.$broadcast('META_HEADER_LOADED', $scope.searchTerm);
-    };
-
-    $scope.open = function () {
-      // TODO Technical DEBT :  ANTI-PATTERN_1 (Don't manipulate DOM in the controller)
-      $('body').toggleClass('hidden-menu');
-    };
-
-    $scope.logout = function () {
-      AuthenticationSharedService.logout();
-    };
-
-}]);
-
-
-fdView.controller('LeftBarCtrl', ['$scope', '$rootScope', 'ProfileService',
-  function ($scope, $rootScope, ProfileService) {
-
-    ProfileService.getMyProfile().then(function (data) {
-      $scope.profile = data;
-    });
-
-    $scope.open = function () {
-      // TODO Technical DEBT :  ANTI-PATTERN_1 (Don't manipulate DOM in the controller)
-      $('body').toggleClass('minified');
-    };
-  }]
-);
-
 // New Search Controller
 fdView.controller('MetaHeaderCtrl', ['$scope', 'EntityService', '$uibModal', 'QueryService', 'configuration',
   function ($scope, EntityService, $uibModal, QueryService, configuration) {
@@ -83,7 +50,7 @@ fdView.controller('MetaHeaderCtrl', ['$scope', 'EntityService', '$uibModal', 'Qu
 
     $scope.loadTypes = function (fortress) {
       if (fortress) {
-        return QueryService.query('documents', [fortress]);
+        return QueryService.doc(fortress);
       }
     };
 
