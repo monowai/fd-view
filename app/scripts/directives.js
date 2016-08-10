@@ -604,7 +604,7 @@ angular.module('fdView.directives', [])
       link: function (scope, element, attrs) {
         scope.getDoctypes = function () {
           if (scope.fortress) {
-            QueryService.query('documents', [scope.fortress]).then(function (data) {
+            QueryService.doc(scope.fortress).then(function (data) {
               scope.documents = data;
             });
           }
