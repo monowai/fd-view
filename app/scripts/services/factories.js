@@ -101,13 +101,14 @@ fdView.factory('QueryService', ['$http', 'configuration', function ($http, confi
         tags = [],          // list of tags
         validationResult;
 
-    var addTag = function (tag) {
-      tag.$$id = tag.$$id || _.uniqueId('tag_');
-      tags.push({label: tag.label || tag.code, id: tag.$$id});
-      return tag.$$id;
-    };
-
-    var findTag = function (id) {
+    return {
+      getAll: function () {
+        return $http.get(configuration.engineUrl() + '/api/v1/model/');
+      },
+      getTags: function () {
+        return tags;
+      },
+      findTag: function (id) {
       var tag = {};
       (function findInList(list, id) {
         _.find(list, function (o) {
@@ -118,16 +119,7 @@ fdView.factory('QueryService', ['$http', 'configuration', function ($http, confi
         });
       })(cp.content, id);
       return tag;
-    };
-
-    return {
-      getAll: function () {
-        return $http.get(configuration.engineUrl() + '/api/v1/model/');
-      },
-      getTags: function () {
-        return tags;
-      },
-      findTag: findTag,
+    },
       addCol: function (col) {
         var column = {};
         column[col.name]={dataType: col.dataType, persistent:true};
@@ -156,9 +148,13 @@ fdView.factory('QueryService', ['$http', 'configuration', function ($http, confi
         //   }
         // });
       },
-      addTag: addTag,
+      addTag: function (tag) {
+        tag.$$id = tag.$$id || _.uniqueId('tag_');
+        tags.push({label: tag.label || tag.code, id: tag.$$id});
+        return tag.$$id;
+      },
       addAlias: function (tag, alias) {
-        var t = findTag(tag.id);
+        var t = this.findTag(tag.id);
         console.log(t);
         if (_.has(t, 'aliases'))
           t.aliases.push(alias);
@@ -272,15 +268,15 @@ fdView.factory('QueryService', ['$http', 'configuration', function ($http, confi
               var tgData = {label: target.label, code: target.code};
               var t = containsTag(tgData);
               if(!t) {
-                t = createTag(target.$$id  || addTag(target), tgData);
+                t = createTag(target.$$id  || this.addTag(target), tgData);
                 graph.nodes.push({data: t});
               } else {
                 target.$$id = t.id;
               }
               connect(tag.$$id, t.id, target.relationship, target.reverse);
               if (hasTargets(target)) createTargets(target);
-            })
-          };
+            }.bind(this))
+          }.bind(this);
 
           var root = {};
 
@@ -296,7 +292,7 @@ fdView.factory('QueryService', ['$http', 'configuration', function ($http, confi
               var tag = containsTag(obj);
               if(!tag) {
                 obj.code = obj.code || key;
-                tag = createTag(obj.$$id || addTag(obj), {label: label, code: obj.code});
+                tag = createTag(obj.$$id || this.addTag(obj), {label: label, code: obj.code});
                 graph.nodes.push({data: tag});
               } else obj.$$id = tag.id;
               if(!_.isEmpty(root)) {
@@ -331,7 +327,7 @@ fdView.factory('QueryService', ['$http', 'configuration', function ($http, confi
                 connect(root.id, e.id, entity.relationshipName,obj.reverse);
               })
             }
-          });
+          }.bind(this));
           cpGraph = graph;
           console.log(graph);
           return graph;
