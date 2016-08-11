@@ -92,6 +92,7 @@ var fdView = angular.module('fdView', [
       .state('statistics', {
         url: '/statistics',
         templateUrl: 'views/statistics.html',
+        controller: 'StatsCtrl',
         data: {
           authorizedRoles: [USER_ROLES.user]
         }
