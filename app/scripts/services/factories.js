@@ -275,7 +275,7 @@ fdView.factory('QueryService', ['$http', 'configuration', function ($http, confi
               }
               connect(tag.$$id, t.id, target.relationship, target.reverse);
               if (hasTargets(target)) createTargets(target);
-            })
+            }.bind(this))
           }.bind(this);
 
           var root = {};

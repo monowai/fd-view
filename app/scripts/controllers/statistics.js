@@ -30,13 +30,6 @@ fdView.controller('StatsCtrl', ['$scope', 'QueryService',
       $scope.fortresses = data;
     });
 
-    $scope.chartOptions = {
-      type: 'pie',
-      titleField: 'key',
-      valueField: 'doc_count',
-      creditsPosition: 'bottom-right'
-    };
-
     $scope.selectFortress = function (f) {
       var payload = {
         'size': 0,
@@ -53,9 +46,10 @@ fdView.controller('StatsCtrl', ['$scope', 'QueryService',
         }
       };
 
-      QueryService.query('es',payload).then(function (data) {
-        $scope.chartOptions.dataProvider = data.aggregations.count_by_type.buckets;
-        AmCharts.makeChart('docChart', $scope.chartOptions);
+      return QueryService.query('es',payload).then(function (data) {
+        // console.log(data);
+        $scope.chartData =
+         data.aggregations.count_by_type.buckets;
       });
 
     };

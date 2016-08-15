@@ -432,3 +432,18 @@ tr.angular-ui-tree-empty {
 .small-box.bg-gray-active {
   color: #f9f9f9;
 }
+
+stats-chart {
+  display: inline-block;
+  position: relative;
+  width: 100%;
+  padding-bottom: 100%;
+  vertical-align: top;
+  overflow: hidden;
+}
+.stat-content {
+  display: inline-block;
+  position: absolute;
+  top: 0;
+  left: 0;
+}

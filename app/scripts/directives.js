@@ -632,5 +632,161 @@ angular.module('fdView.directives', [])
         };
       }
     };
+  }])
+  .directive('statsChart', ['$filter', function ($filter) {
+    function chart(element, width, height, data) {
+      var radius = Math.min(width, height) / 2,
+          color = d3.scale.category20(),
+          total = 0,
+          pie = d3.layout.pie()
+            .sort(null)
+            .value(function (d) { total+=d.value; return d.value; }),
+
+          svg, g, arc,
+
+          object = {};
+
+      object.render = function () {
+        if (!svg) {
+          arc = d3.svg.arc()
+            .outerRadius(radius)
+            .innerRadius(radius - radius / 2);
+          svg = element.append('svg')
+            // .attr('width', width)
+            // .attr('height', height)
+            .attr("preserveAspectRatio", "xMinYMin meet")
+            .attr("viewBox", "0 0 350 350")
+            .classed("chart-content", true)
+            .append('g')
+            .attr('transform', 'translate(' + width / 2 + ',' + height / 2 + ')');
+
+          g = svg.selectAll('.arc')
+            .data(pie(d3.entries(data)))
+            .enter().append('g')
+            .attr('class', 'arc');
+
+          g.append('path')
+            .each(function (d) {
+              this._current = d;
+            })
+            .attr('d', arc)
+            .style('fill', function (d) {
+              return color(d.data.key);
+            });
+          g.append('text')
+            .attr('transform', function (d) {
+              return 'translate(' + arc.centroid(d) + ')';
+            })
+            .attr('dy', '.35em')
+            .style('text-anchor', 'middle');
+          g.select('text').text(function (d) {
+            return d.data.key;
+          });
+
+          svg.append('text')
+            .datum(data)
+            .attr('x', 0)
+            .attr('y', radius / 10)
+            .attr('class', 'text-tooltip')
+            .style('text-anchor', 'middle')
+            .attr('font-weight', 'bold')
+            .style('font-size', radius / 2.5 + 'px');
+
+          svg.select('text.text-tooltip')
+            .attr('fill', '#3c8dbc')
+            .text($filter('megaNum')(total));
+
+          g.on('mouseover', function (obj) {
+            svg.select('text.text-tooltip')
+              .attr('fill', function (d) {
+                return color(obj.data.key);
+              })
+              .text(function (d) {
+                return $filter('megaNum')(d[obj.data.key]);
+              });
+          });
+
+          g.on('mouseout', function (obj) {
+            svg.select('text.text-tooltip')
+              .attr('fill', '#3c8dbc')
+              .text($filter('megaNum')(total));
+          });
+        } else {
+          g.data(pie(d3.entries(data))).exit().remove();
+
+          g.select('path')
+            .transition().duration(200)
+            .attrTween('d', function (a) {
+              var i = d3.interpolate(this._current, a);
+              this._current = i(0);
+              return function (t) {
+                return arc(i(t));
+              };
+            });
+
+          g.select('text')
+            .attr('transform', function (d) {
+              return 'translate(' + arc.centroid(d) + ')';
+            });
+
+          svg.select('text.text-tooltip').datum(data);
+          return object;
+        }
+      };
+
+      object.data = function (value) {
+        if (!arguments.length) return data;
+        data = value;
+        return object;
+      };
+
+      object.element = function(value){
+        if (!arguments.length) return element;
+        element = value;
+        return object;
+      };
+
+      object.width = function(value){
+        if (!arguments.length) return width;
+        width = value;
+        radius = Math.min(width, height) / 2;
+        return object;
+      };
+
+      object.height = function(value){
+        if (!arguments.length) return height;
+        height = value;
+        radius = Math.min(width, height) / 2;
+        return object;
+      };
+
+      return object;
+    }
+
+    return {
+      restrict: 'EA',
+      scope: {
+        data: '='
+      },
+      compile: function (element, attrs) {
+        var width = 350,
+            height = 350;
+
+
+        return function (scope, element, attrs) {
+          scope.$watch('data', function (newVal, oldVal, scope) {
+            if (!scope.data) return;
+            var getData = function(){
+              var data = {};
+              _.map(scope.data, function (e) {
+                data[e.key] = e.doc_count;
+              });
+              return data;
+            };
+            var pie = chart(d3.select(element[0]), width, height, getData()).render();
+          }, true);
+        }
+      }
+    }
   }]);
 // Directives
