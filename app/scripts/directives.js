@@ -637,10 +637,10 @@ angular.module('fdView.directives', [])
     function chart(element, width, height, data) {
       var radius = Math.min(width, height) / 2,
           color = d3.scale.category20(),
-          total = 0,
+          total = function() {return _.reduce(data, function (a, b) { return a+b; })},
           pie = d3.layout.pie()
             .sort(null)
-            .value(function (d) { total+=d.value; return d.value; }),
+            .value(function (d) { return d.value; }),
 
           svg, g, arc,
 
@@ -694,7 +694,7 @@ angular.module('fdView.directives', [])
 
           svg.select('text.text-tooltip')
             .attr('fill', '#3c8dbc')
-            .text($filter('megaNum')(total));
+            .text($filter('megaNum')(total()));
 
           g.on('mouseover', function (obj) {
             svg.select('text.text-tooltip')
@@ -709,7 +709,7 @@ angular.module('fdView.directives', [])
           g.on('mouseout', function (obj) {
             svg.select('text.text-tooltip')
               .attr('fill', '#3c8dbc')
-              .text($filter('megaNum')(total));
+              .text($filter('megaNum')(total()));
           });
         } else {
           g.data(pie(d3.entries(data))).exit().remove();
@@ -730,8 +730,8 @@ angular.module('fdView.directives', [])
             });
 
           svg.select('text.text-tooltip').datum(data);
-          return object;
         }
+        return object;
       };
 
       object.data = function (value) {
@@ -768,23 +768,21 @@ angular.module('fdView.directives', [])
       scope: {
         data: '='
       },
-      compile: function (element, attrs) {
-        var width = 350,
-            height = 350;
+      link: function (scope, element, attrs) {
+        var width = 350, height = 350;
+        var getData = function(dataSet){
+          var data = {};
+          _.map(dataSet, function (e) {
+            data[e.key] = e.doc_count;
+          });
+          return data;
+        };
+        var statChart = chart(d3.select(element[0]), width, height, getData(scope.data)).render();
 
-        return function (scope, element, attrs) {
-          scope.$watch('data', function (newVal, oldVal, scope) {
-            if (!scope.data) return;
-            var getData = function(){
-              var data = {};
-              _.map(scope.data, function (e) {
-                data[e.key] = e.doc_count;
-              });
-              return data;
-            };
-            var pie = chart(d3.select(element[0]), width, height, getData()).render();
-          }, true);
-        }
+        scope.$watch('data', function (newVal, oldVal, scope) {
+          if (!scope.data) return;
+          statChart.data(getData(newVal)).render();
+        }, true);
       }
     }
   }])
@@ -808,7 +806,6 @@ angular.module('fdView.directives', [])
       var ctrl = this;
       var payload = {
         'size': 0,
-        'fortress': ctrl.fortress.name,
         'query': {
           'match_all': {}
         },
@@ -821,15 +818,25 @@ angular.module('fdView.directives', [])
         }
       };
 
-      QueryService.query('es',payload).then(function (data) {
-        if (data.aggregations) {
-          ctrl.chartData = data.aggregations.count_by_type.buckets;
-          ctrl.show = true;
-        } else ctrl.show=false;
-      });
+      ctrl.$onChanges = function (change) {
+        if (change.fortress) {
+          payload.fortress = ctrl.fortress.name;
+        }
+        if (change.search.currentValue) {
+          ctrl.show = false;
+          payload.query = {query_string: {query: ctrl.search}};
+        }
+        QueryService.query('es', payload).then(function (data) {
+          if (data.hits.total>0) {
+            ctrl.chartData = data.aggregations.count_by_type.buckets;
+            ctrl.show = true;
+          } else ctrl.show=false;
+        });
+      };
     }],
     bindings: {
-      fortress: '<'
+      fortress: '<',
+      search: '<'
     }
   });
 // Directives

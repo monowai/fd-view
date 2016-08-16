@@ -32,9 +32,24 @@
 <!-- Main content -->
 <section class="content">
   <div class="row">
+    <div class="col-md-12">
+      <form class="panel" ng-submit="search($root.searchText)">
+        <div class="input-group">
+          <div class="input-group-btn">
+            <button type="submit" class="btn btn-primary">
+              <i class="fa fa-search"></i> View
+            </button>
+          </div>
+          <input type="search" class="form-control" value="*" placeholder="Search..." ng-model="$root.searchText"
+                 size="100" autocomplete="on" autofocus/>
+        </div>
+      </form>
+    </div>
+  </div>
+  <div class="row">
     <div class="col-sm-12">
-      <div ng-repeat="f in fortresses">
-        <fort-stat fortress="f"></fort-stat>
+      <div ng-repeat="f in fortresses"  class="fader">
+        <fort-stat fortress="f" search="term"></fort-stat>
       </div>
     </div>
   </div>

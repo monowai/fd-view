@@ -29,5 +29,9 @@ fdView.controller('StatsCtrl', ['$scope', 'QueryService',
     QueryService.general('fortress').then(function (data) {
       $scope.fortresses = data;
     });
+
+    $scope.search = function (term) {
+      $scope.term = term;
+    }
   }
 ]);
