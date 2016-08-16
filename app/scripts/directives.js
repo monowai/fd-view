@@ -654,8 +654,8 @@ angular.module('fdView.directives', [])
           svg = element.append('svg')
             // .attr('width', width)
             // .attr('height', height)
-            .attr("preserveAspectRatio", "xMinYMin meet")
-            .attr("viewBox", "0 0 350 350")
+            .attr('preserveAspectRatio', 'xMinYMid')
+            .attr('viewBox', '0 0 '+width+' '+height)
             .classed("chart-content", true)
             .append('g')
             .attr('transform', 'translate(' + width / 2 + ',' + height / 2 + ')');
@@ -772,7 +772,6 @@ angular.module('fdView.directives', [])
         var width = 350,
             height = 350;
 
-
         return function (scope, element, attrs) {
           scope.$watch('data', function (newVal, oldVal, scope) {
             if (!scope.data) return;
@@ -788,5 +787,49 @@ angular.module('fdView.directives', [])
         }
       }
     }
-  }]);
+  }])
+  .component('fortStat', {
+    template: '<div class="col-sm-3 col-lg-2" ng-if="$ctrl.show">\
+    <div class="box">\
+      <div class="box-header with-border">\
+        <h3 class="box-title">{{$ctrl.fortress.name}}</h3>\
+        <div class="box-tools pull-right">\
+          <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse">\
+          <i class="fa fa-minus"></i></button>\
+          <button type="button" class="btn btn-box-tool" data-widget="remove" data-toggle="tooltip" title="Remove">\
+          <i class="fa fa-times"></i></button>\
+        </div>\
+      </div>\
+      <div class="box-body">\
+        <stats-chart data="$ctrl.chartData"></stats-chart></div>\
+      </div>\
+    </div>',
+    controller: ['QueryService', function FortStatCtrl(QueryService) {
+      var ctrl = this;
+      var payload = {
+        'size': 0,
+        'fortress': ctrl.fortress.name,
+        'query': {
+          'match_all': {}
+        },
+        'aggs' : {
+          'count_by_type' : {
+            'terms' : {
+              'field' : '_type'
+            }
+          }
+        }
+      };
+
+      QueryService.query('es',payload).then(function (data) {
+        if (data.aggregations) {
+          ctrl.chartData = data.aggregations.count_by_type.buckets;
+          ctrl.show = true;
+        } else ctrl.show=false;
+      });
+    }],
+    bindings: {
+      fortress: '<'
+    }
+  });
 // Directives

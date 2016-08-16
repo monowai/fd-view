@@ -29,30 +29,5 @@ fdView.controller('StatsCtrl', ['$scope', 'QueryService',
     QueryService.general('fortress').then(function (data) {
       $scope.fortresses = data;
     });
-
-    $scope.selectFortress = function (f) {
-      var payload = {
-        'size': 0,
-        'fortress': f.name,
-        'query': {
-          'match_all': {}
-        },
-        'aggs' : {
-          'count_by_type' : {
-            'terms' : {
-              'field' : '_type'
-            }
-          }
-        }
-      };
-
-      return QueryService.query('es',payload).then(function (data) {
-        // console.log(data);
-        $scope.chartData =
-         data.aggregations.count_by_type.buckets;
-      });
-
-    };
-
   }
 ]);
