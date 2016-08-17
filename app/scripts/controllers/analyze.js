@@ -20,21 +20,9 @@
 
 'use strict';
 
-fdView.controller('AnalyzeCtrl', ['$scope', 'QueryService', '$window', '$timeout', 'configuration',
-  function ($scope, QueryService, $window, $timeout, configuration) {
-    $scope.minCount = 1;
-    $scope.resultSize = 1000;
-    $scope.sharedRlxChecked = true;
-    $scope.reciprocalExcludedChecked = false;
-    $scope.sumByCountChecked = true;
-    $scope.chartType = 'Chord';
-    if (configuration.devMode()) {
-      $scope.devMode = 'true';
-    } else {
-      delete $scope.devMode;
-    }
-
-    $scope.matrix = QueryService.lastMatrix().matrix;
+fdView.controller('AnalyzeCtrl', ['$scope', 'QueryService', 'MatrixRequest', '$window', '$timeout',
+  function ($scope, QueryService, MatrixRequest, $window, $timeout) {
+    $scope.matrix = MatrixRequest.lastMatrix().matrix;
     if(_.isEmpty($scope.matrix)) {
       $scope.graphData = [];
     } else {
@@ -44,66 +32,21 @@ fdView.controller('AnalyzeCtrl', ['$scope', 'QueryService', '$window', '$timeout
       }, 10);
     }
 
-    QueryService.general('fortress').then(function (data) {
-      $scope.fortresses = data;
-    });
     var addOptions = function () {
       if ($scope.chartType === 'Chord' || $scope.chartType === 'TagCloud') {
-        $scope.sharedRlxChecked = true;
-        $scope.reciprocalExcludedChecked = false;
+        MatrixRequest.sharedRlxChecked = true;
+        MatrixRequest.reciprocalExcludedChecked = false;
       } else if ($scope.chartType === 'Matrix' || $scope.chartType === 'BiPartite') {
-        $scope.sharedRlxChecked = false;
-        $scope.reciprocalExcludedChecked = true;
+        MatrixRequest.sharedRlxChecked = false;
+        MatrixRequest.reciprocalExcludedChecked = true;
       }
     };
     addOptions();
 
-    $scope.selectFortress = function () {
-      QueryService.doc($scope.fortress).then(function (data) {
-        $scope.documents = data;
-      });
-      $scope.concepts = [];
-      $scope.fromRlxs = [];
-      $scope.toRlxs = [];
-    };
-    $scope.selectDocument = function () {
-      QueryService.concept('/', $scope.document).then(function (data) {
-        var conceptMap = _.flatten(_.pluck(data, 'concepts'));
-        $scope.concepts = _.uniq(conceptMap, function (c) {
-          return c.name;
-        });
-      });
-      $scope.fromRlxs = [];
-      $scope.toRlxs = [];
-    };
-
-    $scope.selectAllFromRlx = function () {
-      var filtered = filter($scope.fromRlxs);
-
-      angular.forEach(filtered, function (item) {
-        item.selected = true;
-      });
-    };
-
-    $scope.selectConcept = function () {
-      QueryService.concept('/relationships', $scope.document).then(function (data) {
-        var conceptMap = _.filter(_.flatten(_.pluck(data, 'concepts')), function (c) {
-          return _.contains($scope.concept, c.name);
-        });
-        var rlxMap = _.flatten(_.pluck(conceptMap, 'relationships'));
-        var rlx = _.uniq(rlxMap, function (c) {
-          return c.name;
-        });
-        $scope.fromRlxs = rlx;
-        $scope.toRlxs = rlx;
-
-      });
-    };
-    // $scope.graphData = [];
-
     $scope.search = function () {
+      // console.log($scope.chartType);
       if ($scope.chartType === 'TagCloud') {
-        QueryService.tagCloud($scope.searchText, $scope.document, $scope.fortress, $scope.concept, $scope.fromRlx)
+        QueryService.tagCloud(MatrixRequest.searchText, MatrixRequest.document, MatrixRequest.fortress, MatrixRequest.concept, MatrixRequest.fromRlx)
           .then(function (data) {
             var terms = [];
             for (var key in data.terms) {
@@ -133,22 +76,9 @@ fdView.controller('AnalyzeCtrl', ['$scope', 'QueryService', '$window', '$timeout
       }
       else {
 
-        if ($scope.sharedRlxChecked) {
-          $scope.toRlx = $scope.fromRlx;
-        }
         $scope.msg = '';
 
-        QueryService.matrixSearch($scope.fortress,
-          $scope.searchText,
-          $scope.resultSize,
-          $scope.document,
-          $scope.sumByCountChecked,
-          $scope.concept,
-          $scope.fromRlx,
-          $scope.toRlx,
-          $scope.minCount,
-          $scope.reciprocalExcludedChecked,
-          false)
+        MatrixRequest.matrixSearch()
           .then(function (data) {
             if (!data || data.length === 0) {
               $scope.msg = 'No Results.';
@@ -195,7 +125,8 @@ fdView.controller('AnalyzeCtrl', ['$scope', 'QueryService', '$window', '$timeout
         });
     }
 
-    $scope.switchChart = function () {
+    $scope.switchChart = function (type) {
+      $scope.chartType = type;
       if ($scope.chartType === 'Chord' && !$scope.cdData) {
         $scope.cdData = constructChordData($scope.graphData);
       } else if ($scope.chartType === 'Matrix' && !$scope.coData && $scope.coMgr) {
@@ -220,7 +151,6 @@ fdView.controller('AnalyzeCtrl', ['$scope', 'QueryService', '$window', '$timeout
     angular.element($window).on('resize', function () {
       $scope.$apply()
     })
-
   }
 ]);
 

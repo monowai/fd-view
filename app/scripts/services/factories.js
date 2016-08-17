@@ -22,8 +22,6 @@
 
 
 fdView.factory('QueryService', ['$http', 'configuration', function ($http, configuration) {
-  var lastMatrixQuery={},
-      lastMatrixResult={};
   return {
       general: function (queryName) {
         return $http.get(configuration.engineUrl() + '/api/v1/' + queryName + '/').then(function (response) {
@@ -48,43 +46,6 @@ fdView.factory('QueryService', ['$http', 'configuration', function ($http, confi
             return response.data;
           }
         );
-      },
-      matrixSearch: function (fortresses, searchText, resultSize, documents, sumByCount, concepts, fromRlxs, toRlxs, minCount, reciprocals, byKey) {
-        var dataParam = {
-          documents: documents,
-          sampleSize: resultSize,
-          fortresses: fortresses,
-          sumByCol: !sumByCount,
-          queryString: searchText,
-          concepts: concepts,
-          fromRlxs: fromRlxs,
-          toRlxs: toRlxs,
-          minCount: minCount,
-          reciprocalExcluded: reciprocals,
-          byKey: true
-        };
-        if(dataParam === lastMatrixQuery) return lastMatrixResult;
-        else lastMatrixQuery = dataParam;
-        console.log(dataParam);
-        var promise = $http.post(configuration.engineUrl() + '/api/v1/query/matrix/', dataParam).then(function (response) {
-          lastMatrixResult = angular.copy(response.data);
-          lastMatrixResult.matrix = _.map(lastMatrixResult.edges, function (edge) {
-            return {
-              count: edge.data.count,
-              source: _.find(lastMatrixResult.nodes, function (node) {
-                return node.data.id === edge.data.source;
-              }).data.name,
-              target: _.find(lastMatrixResult.nodes, function (node) {
-                return node.data.id === edge.data.target;
-              }).data.name
-            }
-          });
-          return lastMatrixResult;
-        });
-        return promise;
-      },
-      lastMatrix: function () {
-        return lastMatrixResult;
       },
       tagCloud: function (searchText, documents, fortress, tags, relationships) {
         var tagCloudParams = {
@@ -409,6 +370,61 @@ fdView.factory('QueryService', ['$http', 'configuration', function ($http, confi
     }
 
     return $uibModal.open(tempModalDefaults).result;
+  };
+
+}])
+
+.service('MatrixRequest', ['$http', 'configuration', function ($http, configuration) {
+  var lastMatrixQuery={}, lastMatrixResult={};
+
+  this.minCount = 1;
+  this.resultSize = 1000;
+  this.sharedRlxChecked = true;
+  this.reciprocalExcludedChecked = true;
+  this.sumByCountChecked = true;
+  // if (configuration.devMode()) {
+  this.devMode = configuration.devMode();//'true';
+  // } else {
+  //   delete this.devMode;
+  // }
+  this.matrixSearch = function () {
+    if (this.sharedRlxChecked) {
+      this.toRlx = this.fromRlx;
+    }
+    var dataParam = {
+      documents: this.document,
+      sampleSize: this.resultSize,
+      fortresses: this.fortress,
+      sumByCol: !this.sumByCountChecked,
+      queryString: this.searchText,
+      concepts: this.concept,
+      fromRlxs: this.fromRlx,
+      toRlxs: this.toRlx,
+      minCount: this.minCount,
+      reciprocalExcluded: this.reciprocalExcludedChecked,
+      byKey: true
+    };
+    if(dataParam === lastMatrixQuery) return lastMatrixResult;
+    else lastMatrixQuery = dataParam;
+    var promise = $http.post(configuration.engineUrl() + '/api/v1/query/matrix/', dataParam).then(function (response) {
+      lastMatrixResult = angular.copy(response.data);
+      lastMatrixResult.matrix = _.map(lastMatrixResult.edges, function (edge) {
+        return {
+          count: edge.data.count,
+          source: _.find(lastMatrixResult.nodes, function (node) {
+            return node.data.id === edge.data.source;
+          }).data.name,
+          target: _.find(lastMatrixResult.nodes, function (node) {
+            return node.data.id === edge.data.target;
+          }).data.name
+        }
+      });
+      return lastMatrixResult;
+    });
+    return promise;
+  };
+  this.lastMatrix = function () {
+    return lastMatrixResult;
   };
 
 }]);

@@ -34,7 +34,6 @@
 <section class="content">
   <div class="row">
     <div class="col-sm-8 col-md-3 col-lg-3">
-      <!-- Default box -->
       <div class="box box-primary">
         <div class="box-header with-border">
           <h3 class="box-title">Search</h3>
@@ -47,91 +46,19 @@
           </div>
         </div>
 
-        <form role="form" ng-submit="search()">
-          <div class="box-body">
-            <fieldset >
-              <section class="form-group">
-                <label>Chart Type</label>
-                <select ng-model="chartType" class="form-control" ng-change="switchChart()">
-                  <option value="Chord">Chord</option>
-                  <option value="Matrix">Matrix</option>
-                  <option value="BiPartite">BiPartite</option>
-                  <option value="TagCloud">TagCloud</option>
-                </select>
-              </section>
-              <section class="form-group">
-                <label>Fortress</label>
-                <select class="form-control" ng-model="fortress" multiple
-                        ng-options="f.name as f.name for f in fortresses"
-                        ng-change="selectFortress()"></select>
-              </section>
-              <section class="form-group" ng-show="documents.length>0">
-                <label>Documents</label>
-                <select class="form-control" ng-model="document" multiple
-                        ng-options="d.name as d.name for d in documents"
-                        ng-change="selectDocument()"></select>
-              </section>
-              <section class="form-group" ng-show="concepts.length>0">
-                <label>Tags</label>
-                <select class="form-control" ng-model="concept" multiple
-                        ng-options="c.name as c.name for c in concepts"
-                        ng-change="selectConcept()"></select>
-              </section>
-              <section class="form-group" ng-show="!relationshipChecked && fromRlxs.length>0">
-                <label>Relationship From</label>
-                <select class="form-control" ng-model="fromRlx" multiple
-                        ng-options="rf.name as rf.name for rf in fromRlxs"></select>
-              </section>
-              <section class="form-group" ng-hide="shareRelationships || sharedRlxChecked">
-                <label>Relationship To</label>
-                  <select class="form-control" ng-model="toRlx" multiple
-                          ng-options="rt.name as rt.name for rt in toRlxs"></select>
-              </section>
-
-              <section class="form-group">
-                <div class="checkbox">
-                  <label ng-class="{'state-enabled':sumByCount}">
-                  <input type="checkbox" ng-enabled="sumByCount"
-                         ng-model="sumByCountChecked">
-                  <i></i>Sum by count</label>
-                </div>
-              </section>
-
-              <section class="form-group" ng-if="devMode">
-                <div class="checkbox" ng-class="{'state-enabled':shareRelationships}">
-                  <label>
-                    <input type="checkbox" ng-enabled="shareRelationships"
-                           ng-model="sharedRlxChecked">
-                    <i></i>Share Relationships</label>
-                </div>
-              </section>
-
-              <section class="form-group" ng-if="devMode">
-                <div class="checkbox" ng-class="{'state-disabled':reciprocalExcluded}">
-                  <label>
-                  <input type="checkbox" ng-enabled="reciprocalExcluded"
-                         ng-model="reciprocalExcludedChecked">
-                  <i></i>Exclude Reciprocals</label>
-                </div>
-              </section>
-
-              <section>
-                <div class="form-group col-md-6">
-                  <label for="minCount">Min Occurence</label>
-                  <input type="text" class="form-control" name="minCount" id="minCount" ng-model="minCount"/>
-                </div>
-                <div class="form-group col-md-6">
-                  <label for="resultSize">Sample Size</label>
-                  <input type="text" class="form-control" name="resultSize"
-                         id="resultSize" ng-model="resultSize"/>
-                </div>
-              </section>
-
-            </fieldset>
-          </div>
-        </form>
-
-        <!-- /.box-body -->
+        <div class="box-body">
+          <fd-matrix-form>
+            <section class="form-group">
+              <label>Chart Type</label>
+              <select ng-model="chartType" class="form-control" ng-change="switchChart(chartType)">
+                <option value="Chord">Chord</option>
+                <option value="Matrix">Matrix</option>
+                <option value="BiPartite">BiPartite</option>
+                <option value="TagCloud">TagCloud</option>
+              </select>
+            </section>
+          </fd-matrix-form>
+        </div>
       </div>
       <!-- /.box -->
     </div>

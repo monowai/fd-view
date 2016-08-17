@@ -48,77 +48,13 @@
         </ul>
         <div class="tab-content">
           <div class="tab-pane fade" id="search">
-            <fd-search search="search()" message="msg"></fd-search>
-            <div class="row">
+            <fd-search search="search()" message="msg">
               <div class="col-sm-8 col-md-4 col-lg-3">
-                <section class="form-group">
-                  <label>Fortress</label>
-                  <select class="form-control" ng-model="fortress" multiple
-                          ng-options="f.name as f.name for f in fortresses"
-                          ng-change="selectFortress(fortress)"></select>
-                </section>
-                <section class="form-group" ng-show="documents.length>0">
-                  <label>Documents</label>
-                  <select class="form-control" ng-model="document" multiple
-                          ng-options="d.name as d.name for d in documents"
-                          ng-change="selectDocument(document)"></select>
-                </section>
-                <section class="form-group" ng-show="concepts.length>0">
-                  <label>Tags</label>
-                  <select class="form-control" ng-model="concept" multiple
-                          ng-options="c.name as c.name for c in concepts"
-                          ng-change="selectConcept(concept)"></select>
-                </section>
-                <section class="form-group" ng-show="!relationshipChecked && fromRlxs.length>0">
-                  <label>Relationship From</label>
-                  <select class="form-control" ng-model="fromRlx" multiple
-                          ng-options="rf.name as rf.name for rf in fromRlxs"></select>
-                </section>
-                <section class="form-group" ng-hide="shareRelationships || sharedRlxChecked">
-                  <label>Relationship To</label>
-                  <select class="form-control" ng-model="toRlx" multiple
-                          ng-options="rt.name as rt.name for rt in toRlxs"></select>
-                </section>
-
-                <section class="form-group">
-                  <div class="checkbox">
-                    <label ng-class="{'state-enabled':sumByCount}">
-                      <input type="checkbox" ng-enabled="sumByCount"
-                             ng-model="sumByCountChecked">
-                      <i></i>Sum by count</label>
-                  </div>
-                </section>
-
-                <section class="form-group" ng-if="devMode">
-                  <div class="checkbox" ng-class="{'state-enabled':shareRelationships}">
-                    <label>
-                      <input type="checkbox" ng-enabled="shareRelationships"
-                             ng-model="sharedRlxChecked">
-                      <i></i>Share Relationships</label>
-                  </div>
-                </section>
-
-                <section class="form-group" ng-if="devMode">
-                  <div class="checkbox" ng-class="{'state-disabled':reciprocalExcluded}">
-                    <label>
-                      <input type="checkbox" ng-enabled="reciprocalExcluded"
-                             ng-model="reciprocalExcludedChecked">
-                      <i></i>Exclude Reciprocals</label>
-                  </div>
-                </section>
-
-                <section>
-                  <div class="form-group col-md-6">
-                    <label for="minCount">Min Occurence</label>
-                    <input type="text" class="form-control" name="minCount" id="minCount" ng-model="minCount"/>
-                  </div>
-                  <div class="form-group col-md-6">
-                    <label for="resultSize">Sample Size</label>
-                    <input type="text" class="form-control" name="resultSize"
-                           id="resultSize" ng-model="resultSize"/>
-                  </div>
-                </section>
+                <fd-matrix-form></fd-matrix-form>
               </div>
+            </fd-search>
+            <div class="row">
+
             </div>
           </div>
            <!--/.tab-pane -->

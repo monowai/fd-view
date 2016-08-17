@@ -1,0 +1,68 @@
+<div ng-transclude></div>
+<section class="form-group">
+  <label>Fortress</label>
+  <select class="form-control" ng-model="fortress" multiple
+          ng-options="f.name as f.name for f in $ctrl.params.fortresses"
+          ng-change="$ctrl.selectFortress(fortress)"></select>
+</section>
+<section class="form-group" ng-show="$ctrl.params.documents.length>0">
+  <label>Documents</label>
+  <select class="form-control" ng-model="document" multiple
+          ng-options="d.name as d.name for d in $ctrl.params.documents"
+          ng-change="$ctrl.selectDocument(document)"></select>
+</section>
+<section class="form-group" ng-show="$ctrl.params.concepts.length>0">
+  <label>Tags</label>
+  <select class="form-control" ng-model="concept" multiple
+          ng-options="c.name as c.name for c in $ctrl.params.concepts"
+          ng-change="$ctrl.selectConcept(concept)"></select>
+</section>
+<section class="form-group" ng-show="!$ctrl.params.relationshipChecked && $ctrl.params.fromRlxs.length>0">
+  <label>Relationship From</label>
+  <select class="form-control" ng-model="$ctrl.params.fromRlx" multiple
+          ng-options="rf.name as rf.name for rf in $ctrl.params.fromRlxs"></select>
+</section>
+<section class="form-group" ng-hide="$ctrl.params.shareRelationships || $ctrl.params.sharedRlxChecked">
+  <label>Relationship To</label>
+  <select class="form-control" ng-model="$ctrl.params.toRlx" multiple
+          ng-options="rt.name as rt.name for rt in $ctrl.params.toRlxs"></select>
+</section>
+
+<section class="form-group">
+  <div class="checkbox">
+    <label ng-class="{'state-enabled':$ctrl.params.sumByCount}">
+      <input type="checkbox" ng-enabled="$ctrl.params.sumByCount"
+             ng-model="$ctrl.params.sumByCountChecked">
+      <i></i>Sum by count</label>
+  </div>
+</section>
+
+<section class="form-group" ng-if="$ctrl.params.devMode">
+  <div class="checkbox" ng-class="{'state-enabled':$ctrl.params.shareRelationships}">
+    <label>
+      <input type="checkbox" ng-enabled="$ctrl.params.shareRelationships"
+             ng-model="$ctrl.params.sharedRlxChecked">
+      <i></i>Share Relationships</label>
+  </div>
+</section>
+
+<section class="form-group" ng-if="$ctrl.params.devMode">
+  <div class="checkbox" ng-class="{'state-disabled':$ctrl.params.reciprocalExcluded}">
+    <label>
+      <input type="checkbox" ng-enabled="$ctrl.params.reciprocalExcluded"
+             ng-model="$ctrl.params.reciprocalExcludedChecked">
+      <i></i>Exclude Reciprocals</label>
+  </div>
+</section>
+
+<section>
+  <div class="form-group col-md-6">
+    <label for="minCount">Min Occurence</label>
+    <input type="text" class="form-control" name="minCount" id="minCount" ng-model="$ctrl.params.minCount"/>
+  </div>
+  <div class="form-group col-md-6">
+    <label for="resultSize">Sample Size</label>
+    <input type="text" class="form-control" name="resultSize"
+           id="resultSize" ng-model="$ctrl.params.resultSize"/>
+  </div>
+</section>
