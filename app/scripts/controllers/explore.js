@@ -20,74 +20,20 @@
 
 'use strict';
 
-fdView.controller('ExploreCtrl', ['$scope', '$http', 'QueryService', '$compile', '$controller', 'configuration', 'toastr',
-  function ($scope, $http, QueryService, $compile, $controller, configuration, toastr) {
-    $scope.matrix = QueryService.lastMatrix();
+fdView.controller('ExploreCtrl', ['$scope', '$http', 'MatrixRequest', '$compile', '$controller', 'configuration', 'toastr',
+  function ($scope, $http, MatrixRequest, $compile, $controller, configuration, toastr) {
+    $scope.matrix = MatrixRequest.lastMatrix();
     if(_.isEmpty($scope.matrix)) {
       angular.element('[data-target="#search"]').tab('show');
       $scope.graphData = [];
-    } else $scope.graphData=$scope.matrix;
+    } else {
+      $scope.graphData=$scope.matrix;
+    }
 
     $scope.layouts = [{name: 'cose'},
       {name: 'grid'},{name: 'concentric'},
       {name: 'circle'},{name: 'random'},{name: 'breadthfirst'}];
     $scope.layout = $scope.layouts[0];
-    $scope.minCount = 1;
-    $scope.resultSize = 1000;
-    $scope.sharedRlxChecked = true;
-    $scope.reciprocalExcludedChecked = true;
-    $scope.sumByCountChecked = true;
-    if (configuration.devMode()) {
-      $scope.devMode = 'true';
-    } else {
-      delete $scope.devMode;
-    }
-
-    QueryService.general('fortress').then(function (data) {
-      $scope.fortresses = data;
-    });
-
-    $scope.selectFortress = function () {
-      QueryService.doc($scope.fortress).then(function (data) {
-        $scope.documents = data;
-      });
-      $scope.concepts = [];
-      $scope.fromRlxs = [];
-      $scope.toRlxs = [];
-    };
-    $scope.selectDocument = function () {
-      QueryService.concept('/', $scope.document).then(function (data) {
-        var conceptMap = _.flatten(_.pluck(data, 'concepts'));
-        $scope.concepts = _.uniq(conceptMap, function (c) {
-          return c.name;
-        });
-      });
-      $scope.fromRlxs = [];
-      $scope.toRlxs = [];
-    };
-
-    $scope.selectAllFromRlx = function () {
-      var filtered = filter($scope.fromRlxs);
-
-      angular.forEach(filtered, function (item) {
-        item.selected = true;
-      });
-    };
-
-    $scope.selectConcept = function () {
-      QueryService.concept('/relationships', $scope.document).then(function (data) {
-        var conceptMap = _.filter(_.flatten(_.pluck(data, 'concepts')), function (c) {
-          return _.contains($scope.concept, c.name);
-        });
-        var rlxMap = _.flatten(_.pluck(conceptMap, 'relationships'));
-        var rlx = _.uniq(rlxMap, function (c) {
-          return c.name;
-        });
-        $scope.fromRlxs = rlx;
-        $scope.toRlxs = rlx;
-
-      });
-    };
 
     $scope.styles = [
       {'selector': 'node',
@@ -104,51 +50,35 @@ fdView.controller('ExploreCtrl', ['$scope', '$http', 'QueryService', '$compile',
         'height': '40',//'mapData(degree,0,5,20,80)',
         // 'shape': 'roundrectangle'
       }},
-    {'selector':'edge',
-      'css':{
-        'width': 3,
-        'target-arrow-color': '#ccc',
-        'target-arrow-shape': 'triangle'
-      }},
-    {'selector':':selected',
-      'css':{
-        'background-color': 'black',
-        'line-color': 'black',
-        'target-arrow-color': 'black',
-        'source-arrow-color': 'black',
-        'text-outline-color': 'black'
-      }},
-    {'selector':'.mouseover',
-      'css':{
-        'color':'#499ef0'
+      {'selector':'edge',
+        'css':{
+          'width': 3,
+          'target-arrow-color': '#ccc',
+          'target-arrow-shape': 'triangle'
+        }},
+      {'selector':':selected',
+        'css':{
+          'background-color': 'black',
+          'line-color': 'black',
+          'target-arrow-color': 'black',
+          'source-arrow-color': 'black',
+          'text-outline-color': 'black'
+        }},
+      {'selector':'.mouseover',
+        'css':{
+          'color':'#499ef0'
       }}
     ];
 
     $scope.search = function () {
       angular.element('[data-target="#view"]').tab('show');
-      if ($scope.sharedRlxChecked) {
-        $scope.toRlx = $scope.fromRlx;
-      }
 
-      QueryService.matrixSearch($scope.fortress,
-        $scope.searchText,
-        $scope.resultSize,
-        $scope.document,
-        $scope.sumByCountChecked,
-        $scope.concept,
-        $scope.fromRlx,
-        $scope.toRlx,
-        $scope.minCount,
-        $scope.reciprocalExcludedChecked,
-        true).then(function (data) {
-          if (!data || data.edges.length === 0) {
-            toastr.info('No data was found. Try altering your criteria');
-            return data;
-          }
-
-          $scope.graphData = data;
-          // cyGraph($scope.graphData);
-        });
-
+      MatrixRequest.matrixSearch().then(function (data) {
+        if (!data || data.edges.length === 0) {
+          toastr.info('No data was found. Try altering your criteria');
+          return data;
+        }
+        $scope.graphData = data;
+      });
     };
   }]);

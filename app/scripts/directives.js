@@ -838,5 +838,82 @@ angular.module('fdView.directives', [])
       fortress: '<',
       search: '<'
     }
+  })
+  .component('fdSearch', {
+    transclude: true,
+    template: '<form class="panel" ng-submit="$ctrl.search()">\
+        <div class="input-group">\
+          <div class="input-group-btn">\
+            <button type="submit" class="btn btn-primary">\
+            <i class="fa fa-search"></i> View\
+            </button>\
+          </div>\
+          <input type="search" class="form-control" value="*" placeholder="Select criteria before applying a filter ..." ng-model="$ctrl.req.searchText"\
+                 size="100" autocomplete="on" autofocus/>\
+        </div>\
+        <div class="row" ng-transclude></div>\
+      </form>',
+    controller: ['MatrixRequest', function SearchCtrl(MatrixRequest) {
+      this.req = MatrixRequest;
+    }],
+    bindings: {
+      search: '&'
+    }
+  })
+  .component('fdMatrixForm',{
+    templateUrl: 'views/partials/matrix-form.html',
+    transclude: true,
+    controller: ['MatrixRequest', 'QueryService', function MatrixFormCtrl(MatrixRequest, QueryService) {
+      var ctrl = this;
+      ctrl.params = MatrixRequest;
+
+      QueryService.general('fortress').then(function (data) {
+        ctrl.params.fortresses = data;
+      });
+
+      ctrl.selectFortress = function (f) {
+        ctrl.params.fortress = f;
+        QueryService.doc(f).then(function (data) {
+          ctrl.params.documents = data;
+        });
+        ctrl.params.concepts = [];
+        ctrl.params.fromRlxs = [];
+        ctrl.params.toRlxs = [];
+      };
+      ctrl.selectDocument = function (d) {
+        ctrl.params.document = d;
+        QueryService.concept('/', d).then(function (data) {
+          var conceptMap = _.flatten(_.pluck(data, 'concepts'));
+          ctrl.params.concepts = _.uniq(conceptMap, function (c) {
+            return c.name;
+          });
+        });
+        ctrl.params.fromRlxs = [];
+        ctrl.params.toRlxs = [];
+      };
+
+      ctrl.selectAllFromRlx = function () {
+        var filtered = filter(ctrl.params.fromRlxs);
+
+        angular.forEach(filtered, function (item) {
+          item.selected = true;
+        });
+      };
+
+      ctrl.selectConcept = function (concept) {
+        ctrl.params.concept = concept;
+        QueryService.concept('/relationships', ctrl.params.document).then(function (data) {
+          var conceptMap = _.filter(_.flatten(_.pluck(data, 'concepts')), function (c) {
+            return _.contains(concept, c.name);
+          });
+          var rlxMap = _.flatten(_.pluck(conceptMap, 'relationships'));
+          var rlx = _.uniq(rlxMap, function (c) {
+            return c.name;
+          });
+          ctrl.params.fromRlxs = rlx;
+          ctrl.params.toRlxs = rlx;
+        });
+      };
+    }]
   });
 // Directives
