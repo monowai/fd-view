@@ -26,17 +26,17 @@
   var c1 = [-130, 40], c2 = [-50 + offset, 120 + offset], c3 = [-10 + offset, 160 + offset]; //Column positions of labels.
   var colors = d3.scale.category20().domain(d3.range(20));
 
-  bP.partData = function (data, p) {
+  bP.partData = function (data) {
     var sData = {};
 
     sData.keys = [
       d3.set(data.map(function (d) {
-        return d[0].source;
+        return d.source;
       })).values().sort(function (a, b) {
         return ( a < b ? -1 : a > b ? 1 : 0);
       }),
       d3.set(data.map(function (d) {
-        return d[0].target;
+        return d.target;
       })).values().sort(function (a, b) {
         return ( a < b ? -1 : a > b ? 1 : 0);
       })
@@ -55,8 +55,8 @@
     ];
 
     data.forEach(function (d) {
-      sData.data[0][sData.keys[0].indexOf(d[0].source)][sData.keys[1].indexOf(d[0].target)] = d[0].count;
-      sData.data[1][sData.keys[1].indexOf(d[0].target)][sData.keys[0].indexOf(d[0].source)] = d[0].count;
+      sData.data[0][sData.keys[0].indexOf(d.source)][sData.keys[1].indexOf(d.target)] = d.count;
+      sData.data[1][sData.keys[1].indexOf(d.target)][sData.keys[0].indexOf(d.source)] = d.count;
     });
 
     return sData;

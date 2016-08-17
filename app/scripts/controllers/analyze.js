@@ -34,11 +34,11 @@ fdView.controller('AnalyzeCtrl', ['$scope', 'QueryService', '$window', '$timeout
       delete $scope.devMode;
     }
 
-    $scope.matrix = QueryService.lastMatrix();
+    $scope.matrix = QueryService.lastMatrix().matrix;
     if(_.isEmpty($scope.matrix)) {
       $scope.graphData = [];
     } else {
-      $scope.graphData=$scope.matrix.edges;
+      $scope.graphData=$scope.matrix;
       $timeout(function () {
         $scope.switchChart();
       }, 10);
@@ -156,7 +156,7 @@ fdView.controller('AnalyzeCtrl', ['$scope', 'QueryService', '$window', '$timeout
             } else {
               $scope.msg = null;
             }
-            $scope.graphData = data;
+            $scope.graphData = data.matrix;
             $scope.cdData = null;
             $scope.coData = null;
             $scope.bpData = null;
@@ -327,13 +327,9 @@ function split(a, n) {
 function constructBiPartiteData(data) {
   var chartData = [];
 
-  var mappedData = _.map(data, function (v, k) {
-    return _.values(v);
-  });
-
   var bpData = [
     {
-      data: bP.partData(mappedData, 2),
+      data: bP.partData(data),
       dataLength: data.length,
       id: 'Relationship',
       header: ['From', 'To', 'Relationship']

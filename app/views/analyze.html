@@ -47,7 +47,7 @@
           </div>
         </div>
 
-        <form role="form">
+        <form role="form" ng-submit="search()">
           <div class="box-body">
             <fieldset >
               <section class="form-group">
@@ -128,17 +128,6 @@
               </section>
 
             </fieldset>
-            <!--<footer>-->
-            <!--<div class="alert alert-warning fade in" ng-show="msg">-->
-            <!--{{msg}}-->
-            <!--</div>-->
-            <!--<div class="input-group-btn">-->
-            <!--<button class="btn btn-default btn-primary" type="submit" href="javascript:void(0);"-->
-            <!--ng-click="search()">-->
-            <!--<i class="fa fa-search"></i> Search-->
-            <!--</button>-->
-            <!--</div>-->
-            <!--</footer>-->
           </div>
         </form>
 
@@ -161,18 +150,8 @@
           </div>
         </div>
         <div class="box-body">
-          <div class="input-group">
-            <div class="input-group-btn">
-              <button type="submit" class="btn btn-primary" ng-click="search()">
-                <i class="fa fa-search"></i> View
-              </button>
-            </div>
-            <input type="search" class="form-control" value="*" placeholder="Select criteria before applying a filter ..." ng-model="$root.searchText"
-                 size="100" autocomplete="on"/>
-          </div>
-          <div class="callout callout-warning fade in" ng-show="msg">
-            {{msg}}
-          </div>
+
+          <fd-search search="search()" message="msg"></fd-search>
 
           <div style="text-align:right;">
 

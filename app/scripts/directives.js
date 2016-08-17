@@ -838,5 +838,30 @@ angular.module('fdView.directives', [])
       fortress: '<',
       search: '<'
     }
+  })
+  .component('fdSearch', {
+    transclude: true,
+    template: '<form class="panel" ng-submit="$ctrl.search()">\
+        <div class="input-group">\
+          <div class="input-group-btn">\
+            <button type="submit" class="btn btn-primary">\
+            <i class="fa fa-search"></i> View\
+            </button>\
+          </div>\
+          <input type="search" class="form-control" value="*" placeholder="Select criteria before applying a filter ..." ng-model="$root.searchText"\
+                 size="100" autocomplete="on" autofocus/>\
+        </div>\
+        <div class="callout callout-warning fade in" ng-show="$ctrl.message">\
+          {{ $ctrl.message }}\
+        </div>\
+        <div class="row" ng-transclude></div>\
+      </form>',
+    controller: function SearchCtrl() {
+
+    },
+    bindings: {
+      search: '&',
+      message: '<'
+    }
   });
 // Directives

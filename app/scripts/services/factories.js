@@ -61,16 +61,25 @@ fdView.factory('QueryService', ['$http', 'configuration', function ($http, confi
           toRlxs: toRlxs,
           minCount: minCount,
           reciprocalExcluded: reciprocals,
-          byKey: byKey
+          byKey: true
         };
         if(dataParam === lastMatrixQuery) return lastMatrixResult;
         else lastMatrixQuery = dataParam;
         console.log(dataParam);
         var promise = $http.post(configuration.engineUrl() + '/api/v1/query/matrix/', dataParam).then(function (response) {
-          angular.copy(response.data, lastMatrixResult);
-          if(byKey===false) {
-            return response.data.edges;
-          } else return response.data;
+          lastMatrixResult = angular.copy(response.data);
+          lastMatrixResult.matrix = _.map(lastMatrixResult.edges, function (edge) {
+            return {
+              count: edge.data.count,
+              source: _.find(lastMatrixResult.nodes, function (node) {
+                return node.data.id === edge.data.source;
+              }).data.name,
+              target: _.find(lastMatrixResult.nodes, function (node) {
+                return node.data.id === edge.data.target;
+              }).data.name
+            }
+          });
+          return lastMatrixResult;
         });
         return promise;
       },
@@ -354,9 +363,9 @@ fdView.factory('QueryService', ['$http', 'configuration', function ($http, confi
         return $http.post(configuration.engineUrl()+'/api/v1/model/' + url, cp);
       }
   };
-}]);
+}])
 
-fdView.service('modalService',['$uibModal', function ($uibModal) {
+.service('modalService',['$uibModal', function ($uibModal) {
   var modalDefaults = {
     backdrop: true,
     keyboard: true,

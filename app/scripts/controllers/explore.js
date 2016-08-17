@@ -26,7 +26,9 @@ fdView.controller('ExploreCtrl', ['$scope', '$http', 'QueryService', '$compile',
     if(_.isEmpty($scope.matrix)) {
       angular.element('[data-target="#search"]').tab('show');
       $scope.graphData = [];
-    } else $scope.graphData=$scope.matrix;
+    } else {
+      $scope.graphData=$scope.matrix;
+    }
 
     $scope.layouts = [{name: 'cose'},
       {name: 'grid'},{name: 'concentric'},
@@ -47,8 +49,9 @@ fdView.controller('ExploreCtrl', ['$scope', '$http', 'QueryService', '$compile',
       $scope.fortresses = data;
     });
 
-    $scope.selectFortress = function () {
-      QueryService.doc($scope.fortress).then(function (data) {
+    $scope.selectFortress = function (f) {
+      $scope.fortress = f;
+      QueryService.doc(f).then(function (data) {
         $scope.documents = data;
       });
       $scope.concepts = [];
@@ -74,10 +77,10 @@ fdView.controller('ExploreCtrl', ['$scope', '$http', 'QueryService', '$compile',
       });
     };
 
-    $scope.selectConcept = function () {
+    $scope.selectConcept = function (concept) {
       QueryService.concept('/relationships', $scope.document).then(function (data) {
         var conceptMap = _.filter(_.flatten(_.pluck(data, 'concepts')), function (c) {
-          return _.contains($scope.concept, c.name);
+          return _.contains(concept, c.name);
         });
         var rlxMap = _.flatten(_.pluck(conceptMap, 'relationships'));
         var rlx = _.uniq(rlxMap, function (c) {
@@ -104,23 +107,23 @@ fdView.controller('ExploreCtrl', ['$scope', '$http', 'QueryService', '$compile',
         'height': '40',//'mapData(degree,0,5,20,80)',
         // 'shape': 'roundrectangle'
       }},
-    {'selector':'edge',
-      'css':{
-        'width': 3,
-        'target-arrow-color': '#ccc',
-        'target-arrow-shape': 'triangle'
-      }},
-    {'selector':':selected',
-      'css':{
-        'background-color': 'black',
-        'line-color': 'black',
-        'target-arrow-color': 'black',
-        'source-arrow-color': 'black',
-        'text-outline-color': 'black'
-      }},
-    {'selector':'.mouseover',
-      'css':{
-        'color':'#499ef0'
+      {'selector':'edge',
+        'css':{
+          'width': 3,
+          'target-arrow-color': '#ccc',
+          'target-arrow-shape': 'triangle'
+        }},
+      {'selector':':selected',
+        'css':{
+          'background-color': 'black',
+          'line-color': 'black',
+          'target-arrow-color': 'black',
+          'source-arrow-color': 'black',
+          'text-outline-color': 'black'
+        }},
+      {'selector':'.mouseover',
+        'css':{
+          'color':'#499ef0'
       }}
     ];
 
@@ -139,8 +142,8 @@ fdView.controller('ExploreCtrl', ['$scope', '$http', 'QueryService', '$compile',
         $scope.fromRlx,
         $scope.toRlx,
         $scope.minCount,
-        $scope.reciprocalExcludedChecked,
-        true).then(function (data) {
+        $scope.reciprocalExcludedChecked
+      ).then(function (data) {
           if (!data || data.edges.length === 0) {
             toastr.info('No data was found. Try altering your criteria');
             return data;
