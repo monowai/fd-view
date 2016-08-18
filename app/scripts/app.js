@@ -38,7 +38,8 @@ var fdView = angular.module('fdView', [
   'ng.jsoneditor',
   'monospaced.elastic',
   'ngTextcomplete',
-  'ui.tree'
+  'ui.tree',
+  'sticky'
 ])
   .config(['$stateProvider','$urlRouterProvider','$locationProvider','USER_ROLES', function ($stateProvider, $urlRouterProvider, $locationProvider, USER_ROLES) {
     $stateProvider
