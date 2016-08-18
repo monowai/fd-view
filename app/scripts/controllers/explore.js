@@ -32,7 +32,9 @@ fdView.controller('ExploreCtrl', ['$scope', '$http', 'MatrixRequest', '$compile'
 
     $scope.layouts = [{name: 'cose'},
       {name: 'grid'},{name: 'concentric'},
-      {name: 'circle'},{name: 'random'},{name: 'breadthfirst'}];
+      {name: 'circle'}, {name: 'breadthfirst'},
+      {name: 'dagre'},{name: 'random'}
+    ];
     $scope.layout = $scope.layouts[0];
 
     $scope.styles = [

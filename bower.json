@@ -24,6 +24,7 @@
     "cytoscape": "~2.6.12",
     "cytoscape-edgehandles": "^2.4.3",
     "cytoscape-qtip": "^2.4.0",
+    "cytoscape-dagre": "^1.3.0",
     "ng-jsoneditor": "~1.0.0",
     "angular-toastr": "^1.7.0",
     "angular-elastic": "^2.5.1",
