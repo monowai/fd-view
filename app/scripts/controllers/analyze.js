@@ -34,6 +34,17 @@ fdView.controller('AnalyzeCtrl', ['$scope', 'QueryService', 'MatrixRequest', '$w
       }, 10);
     }
 
+    var checkOptions = function () {
+      if ((($scope.chartType === 'Chord'  || $scope.chartType === 'TagCloud') &&
+        (MatrixRequest.reciprocalExcludedChecked && !MatrixRequest.sharedRlxChecked)) ||
+        (($scope.chartType === 'Matrix'  || $scope.chartType === 'BiPartite') &&
+        (!MatrixRequest.reciprocalExcludedChecked && MatrixRequest.sharedRlxChecked)))
+      {
+        toastr.warning('Search results are not optimal for '+ $scope.chartType +' diagram. You can change <strong>Search settings</strong> or chart type.', 'Warning',
+          {allowHtml: true});
+      }
+    };
+
     var addOptions = function () {
       if ($scope.chartType === 'Chord' || $scope.chartType === 'TagCloud') {
         MatrixRequest.sharedRlxChecked = true;
@@ -126,6 +137,7 @@ fdView.controller('AnalyzeCtrl', ['$scope', 'QueryService', 'MatrixRequest', '$w
     }
 
     $scope.switchChart = function () {
+      checkOptions();
       if ($scope.chartType === 'Chord' && !$scope.cdData) {
         $scope.cdData = constructChordData($scope.graphData);
       } else if ($scope.chartType === 'Matrix' && !$scope.coData && $scope.coMgr) {
