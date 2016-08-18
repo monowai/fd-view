@@ -178,18 +178,16 @@ fdView.factory('AuthenticationSharedService', ['$rootScope', '$state', '$http', 
 );
 
 
-fdView.factory('interceptorNgProgress', ['$injector' ,function ($injector) {
-    var completedProgress, getNgProgress, ngProgress, working;
-    ngProgress = null;
-    working = false;
+fdView.factory('interceptorNgProgress', ['ngProgressFactory',function (ngProgressFactory) {
+    var ngProgress = null, working = false;
 
-    getNgProgress = function () {
-      ngProgress = ngProgress || $injector.get('ngProgress');
-      ngProgress.color('red');
+    var getNgProgress = function () {
+      ngProgress = ngProgress || ngProgressFactory.createInstance();
+      // ngProgress.setColor('red');
       return ngProgress;
     };
 
-    completedProgress = function () {
+    var completedProgress = function () {
       var ngProgress;
       if (working) {
         ngProgress = getNgProgress();
