@@ -20,10 +20,12 @@
 
 'use strict';
 
-fdView.controller('AnalyzeCtrl', ['$scope', 'QueryService', 'MatrixRequest', '$window', '$timeout',
-  function ($scope, QueryService, MatrixRequest, $window, $timeout) {
+fdView.controller('AnalyzeCtrl', ['$scope', 'QueryService', 'MatrixRequest', '$window', '$timeout', 'toastr',
+  function ($scope, QueryService, MatrixRequest, $window, $timeout, toastr) {
     $scope.matrix = MatrixRequest.lastMatrix().matrix;
+    $scope.chartType = 'Chord';
     if(_.isEmpty($scope.matrix)) {
+      angular.element('[data-target="#search"]').tab('show');
       $scope.graphData = [];
     } else {
       $scope.graphData=$scope.matrix;
@@ -44,10 +46,11 @@ fdView.controller('AnalyzeCtrl', ['$scope', 'QueryService', 'MatrixRequest', '$w
     addOptions();
 
     $scope.search = function () {
-      // console.log($scope.chartType);
       if ($scope.chartType === 'TagCloud') {
         QueryService.tagCloud(MatrixRequest.searchText, MatrixRequest.document, MatrixRequest.fortress, MatrixRequest.concept, MatrixRequest.fromRlx)
           .then(function (data) {
+            angular.element('[data-target="#view"]').tab('show');
+            console.log(data);
             var terms = [];
             for (var key in data.terms) {
               var item = {};
@@ -75,16 +78,13 @@ fdView.controller('AnalyzeCtrl', ['$scope', 'QueryService', 'MatrixRequest', '$w
         });
       }
       else {
-
-        $scope.msg = '';
-
         MatrixRequest.matrixSearch()
           .then(function (data) {
             if (!data || data.length === 0) {
-              $scope.msg = 'No Results.';
+              toastr.info('No data was found. Try altering your criteria');
               return data;
             } else {
-              $scope.msg = null;
+              angular.element('[data-target="#view"]').tab('show');
             }
             $scope.graphData = data.matrix;
             $scope.cdData = null;
@@ -125,8 +125,7 @@ fdView.controller('AnalyzeCtrl', ['$scope', 'QueryService', 'MatrixRequest', '$w
         });
     }
 
-    $scope.switchChart = function (type) {
-      $scope.chartType = type;
+    $scope.switchChart = function () {
       if ($scope.chartType === 'Chord' && !$scope.cdData) {
         $scope.cdData = constructChordData($scope.graphData);
       } else if ($scope.chartType === 'Matrix' && !$scope.coData && $scope.coMgr) {

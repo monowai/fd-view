@@ -851,17 +851,13 @@ angular.module('fdView.directives', [])
           <input type="search" class="form-control" value="*" placeholder="Select criteria before applying a filter ..." ng-model="$ctrl.req.searchText"\
                  size="100" autocomplete="on" autofocus/>\
         </div>\
-        <div class="callout callout-warning fade in" ng-show="$ctrl.message">\
-          {{ $ctrl.message }}\
-        </div>\
         <div class="row" ng-transclude></div>\
       </form>',
     controller: ['MatrixRequest', function SearchCtrl(MatrixRequest) {
       this.req = MatrixRequest;
     }],
     bindings: {
-      search: '&',
-      message: '<'
+      search: '&'
     }
   })
   .component('fdMatrixForm',{
@@ -916,7 +912,6 @@ angular.module('fdView.directives', [])
           });
           ctrl.params.fromRlxs = rlx;
           ctrl.params.toRlxs = rlx;
-
         });
       };
     }]
