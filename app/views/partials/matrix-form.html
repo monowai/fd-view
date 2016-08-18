@@ -25,7 +25,7 @@
     <select class="form-control" ng-model="$ctrl.params.fromRlx" multiple
             ng-options="rf.name as rf.name for rf in $ctrl.params.fromRlxs"></select>
   </section>
-  <section class="form-group" ng-hide="$ctrl.params.shareRelationships || $ctrl.params.sharedRlxChecked">
+  <section class="form-group" ng-hide="$ctrl.params.sharedRlxChecked">
     <label>Relationship To</label>
     <select class="form-control" ng-model="$ctrl.params.toRlx" multiple
             ng-options="rt.name as rt.name for rt in $ctrl.params.toRlxs"></select>
@@ -34,28 +34,28 @@
 <div class="col-sm-6 col-md-4 col-lg-3">
   <section class="form-group">
     <div class="checkbox">
-      <label ng-class="{'state-enabled':$ctrl.params.sumByCount}">
-        <input type="checkbox" ng-enabled="$ctrl.params.sumByCount"
-               ng-model="$ctrl.params.sumByCountChecked">
-        <i></i>Sum by count</label>
+      <label>
+        <input type="checkbox" ng-model="$ctrl.params.sumByCountChecked">
+        Sum by count
+      </label>
     </div>
   </section>
 
   <section class="form-group" ng-if="$ctrl.params.devMode">
-    <div class="checkbox" ng-class="{'state-enabled':$ctrl.params.shareRelationships}">
+    <div class="checkbox">
       <label>
-        <input type="checkbox" ng-enabled="$ctrl.params.shareRelationships"
-               ng-model="$ctrl.params.sharedRlxChecked">
-        <i></i>Share Relationships</label>
+        <input type="checkbox" ng-model="$ctrl.params.sharedRlxChecked">
+        Share Relationships
+      </label>
     </div>
   </section>
 
   <section class="form-group" ng-if="$ctrl.params.devMode">
-    <div class="checkbox" ng-class="{'state-disabled':$ctrl.params.reciprocalExcluded}">
+    <div class="checkbox">
       <label>
-        <input type="checkbox" ng-enabled="$ctrl.params.reciprocalExcluded"
-               ng-model="$ctrl.params.reciprocalExcludedChecked">
-        <i></i>Exclude Reciprocals</label>
+        <input type="checkbox" ng-model="$ctrl.params.reciprocalExcludedChecked">
+        Exclude Reciprocals
+      </label>
     </div>
   </section>
 
@@ -66,8 +66,7 @@
     </div>
     <div class="form-group col-md-6">
       <label for="resultSize">Sample Size</label>
-      <input type="text" class="form-control" name="resultSize"
-             id="resultSize" ng-model="$ctrl.params.resultSize"/>
+      <input type="text" class="form-control" name="resultSize" id="resultSize" ng-model="$ctrl.params.resultSize"/>
     </div>
   </section>
 </div>

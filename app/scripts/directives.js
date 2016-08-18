@@ -218,7 +218,8 @@ angular.module('fdView.directives', [])
         nodeClick: '=',
         navigatorContainerId: '@',
         contextMenuCommands: '=',
-        onEdge: '&?'
+        onEdge: '&?',
+        qtip: '='
       },
       link: function(scope, element, attrs, controller) {
         scope.$watchGroup(['elements', 'styles', 'layout'], function(newValues, oldValues, scope) {
@@ -289,7 +290,7 @@ angular.module('fdView.directives', [])
 
                 // QTip
                 cy.elements().qtip({
-                  content: function(){ return this[0]._private.data.code },
+                  content: scope.qtip,//function(){ return this[0]._private.data.code },
                   position: {
                     my: 'top center',
                     at: 'bottom center'

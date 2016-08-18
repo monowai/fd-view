@@ -32,8 +32,11 @@ fdView.controller('ExploreCtrl', ['$scope', '$http', 'MatrixRequest', '$compile'
 
     $scope.layouts = [{name: 'cose'},
       {name: 'grid'},{name: 'concentric'},
-      {name: 'circle'},{name: 'random'},{name: 'breadthfirst'}];
+      {name: 'circle'}, {name: 'breadthfirst'},
+      {name: 'dagre'}];
     $scope.layout = $scope.layouts[0];
+
+    var nodeColor = d3.scale.category20();
 
     $scope.styles = [
       {'selector': 'node',
@@ -44,15 +47,15 @@ fdView.controller('ExploreCtrl', ['$scope', '$http', 'MatrixRequest', '$compile'
         'text-halign': 'center',
         'text-valign': 'center',
         'color': 'white',
+        'background-color': function (ele) { return nodeColor(ele.data().label); },
         'text-outline-width': 2,
         'text-outline-color': '#888',
-        'width': '40',//'mapData(degree,0,5,20,80)',
-        'height': '40',//'mapData(degree,0,5,20,80)',
-        // 'shape': 'roundrectangle'
+        'width': '50',
+        'height': '50'
       }},
       {'selector':'edge',
         'css':{
-          'width': 3,
+          'width': 'data(count)',
           'target-arrow-color': '#ccc',
           'target-arrow-shape': 'triangle'
         }},
@@ -69,6 +72,16 @@ fdView.controller('ExploreCtrl', ['$scope', '$http', 'MatrixRequest', '$compile'
           'color':'#499ef0'
       }}
     ];
+
+    $scope.qtip = function () {
+      if (this.group()==='nodes') {
+        return '<strong>'+this.data('id')+' </strong>'+this.data().name+
+               '<br><strong>Type: </strong>'+this.data().label;
+      } else {
+        return '<strong>Count: </strong>'+this.data().count;
+      }
+
+    };
 
     $scope.search = function () {
       angular.element('[data-target="#view"]').tab('show');

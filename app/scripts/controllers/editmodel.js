@@ -279,6 +279,7 @@ fdView.controller('EditModelCtrl', ['$scope', '$stateParams', '$window', 'toastr
       {name: 'random'}, {name: 'breadthfirst'}];
     $scope.layout = $scope.layouts[0];
     $scope.nodes = [];
+    $scope.qtip = function () { return this.data().code; };
 
     $scope.processDrop = function () {
       console.log('Element Dropped..');
