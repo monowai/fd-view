@@ -283,21 +283,24 @@
                   </tr>
                   <tr ng-if="contentModel.tagModel" ng-repeat="row in rows" ng-click="showResult($index)">
                     <td>{{$index}}</td>
-                    <td>{{validationResult.message[$index]}}</td>
+                    <td>{{validationResult.messages[$index]}}</td>
                   </tr>
                   </tbody>
                 </table>
               </div>
               <div class="col-md-6" ng-show="rowResult">
-                <div class="row" ng-show="rowResult.message">
-                  <div class="col-md-2"><h4>Message:</h4></div>
-                  <div class="col-md-10">
-                    <div class="well">{{rowResult.message}}</div>
+                <div sticky>
+                  <div class="row" ng-show="rowResult.messages">
+                    <label class="control-label">Messages:</label>
+                    <div class="col-md-12">
+                      <div ng-jsoneditor="loadMsgViewer" ng-model="rowResult.messages" options="{mode:'tree'}" style="height: 20em"></div>
+                    </div>
                   </div>
-                </div>
-                <div class="row">
-                  <div class="col-md-12" ng-if="rowResult">
-                    <div ng-jsoneditor="loadViewer" ng-model="rowResult" options="{mode:'tree'}" ng-height="240"></div>
+                  <div class="row">
+                    <label class="control-label">Entity/Tag:</label>
+                    <div class="col-md-12" ng-if="rowResult">
+                      <div ng-jsoneditor="loadViewer" ng-model="rowResult" options="{mode:'tree'}" style="height: 35em"></div>
+                    </div>
                   </div>
                 </div>
               </div>

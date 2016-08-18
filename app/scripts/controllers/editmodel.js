@@ -535,10 +535,15 @@ fdView.controller('EditModelCtrl', ['$scope', '$stateParams', '$window', 'toastr
 
     $scope.showResult = function ($index) {
       $scope.rowResult = $scope.rows[$index];
-      $scope.rowResult.message = $scope.validationResult.message[$index];
+      $scope.rowResult.messages = _.filter($scope.validationResult.results[$index], function (res) {
+        return res.messages.length > 0;
+      });
 
       $scope.loadViewer = function (instance) {
         $scope.resultViewer = instance;
+      };
+      $scope.loadMsgViewer = function (instance) {
+        $scope.resultMsgViewer = instance;
       };
     };
 
