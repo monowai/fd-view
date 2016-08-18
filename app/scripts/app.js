@@ -291,4 +291,5 @@ fdView.provider('configuration', ['engineUrl', function ( engineUrl) {
 
 fdView.config(['$httpProvider', function ($httpProvider) {
   $httpProvider.defaults.withCredentials = true;
+  $httpProvider.interceptors.push('interceptorNgProgress');
 }]);
