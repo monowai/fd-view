@@ -29,16 +29,20 @@ fdView.controller('AnalyzeCtrl', ['$scope', 'QueryService', 'MatrixRequest', '$w
       $scope.graphData = [];
     } else {
       $scope.graphData=$scope.matrix;
+      if(MatrixRequest.reciprocalExcluded() && !MatrixRequest.sharedChecked()) {
+        $scope.chartType = 'BiPartite';
+      }
       $timeout(function () {
         $scope.switchChart();
       }, 10);
     }
 
     var checkOptions = function () {
+      if (!$scope.matrix) return;
       if ((($scope.chartType === 'Chord'  || $scope.chartType === 'TagCloud') &&
-        (MatrixRequest.reciprocalExcludedChecked && !MatrixRequest.sharedRlxChecked)) ||
+        (MatrixRequest.reciprocalExcluded() && !MatrixRequest.sharedChecked())) ||
         (($scope.chartType === 'Matrix'  || $scope.chartType === 'BiPartite') &&
-        (!MatrixRequest.reciprocalExcludedChecked && MatrixRequest.sharedRlxChecked)))
+        (!MatrixRequest.reciprocalExcluded() && MatrixRequest.sharedChecked())))
       {
         toastr.warning('Search results are not optimal for '+ $scope.chartType +' diagram. You can change <strong>Search settings</strong> or chart type.', 'Warning',
           {allowHtml: true});

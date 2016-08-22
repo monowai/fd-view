@@ -379,7 +379,7 @@ fdView.factory('QueryService', ['$http', 'configuration', function ($http, confi
 
   this.minCount = 1;
   this.resultSize = 1000;
-  this.sharedRlxChecked = true;
+  this.sharedRlxChecked = false;
   this.reciprocalExcludedChecked = true;
   this.sumByCountChecked = true;
   // if (configuration.devMode()) {
@@ -404,8 +404,8 @@ fdView.factory('QueryService', ['$http', 'configuration', function ($http, confi
       reciprocalExcluded: this.reciprocalExcludedChecked,
       byKey: true
     };
-    if(dataParam === lastMatrixQuery) return lastMatrixResult;
-    else lastMatrixQuery = dataParam;
+    if(angular.equals(dataParam, lastMatrixQuery)) return lastMatrixResult;
+    lastMatrixQuery = angular.copy(dataParam);
     var promise = $http.post(configuration.engineUrl() + '/api/v1/query/matrix/', dataParam).then(function (response) {
       lastMatrixResult = angular.copy(response.data);
       lastMatrixResult.matrix = _.map(lastMatrixResult.edges, function (edge) {
@@ -422,6 +422,12 @@ fdView.factory('QueryService', ['$http', 'configuration', function ($http, confi
       return lastMatrixResult;
     });
     return promise;
+  };
+  this.sharedChecked = function () {
+    return lastMatrixQuery.toRlxs===lastMatrixQuery.fromRlxs;
+  };
+  this.reciprocalExcluded = function () {
+    return lastMatrixQuery.reciprocalExcluded;
   };
   this.lastMatrix = function () {
     return lastMatrixResult;

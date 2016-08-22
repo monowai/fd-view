@@ -61,7 +61,7 @@ var fdView = angular.module('fdView', [
       .state('search', {
         url: '/search',
         templateUrl: 'views/search.html',
-        controller: 'MetaHeaderCtrl',
+        controller: 'MetaHeaderCtrl as $ctrl',
         data: {
           authorizedRoles: [USER_ROLES.user]
         }

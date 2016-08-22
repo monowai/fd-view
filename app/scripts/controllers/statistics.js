@@ -24,14 +24,14 @@
 
 'use strict';
 
-fdView.controller('StatsCtrl', ['$scope', 'QueryService',
-  function ($scope, QueryService) {
+fdView.controller('StatsCtrl', ['$scope', 'QueryService', 'MatrixRequest',
+  function ($scope, QueryService, MatrixRequest) {
     QueryService.general('fortress').then(function (data) {
       $scope.fortresses = data;
     });
 
-    $scope.search = function (term) {
-      $scope.term = term;
+    $scope.search = function () {
+      $scope.term = MatrixRequest.searchText;
     }
   }
 ]);

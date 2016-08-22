@@ -26,8 +26,14 @@ fdView.controller('ExploreCtrl', ['$scope', '$http', 'MatrixRequest', '$compile'
     if(_.isEmpty($scope.matrix)) {
       angular.element('[data-target="#search"]').tab('show');
       $scope.graphData = [];
+      MatrixRequest.sharedRlxChecked = false;
+      MatrixRequest.reciprocalExcludedChecked = true;
     } else {
       $scope.graphData=$scope.matrix;
+      if (!MatrixRequest.reciprocalExcluded() && MatrixRequest.sharedChecked()) {
+        toastr.warning('Search results are not optimal for the graph. You can change <strong>Search settings</strong>.', 'Warning',
+          {allowHtml: true});
+      }
     }
 
     $scope.layouts = [{name: 'cose'},
