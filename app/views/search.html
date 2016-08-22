@@ -41,34 +41,22 @@
             <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
           </div><!-- /.box-tools -->
         </div><!-- /.box-header -->
-        <form role="form" ng-submit="search(searchText,company,fortress,types)">
-          <div class="box-body">
-            <div class="alert alert-warning fade in" ng-show="msg">
-              {{msg}}
-            </div>
-
+        <div class="box-body">
+          <fd-search search="search()">
+          <div class="col-md-6">
             <div class="form-group">
-              <input class="form-control" type="text" placeholder="Search..." ng-model="$root.searchText" autofocus/>
+              <label for="fortress">Fortress</label>
+              <fortress-input id="fortress" model="$ctrl.fortress" autocomplete="off"></fortress-input>
             </div>
-            <br>
-            <div class="col-md-6">
-              <div class="form-group">
-                <label for="fortress">Fortress</label>
-                <fortress-input id="fortress" model="fortress" autocomplete="off"></fortress-input>
-              </div>
-            </div>
-            <div class="col-md-6">
-              <label for="types">Types</label>
-              <tags-input id="types" type="text" placeholder="Types..." ng-model="types" key-property="name" display-property="name">
-                <auto-complete source="loadTypes(fortress)" min-length="1"></auto-complete>
-              </tags-input>
-            </div>
-          </div><!-- /.box-body -->
-          <div class="box-footer">
-            <button type="submit" class="btn btn-primary"><i class="fa fa-search"></i>Search
-            </button>
           </div>
-        </form>
+          <div class="col-md-6">
+            <label for="types">Types</label>
+            <tags-input id="types" type="text" placeholder="Types..." ng-model="$ctrl.types" key-property="name" display-property="name">
+              <auto-complete source="loadTypes($ctrl.fortress)" min-length="1"></auto-complete>
+            </tags-input>
+          </div>
+          </fd-search>
+        </div>
       </div><!-- /.box -->
     </div>
   </div>

@@ -24,8 +24,8 @@ fdView.factory('EntityService', ['$http', 'configuration',
     function ($http, configuration) {
 
       return {
-        search: function (searchText, company, fortress, typesToBeSend) {
-          var dataParam = {searchText: searchText, company: company, fortress: fortress, types: typesToBeSend};
+        search: function (searchText, fortress, typesToBeSend) {
+          var dataParam = {searchText: searchText, fortress: fortress, types: typesToBeSend};
           return $http.post(configuration.engineUrl() + '/api/v1/query/', dataParam).then(function (response) {
             return response.data.results;
           });

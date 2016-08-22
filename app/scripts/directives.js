@@ -844,13 +844,13 @@ angular.module('fdView.directives', [])
     transclude: true,
     template: '<form class="panel" ng-submit="$ctrl.search()">\
         <div class="input-group">\
+          <input type="search" class="form-control" value="*" placeholder="Select criteria before applying a filter ..." ng-model="$ctrl.req.searchText"\
+                 size="100" autocomplete="on" autofocus/>\
           <div class="input-group-btn">\
             <button type="submit" class="btn btn-primary">\
             <i class="fa fa-search"></i> View\
             </button>\
           </div>\
-          <input type="search" class="form-control" value="*" placeholder="Select criteria before applying a filter ..." ng-model="$ctrl.req.searchText"\
-                 size="100" autocomplete="on" autofocus/>\
         </div>\
         <div class="row" ng-transclude></div>\
       </form>',
@@ -884,7 +884,7 @@ angular.module('fdView.directives', [])
       ctrl.selectDocument = function (d) {
         ctrl.params.document = d;
         QueryService.concept('/', d).then(function (data) {
-          var conceptMap = _.flatten(_.pluck(data, 'concepts'));
+          var conceptMap = _.flatten(_.map(data, 'concepts'));
           ctrl.params.concepts = _.uniq(conceptMap, function (c) {
             return c.name;
           });
@@ -904,10 +904,10 @@ angular.module('fdView.directives', [])
       ctrl.selectConcept = function (concept) {
         ctrl.params.concept = concept;
         QueryService.concept('/relationships', ctrl.params.document).then(function (data) {
-          var conceptMap = _.filter(_.flatten(_.pluck(data, 'concepts')), function (c) {
-            return _.contains(concept, c.name);
+          var conceptMap = _.filter(_.flatten(_.map(data, 'concepts')), function (c) {
+            return _.includes(concept, c.name);
           });
-          var rlxMap = _.flatten(_.pluck(conceptMap, 'relationships'));
+          var rlxMap = _.flatten(_.map(conceptMap, 'relationships'));
           var rlx = _.uniq(rlxMap, function (c) {
             return c.name;
           });

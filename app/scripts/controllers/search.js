@@ -21,8 +21,9 @@
 'use strict';
 
 // New Search Controller
-fdView.controller('MetaHeaderCtrl', ['$scope', 'EntityService', '$uibModal', 'QueryService', 'configuration',
-  function ($scope, EntityService, $uibModal, QueryService, configuration) {
+fdView.controller('MetaHeaderCtrl', ['$scope', 'EntityService', '$uibModal', 'QueryService', 'MatrixRequest', 'configuration',
+  function ($scope, EntityService, $uibModal, QueryService, MatrixRequest, configuration) {
+    var ctrl = this;
     //ToDo: Why do I need to Explore functions?
     $scope.advancedSearch = false;
     $scope.searchResultFound = false;
@@ -54,13 +55,13 @@ fdView.controller('MetaHeaderCtrl', ['$scope', 'EntityService', '$uibModal', 'Qu
       }
     };
 
-    $scope.search = function (searchText, company, fortress, types) {
+    $scope.search = function () {
       var typesToBeSend = [];
-      for (var type in types) {
-        typesToBeSend.push(types[type].text);
+      for (var type in ctrl.types) {
+        typesToBeSend.push(ctrl.types[type].text);
       }
 
-      EntityService.search(searchText, company, fortress, typesToBeSend).then(function (data) {
+      EntityService.search(MatrixRequest.searchText, ctrl.fortress, typesToBeSend).then(function (data) {
         console.log(data);
         $scope.searchResults = data;
         angular.forEach(data, function (d) {
