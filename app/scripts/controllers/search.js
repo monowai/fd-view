@@ -71,7 +71,7 @@ fdView.controller('MetaHeaderCtrl', ['$scope', 'EntityService', '$uibModal', 'Qu
             var uniqueEle = _.difference(_.uniq(ele), uniqueList);
             if (uniqueEle.length > 0) {
               d.resources.push({key: k, value: uniqueEle});
-              uniqueList = _.union(uniqueEle, uniqueList);
+              uniqueList = _.union( uniqueEle, uniqueList);
             }
           });
         });

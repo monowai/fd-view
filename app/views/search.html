@@ -84,18 +84,19 @@
                     <small>
                       <span ng-repeat="resource in searchResult.resources track by $index" title="{{resource.key}}">
                         <span ng-repeat="value in resource.value track by $index">
-                          <span ng-bind-html="value" class="search-resources"></span> ...
+                          {{resource.key}}
+                          <span ng-bind-html="value" class="search-resources"></span>
                         </span>
                       </span>
                     </small>
                   </div>
 
                   <div class="well well-sm display-inline fd-entityKey-elements">
-                    <button class="btn btn-xs btn-default">{{searchResult.event}}</button>
-                    <button class="btn btn-xs btn-default" ng-click="openDetailsView(searchResult.key)">{{searchResult.key}}</button>
+                    <!--<button class="btn btn-xs btn-default">{{searchResult.event}}</button>-->
                     <button class="btn btn-xs btn-default">{{searchResult.fortress}}</button>
                     <button class="btn btn-xs btn-default">{{searchResult.documentType}}</button>
-                    <button class="btn btn-xs btn-default" ng-if="searchResult.code != null">{{searchResult.code}}</button>
+                    <button class="btn btn-xs btn-default" ng-click="openDetailsView(searchResult.key)">{{searchResult.code}}</button>
+                    <button class="btn btn-xs btn-default" ng-click="openDetailsView(searchResult.key)" ng-if="searchResult.name != null">{{searchResult.name}}</button>
                   </div>
 
                   <!--<a ng-click="findLogs(searchResult.key, $index)"-->
