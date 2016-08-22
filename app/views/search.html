@@ -61,88 +61,84 @@
     </div>
   </div>
 
-  <div class="row">
-    <div class="col-md-12" ng-if="searchResults.length !=0">
-      <div class="box box-success">
-        <div class="box-header with-border">
-          <h3 class="box-title">Search Results</h3>
-          <div class="box-tools pull-right">
-            <button class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
-          </div><!-- /.box-tools -->
-        </div><!-- /.box-header -->
-        <div class="box-body">
-          <div class="well well-sm">
-            <ul class="timeline">
-              <li ng-repeat="searchResult in searchResults">
-                <i class="fa fa-file-text"></i>
-                <div class="timeline-item">
-                  <span class="time"><i class="fa fa-clock-o"></i>{{searchResult.lastUser}} - {{searchResult.lastUpdate | amDateFormat:'ddd, MMM Do YYYY, hh:mm'}} </span>
+  <div class="row" id="results">
+    <div class="col-md-12" ng-if="sr.entities.length>0">
+      <div class="box-body">
+        <ul class="timeline" infinite-scroll="sr.nextPage()" infinite-scroll-distance="1">
+          <li class="time-label"><span class="bg-green">{{sr.total}} Search Results</span> </li>
+          <li ng-repeat="searchResult in sr.entities">
+            <i class="fa fa-file-text"></i>
+            <div class="timeline-item">
+              <span class="time"><i class="fa fa-clock-o"></i>{{searchResult.lastUser}} - {{searchResult.lastUpdate | amDateFormat:'ddd, MMM Do YYYY, hh:mm'}} </span>
 
-                  <h3 class="timeline-header">{{searchResult.description}}</h3>
+              <h3 class="timeline-header"><a href ng-click="openDetailsView(searchResult.key)">{{searchResult.name}}</a></h3>
 
-                  <div>
-                    <small>
-                      <span ng-repeat="resource in searchResult.resources track by $index" title="{{resource.key}}">
-                        <span ng-repeat="value in resource.value track by $index">
-                          <span ng-bind-html="value" class="search-resources"></span> ...
-                        </span>
+              <div class="timeline-body">
+                {{searchResult.description}}
+
+                <div>
+                  <small>
+                    <span ng-repeat="resource in searchResult.resources track by $index" title="{{resource.key}}">
+                      <span ng-repeat="value in resource.value track by $index">
+                        <em><strong>{{resource.key | cleanCode}}:</strong></em>
+                        <span ng-bind-html="value" class="search-resources"></span>
                       </span>
-                    </small>
-                  </div>
-
-                  <div class="well well-sm display-inline fd-entityKey-elements">
-                    <button class="btn btn-xs btn-default">{{searchResult.event}}</button>
-                    <button class="btn btn-xs btn-default" ng-click="openDetailsView(searchResult.key)">{{searchResult.key}}</button>
-                    <button class="btn btn-xs btn-default">{{searchResult.fortress}}</button>
-                    <button class="btn btn-xs btn-default">{{searchResult.documentType}}</button>
-                    <button class="btn btn-xs btn-default" ng-if="searchResult.code != null">{{searchResult.code}}</button>
-                  </div>
-
-                  <!--<a ng-click="findLogs(searchResult.key, $index)"-->
-                  <!--ng-if="!searchResult.seeLogsAction" class="btn btn-xs btn-primary"><i class="fa fa-angle-double-down"></i> Changes</a>-->
-
-                  <a ng-click="findLogs(searchResult.key, $index)"
-                     ng-if="searchResult.seeLogsAction" class="btn btn-xs btn-primary"><i class="fa fa-angle-double-down"></i> Changes</a>
-
-                  <p ng-if="searchResult.whenCreated != null">
-                    <!-- ToDo - format the date to the users Locale, not hard coded-->
-                    <small>Created on <em>{{searchResult.whenCreated | amDateFormat:'dddd, MMMM Do YYYY, h:mm:ss a'}}</em> by <em>{{searchResult.lastUser}}</em>
-                    </small>
-                  </p>
-
-                  <div class="box-body smart-form slide in" ng-if="searchResult.seeLogsAction">
-                    <!-- content goes here -->
-                    <h5 class="todo-group-title"><i class="fa fa-list"></i> Logs</h5>
-                    <ul class="todo ui-sortable fd-logs">
-                      <li ng-repeat="logsResult in searchResult.logs">
-                      <span class="handle">
-                        <label class="checkbox">
-                          <input type="checkbox" ng-click="selectLog(logsResult.id)" name="checkbox-inline">
-                        </label>
-                      </span>
-                        <p>
-                          <strong>{{logsResult.log.event.name}}</strong> -
-                          {{logsResult.log.comment}}
-                          <small>By {{logsResult.log.who.name}}</small>
-                          [<a ng-click="openPopup(logsResult.id)" class="font-xs">More
-                          Details</a>] <span class="date">{{logsResult.fortressWhen | amDateFormat:'dddd, MMMM Do YYYY, h:mm:ss a'}}</span>
-                        </p>
-                      </li>
-                    </ul>
-                    <a class="btn btn-xs btn-primary" ng-if="selectedLog.length === 2"
-                       ng-click="openDeltaPopup()"><i class="fa fa-indent"></i> Compare Logs</a>
-                    <!-- end content -->
-                  </div>
+                    </span>
+                  </small>
                 </div>
-              </li>
-              <li class="text-center">
-                <a href="javascript:void(0)" class="btn btn-sm btn-default">
-                  <i class="fa fa-arrow-down text-muted"></i> LOAD MORE</a>
-              </li>
-            </ul>
-          </div>
-        </div><!-- /.box-body -->
-      </div><!-- /.box -->
+
+                <p ng-hide="!searchResult.whenCreated">
+                  <!-- ToDo - format the date to the users Locale, not hard coded-->
+                  <small><b>Created on </b><em>{{searchResult.whenCreated | amDateFormat:'dddd, MMMM Do YYYY, h:mm:ss a'}}</em> by <em>{{searchResult.lastUser}}</em>
+                  </small>
+                </p>
+              </div>
+
+              <!--<a ng-click="findLogs(searchResult.key, $index)"-->
+              <!--ng-if="!searchResult.seeLogsAction" class="btn btn-xs btn-primary"><i class="fa fa-angle-double-down"></i> Changes</a>-->
+
+              <!--<a ng-click="findLogs(searchResult.key, $index)"-->
+                 <!--ng-if="searchResult.seeLogsAction" class="btn btn-xs btn-primary"><i class="fa fa-angle-double-down"></i> Changes</a>-->
+
+              <!--<div class="box-body smart-form slide in" ng-if="searchResult.seeLogsAction">-->
+                <!--&lt;!&ndash; content goes here &ndash;&gt;-->
+                <!--<h5 class="todo-group-title"><i class="fa fa-list"></i> Logs</h5>-->
+                <!--<ul class="todo ui-sortable fd-logs">-->
+                  <!--<li ng-repeat="logsResult in searchResult.logs">-->
+                  <!--<span class="handle">-->
+                    <!--<label class="checkbox">-->
+                      <!--<input type="checkbox" ng-click="selectLog(logsResult.id)" name="checkbox-inline">-->
+                    <!--</label>-->
+                  <!--</span>-->
+                    <!--<p>-->
+                      <!--<strong>{{logsResult.log.event.name}}</strong> - -->
+                      <!--{{logsResult.log.comment}}-->
+                      <!--<small>By {{logsResult.log.who.name}}</small>-->
+                      <!--[<a ng-click="openPopup(logsResult.id)" class="font-xs">More-->
+                      <!--Details</a>] <span class="date">{{logsResult.fortressWhen | amDateFormat:'dddd, MMMM Do YYYY, h:mm:ss a'}}</span>-->
+                    <!--</p>-->
+                  <!--</li>-->
+                <!--</ul>-->
+                <!--<a class="btn btn-xs btn-primary" ng-if="selectedLog.length === 2"-->
+                   <!--ng-click="openDeltaPopup()"><i class="fa fa-indent"></i> Compare Logs</a>-->
+                <!--&lt;!&ndash; end content &ndash;&gt;-->
+              <!--</div>-->
+
+              <div class="timeline-footer">
+                <!--<button class="btn btn-xs btn-default">{{searchResult.event}}</button>-->
+                <button class="btn btn-xs btn-primary" ng-click="openDetailsView(searchResult.key)" uib-tooltip="{{searchResult.code}}">View</button>
+                <button class="btn btn-xs btn-default" ng-click="setFilter(searchResult.fortress)" uib-tooltip="Filter Fortress">{{searchResult.fortress}}</button>
+                <button class="btn btn-xs btn-default" ng-click="setFilter(searchResult.fortress, searchResult.documentType)" uib-tooltip="Filter Document Type">{{searchResult.documentType}}</button>
+                <button class="btn btn-xs btn-default" ng-click="openDetailsView(searchResult.key)" ng-hide="!searchResult.name">{{searchResult.name}}</button>
+              </div>
+            </div>
+          </li>
+          <li class="text-center" ng-show="sr.index<sr.total">
+            <a href="sr.nextPage()" class="btn btn-sm btn-default">
+              <i class="fa fa-arrow-down text-muted"></i> LOAD MORE</a>
+          </li>
+        </ul>
+      </div><!-- /.box-body -->
     </div>
   </div>
 </section>
