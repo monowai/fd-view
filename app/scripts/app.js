@@ -38,6 +38,7 @@ var fdView = angular.module('fdView', [
   'ng.jsoneditor',
   'monospaced.elastic',
   'ngTextcomplete',
+  'infinite-scroll',
   'ui.tree',
   'sticky'
 ])

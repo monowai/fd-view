@@ -21,8 +21,8 @@
 'use strict';
 
 // New Search Controller
-fdView.controller('MetaHeaderCtrl', ['$scope', 'EntityService', '$uibModal', 'QueryService', 'MatrixRequest', 'configuration',
-  function ($scope, EntityService, $uibModal, QueryService, MatrixRequest, configuration) {
+fdView.controller('MetaHeaderCtrl', ['$scope', 'EntityService', '$timeout', '$anchorScroll', '$uibModal', 'QueryService', 'MatrixRequest', 'configuration', 'SearchService',
+  function ($scope, EntityService, $timeout, $anchorScroll, $uibModal, QueryService, MatrixRequest, configuration, SearchService) {
     var ctrl = this;
     //ToDo: Why do I need to Explore functions?
     $scope.advancedSearch = false;
@@ -33,6 +33,7 @@ fdView.controller('MetaHeaderCtrl', ['$scope', 'EntityService', '$uibModal', 'Qu
     $scope.logsResults = [];
     $scope.selectedLog = [];
     $scope.fragments = [];
+    ctrl.types = [];
 
     $scope.openGraphExplorer = function (entityKey) {
       EntityService.getEntityPK(entityKey).then(function (id) {
@@ -55,30 +56,27 @@ fdView.controller('MetaHeaderCtrl', ['$scope', 'EntityService', '$uibModal', 'Qu
       }
     };
 
+    $scope.setFilter = function (fortress, type) {
+      if (ctrl.fortress!==fortress) {
+        ctrl.types = [];
+        ctrl.fortress = fortress;
+      }
+      if (type && _.findIndex(ctrl.types, {name: type})<0) ctrl.types.push({name: type});
+    };
+
     $scope.search = function () {
       var typesToBeSend = [];
       for (var type in ctrl.types) {
         typesToBeSend.push(ctrl.types[type].text);
       }
 
-      EntityService.search(MatrixRequest.searchText, ctrl.fortress, typesToBeSend).then(function (data) {
-        console.log(data);
-        $scope.searchResults = data;
-        angular.forEach(data, function (d) {
-          d.resources = [];
-          var uniqueList = [];
-          _.find(d.fragments, function (ele, k) {
-            var uniqueEle = _.difference(_.uniq(ele), uniqueList);
-            if (uniqueEle.length > 0) {
-              d.resources.push({key: k, value: uniqueEle});
-              uniqueList = _.union( uniqueEle, uniqueList);
-            }
-          });
-        });
-        $scope.searchResultFound = true;
-        $scope.logResultFound = false;
+      $scope.sr = new SearchService(MatrixRequest.searchText, ctrl.fortress, typesToBeSend);
+      $scope.sr.nextPage(function () {
+        $timeout(function(){$anchorScroll('results')},100);
       });
 
+      $scope.searchResultFound = true;
+      $scope.logResultFound = false;
     };
 
     $scope.findLogs = function (entityKey, index) {
@@ -188,3 +186,60 @@ var ModalInstanceSingleLogCtrl = ['$scope', '$uibModalInstance', 'log1', functio
     $uibModalInstance.dismiss('cancel');
   };
 }];
+
+fdView.factory('SearchService', ['EntityService', function (EntityService) {
+  var Search = function (searchText, fortress, typesToBeSend) {
+    this.entities = [];
+    this.busy = false;
+    this.index=0;
+    // this.total=0;
+    this.searchText = searchText;
+    this.fortress = fortress;
+    this.typesToBeSend = typesToBeSend;
+  };
+
+  Search.prototype.nextPage = function (callback) {
+    if (this.busy || this.index===this.total) return;
+    this.busy = true;
+
+    EntityService.search(this.searchText, this.fortress, this.typesToBeSend, this.index)
+      .then(function (data) {
+        angular.forEach(data.results, function (d) {
+          d.resources = [];
+          var uniqueList = [];
+          _.find(d.fragments, function (ele, k) {
+            var uniqueEle = _.difference(_.uniq(ele), uniqueList);
+            if (uniqueEle.length > 0) {
+              d.resources.push({key: k, value: uniqueEle});
+              uniqueList = _.union(uniqueEle, uniqueList);
+            }
+          });
+        });
+
+        this.entities = this.entities.concat(data.results);
+        this.index += data.results.length;
+        this.total = data.total;
+        this.busy = false;
+        if(callback) callback();
+      }.bind(this));
+  };
+
+  return Search;
+}]);
+
+fdView.filter('cleanCode', function () {
+  return function (code) {
+    var keys = code.split('.');
+    if (keys.length>1) {
+      return keys
+        .filter(function (key) {
+          return key!=='tag' && key!=='code';
+        })
+        .slice(-2)
+        .reduce(function (acc, el) {
+          return acc +'/'+el;
+        });
+    }
+    return code;
+  }
+});

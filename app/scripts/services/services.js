@@ -24,10 +24,10 @@ fdView.factory('EntityService', ['$http', 'configuration',
     function ($http, configuration) {
 
       return {
-        search: function (searchText, fortress, typesToBeSend) {
-          var dataParam = {searchText: searchText, fortress: fortress, types: typesToBeSend};
+        search: function (searchText, fortress, typesToBeSend, index) {
+          var dataParam = {searchText: searchText, fortress: fortress, types: typesToBeSend, from: index};
           return $http.post(configuration.engineUrl() + '/api/v1/query/', dataParam).then(function (response) {
-            return response.data.results;
+            return {results: response.data.results, total: response.data.totalHits};
           });
         },
         getLogsForEntity: function (entityKey) {
