@@ -217,11 +217,11 @@ fdView.factory('interceptorNgProgress', ['ngProgressFactory',function (ngProgres
       response: function (response) {
         completedProgress();
         return response;
-      },
-      responseError: function (response) {
-        completedProgress();
-        return response;
-      }
+      }//,
+      // responseError: function (response) {
+      //   completedProgress();
+      //   return response;
+      // }
     };
   }]
 );
