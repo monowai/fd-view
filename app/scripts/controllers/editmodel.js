@@ -20,6 +20,8 @@
 
 'use strict';
 
+agGrid.initialiseAgGridWithAngular1(angular);
+
 fdView.controller('EditModelCtrl', ['$scope', '$stateParams', '$window', 'toastr', '$uibModal', 'QueryService', 'ContentModel', '$state', '$http', '$timeout', 'modalService', 'configuration',
   function ($scope, $stateParams, $window, toastr, $uibModal, QueryService, ContentModel, $state, $http, $timeout, modalService, configuration) {
 
@@ -507,6 +509,36 @@ fdView.controller('EditModelCtrl', ['$scope', '$stateParams', '$window', 'toastr
         toastr.warning('File is not loaded', 'Warning');
       }
       $scope.dataSample = data.slice(0,200);
+      $scope.gridOptions = {
+        columnDefs: _.map(Object.keys($scope.dataSample[0]), function (k) {
+          return {field: k, headerName: k, editable: true, headerClass: function () {
+            var obj = $scope.contentModel.content[k];
+            if (obj) {
+              if (obj.tag)
+                return 'tag';
+              if (obj.$$alias)
+                return 'alias';
+              if (obj.callerRef)
+                return 'bg-green';
+              if (!obj.persistent)
+                return 'dim';
+            }
+          }};
+        }),
+        rowData: $scope.dataSample,
+        enableColResize: true,
+        enableSorting: true,
+        enableFilter: true,
+        rowSelection: 'multiple',
+        angularCompileHeaders: true,
+        // headerCellRenderer: function (params) {
+        //   params.$scope.editColDef = $scope.showColDef;
+        //
+        //   var eCell = document.createElement('span');
+        //   eCell.innerHTML = '<span ng-click="showColDef(params.colDef.headerName, {})" class="fa fa-edit"></button></span>';
+        //   return eCell;
+        // }
+      };
       ContentModel.updateModel($scope.contentModel);
       ContentModel.getDefault({rows: $scope.dataSample}).success(function (res) {
         toastr.success('Data is loaded', 'Success');

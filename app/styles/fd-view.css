@@ -247,22 +247,20 @@ td > input.ng-invalid-required {
   border-color: #dd4b39;
 }
 
-/*th.col {*/
-  /**/
-/*}*/
 th.col:hover {
   color: #0d6aad;
 }
 th.col.coldef {
   background-color: #499ef5;
 }
-th.col.tag {
+th.col.tag, .ag-header-cell.tag {
   background-color: #f7cd8f;
+  color: #0a0a0a;
 }
-th.col.caller-ref {
+th.col.caller-ref, .ag-header-cell.caller-ref{
   font-style: italic;
 }
-th.col.alias, .btn-alias {
+th.col.alias, .ag-header-cell.alias, .btn-alias {
   background-color: #f7bf65;
 }
 th.col>span {
