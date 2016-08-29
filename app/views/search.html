@@ -68,7 +68,7 @@
           <li class="time-label"><span class="bg-green">{{sr.total}} Search Results</span> </li>
           <li ng-repeat="searchResult in sr.entities">
             <i class="fa fa-file-text"></i>
-            <div class="timeline-item">
+            <article class="timeline-item">
               <span class="time"><i class="fa fa-clock-o"></i>{{searchResult.lastUser}} - {{searchResult.lastUpdate | amDateFormat:'ddd, MMM Do YYYY, hh:mm'}} </span>
 
               <h3 class="timeline-header"><a href ng-click="openDetailsView(searchResult.key)">{{searchResult.name}}</a></h3>
@@ -131,7 +131,7 @@
                 <button class="btn btn-xs btn-default" ng-click="setFilter(searchResult.fortress, searchResult.documentType)" uib-tooltip="Filter Document Type">{{searchResult.documentType}}</button>
                 <button class="btn btn-xs btn-default" ng-click="openDetailsView(searchResult.key)" ng-hide="!searchResult.name">{{searchResult.name}}</button>
               </div>
-            </div>
+            </article>
           </li>
           <li class="text-center" ng-show="sr.index<sr.total">
             <a href="sr.nextPage()" class="btn btn-sm btn-default">

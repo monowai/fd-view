@@ -50,19 +50,20 @@ fdView.controller('ExploreCtrl', ['$scope', '$http', 'MatrixRequest', '$compile'
         'content': 'data(name)',
         'font-size': '15pt',
         'min-zoomed-font-size': '9pt',
-        'text-halign': 'center',
-        'text-valign': 'center',
+        'text-valign': 'bottom',
+        'text-halign': 'right',
         'color': 'white',
         'background-color': function (ele) { return nodeColor(ele.data().label); },
-        'text-outline-width': 2,
-        'text-outline-color': '#888',
-        'width': '50',
-        'height': '50'
+        // 'text-outline-width': 2,
+        // 'text-outline-color': '#888',
+        // 'width': '50',
+        // 'height': '50'
       }},
       {'selector':'edge',
         'css':{
           'width': 'data(count)',
-          'target-arrow-color': '#ccc',
+          'line-color': '#067B7B',
+          'target-arrow-color': '#067B7B',
           'target-arrow-shape': 'triangle'
         }},
       {'selector':':selected',

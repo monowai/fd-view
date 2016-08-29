@@ -36,6 +36,7 @@ var fdView = angular.module('fdView', [
   'http-auth-interceptor',
   'ab.graph.matrix.directives',
   'ng.jsoneditor',
+  'ngTableResize',
   'monospaced.elastic',
   'ngTextcomplete',
   'infinite-scroll',
