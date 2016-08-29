@@ -191,14 +191,14 @@
                 </div>
               </div>
             </div>
-            <div class="hscroll-table fader" ng-show="!!dataSample">
-              <table id="datasample" class="table table-bordered table-hover">
+            <div class="hscroll-table fader" ng-if="!!dataSample">
+              <table resizeable mode="'BasicResizer'" id="datasample" class="table table-bordered table-hover">
                 <thead>
                 <tr>
-                  <th class="col coldef" ng-repeat="(k,v) in dataSample[0]" ng-click="showColDef(k,{})"
+                  <th class="col coldef" ng-repeat="(k,v) in dataSample[0]"
                       ng-class="{'tag': contentModel.content[k].tag, 'bg-green': contentModel.content[k].callerRef,
                       'btn-alias': !!contentModel.content[k].$$alias, 'dim': contentModel.content[k].persistent===false}">
-                    <span>{{v.target || k}}</span></th>
+                    <span ng-click="showColDef(k,{})">{{v.target || k}}</span></th>
                 </tr>
                 </thead>
                 <tbody>
@@ -251,7 +251,7 @@
               </div>
             </div>
             <div class="col-md-10" droppable="handleDrop">
-              <cytoscape elements="modelGraph" layout="layout" styles="styles" selected-nodes="nodes" ng-height="180" on-edge="nodeLink(source, target)" qtip="qtip"></cytoscape>
+              <cytoscape class="modeler" elements="modelGraph" layout="layout" styles="styles" selected-nodes="nodes" ng-height="180" on-edge="nodeLink(source, target)" qtip="qtip"></cytoscape>
             </div>
           </div>
 

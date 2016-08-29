@@ -192,6 +192,11 @@ h4.paragraph-header {
   height: 100%;
   display: block;
   border: 1px solid #ccc ;
+  background: #3E3E3E;
+}
+
+#cy.modeler {
+  background: #f0f0f0;
 }
 
 .box-filter {
@@ -242,9 +247,9 @@ td > input.ng-invalid-required {
   border-color: #dd4b39;
 }
 
-th.col {
-  cursor: pointer;
-}
+/*th.col {*/
+  /**/
+/*}*/
 th.col:hover {
   color: #0d6aad;
 }
@@ -262,6 +267,7 @@ th.col.alias, .btn-alias {
 }
 th.col>span {
   display: inline-block;
+  cursor: pointer;
 }
 th.col>span:after {
   display:block;
