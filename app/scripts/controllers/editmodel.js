@@ -531,13 +531,13 @@ fdView.controller('EditModelCtrl', ['$scope', '$stateParams', '$window', 'toastr
         enableFilter: true,
         rowSelection: 'multiple',
         angularCompileHeaders: true,
-        // headerCellRenderer: function (params) {
-        //   params.$scope.editColDef = $scope.showColDef;
-        //
-        //   var eCell = document.createElement('span');
-        //   eCell.innerHTML = '<span ng-click="showColDef(params.colDef.headerName, {})" class="fa fa-edit"></button></span>';
-        //   return eCell;
-        // }
+        headerCellRenderer: function (params) {
+          params.$scope.editColDef = $scope.showColDef;
+
+          var eCell = document.createElement('span');
+          eCell.innerHTML = '<span class="ag-click-ico" ng-click="showColDef(\''+params.colDef.headerName+'\', {})"><i class="fa fa-edit"></i></span>&nbsp;'+params.colDef.headerName;
+          return eCell;
+        }
       };
       ContentModel.updateModel($scope.contentModel);
       ContentModel.getDefault({rows: $scope.dataSample}).success(function (res) {

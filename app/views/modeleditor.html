@@ -193,22 +193,6 @@
             </div>
             <div class="hscroll-table fader" ng-if="!!dataSample">
               <div ag-grid="gridOptions" class="ag-blue"></div>
-
-              <!--<table id="datasample" class="table table-bordered table-hover">-->
-                <!--<thead>-->
-                <!--<tr>-->
-                  <!--<th class="col coldef" ng-repeat="(k,v) in dataSample[0]"-->
-                      <!--ng-class="{'tag': contentModel.content[k].tag, 'bg-green': contentModel.content[k].callerRef,-->
-                      <!--'btn-alias': !!contentModel.content[k].$$alias, 'dim': contentModel.content[k].persistent===false}">-->
-                    <!--<span ng-click="showColDef(k,{})">{{v.target || k}}</span></th>-->
-                <!--</tr>-->
-                <!--</thead>-->
-                <!--<tbody>-->
-                <!--<tr ng-repeat="d in dataSample">-->
-                  <!--<td ng-repeat="(k,v) in d"><input type="text" ng-model="v" msd-elastic></td>-->
-                <!--</tr>-->
-                <!--</tbody>-->
-              <!--</table>-->
             </div>
             <p ng-show="dataSample.length>49"><i>* Only first 50 rows are displayed</i></p>
           </div>
