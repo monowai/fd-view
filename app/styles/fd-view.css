@@ -263,8 +263,8 @@ th.col.caller-ref, .ag-header-cell.caller-ref{
 th.col.alias, .ag-header-cell.alias, .btn-alias {
   background-color: #f7bf65;
 }
-th.col>span {
-  display: inline-block;
+th.col>span, .ag-click-ico {
+  /*display: inline-block;*/
   cursor: pointer;
 }
 th.col>span:after {
