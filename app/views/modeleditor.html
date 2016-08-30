@@ -49,7 +49,7 @@
               <li role="menuitem" ng-show="canSave()"><a href ng-click="save()">Save</a></li>
               <li role="menuitem" ng-show="dataSample"><a href ng-click="validate(dataSample)">Validate</a></li>
               <li role="menuitem" ng-show="validationResult"><a href ng-click="trackResult(validationResult)">Track</a></li>
-              <li role="menuitem" ng-show="csvContent || dataSample"><a href ng-click="cleanSample()">Reload Sample</a></li>
+              <li role="menuitem" ng-show="dataSample"><a href ng-click="cleanSample()">Reload Sample</a></li>
               <li class="divider" ng-show="canSave()"></li>
               <li role="menuitem"><a href ng-click="cancel()">Cancel</a></li>
             </ul>
@@ -149,13 +149,13 @@
               <div class="row">
                 <div class="col-sm-3">
                   <fieldset>
-                    <legend>Sample <button type="submit" class="btn btn-primary pull-right" ng-click="getDefault()" ng-disabled="!csvContent" ng-show="!!csvContent"><i class="fa fa-bolt"></i>&nbsp; Analyze</button></legend>
+                    <legend>Sample </legend>
                     <div class="row">
 
                       <div class="form-group">
                         <label for="data-delim" class="col-xs-4 control-label">Delimiter</label>
                         <div class="col-xs-7">
-                          <input type="text" class="form-control" id="data-delim" ng-model="delim">
+                          <input type="text" class="form-control" id="data-delim" ng-model="delim" ng-init="delim=','">
                         </div>
                       </div>
 
@@ -184,7 +184,7 @@
                   <div class="well well-sm">
                     <div class="row">
                       <div class="col-md-12">
-                        <div class="file-box" file-box="loadFile($fileContent, $fileName)"></div>
+                        <div class="file-box" file-box="loadFile($fileContent, $fileName, delim)"></div>
                       </div>
                     </div>
                   </div>

@@ -479,18 +479,12 @@ fdView.controller('EditModelCtrl', ['$scope', '$stateParams', '$window', 'toastr
       });
     };
 
-    $scope.delim=',';
     $scope.hasHeader=true;
 
-    $scope.loadFile = function(fileContent, fileName){
-      $scope.fileName = fileName;
-      $scope.csvContent = fileContent;
-    };
-
-    $scope.getDefault = function () {
+    $scope.loadFile = function(fileContent, fileName, delim){
       var data=[];
-      if ($scope.csvContent) {
-        var lines = $scope.csvContent.match(/[^\r\n]+/g);
+      if (fileContent) {
+        var lines = fileContent.match(/[^\r\n]+/g);
         var i = 0;
         while (lines[i].match(/^#.*/)) {
           lines[i]='';
@@ -499,9 +493,9 @@ fdView.controller('EditModelCtrl', ['$scope', '$stateParams', '$window', 'toastr
         var clean = lines.join('\n').trim();
 
         var parser;
-        if (this.delim==='\\t') {
+        if (delim==='\\t') {
           parser = d3.tsv;
-        } else parser = d3.dsv(this.delim, 'text/plain');
+        } else parser = d3.dsv(delim, 'text/plain');
         parser.parse(clean, function (d) {
           data.push(d);
         });
@@ -549,11 +543,9 @@ fdView.controller('EditModelCtrl', ['$scope', '$stateParams', '$window', 'toastr
       }).error(function (res) {
         toastr.error(res, 'Error');
       });
-      delete $scope.csvContent;
     };
 
     $scope.cleanSample = function () {
-      if ($scope.csvContent) delete $scope.csvContent;
       if ($scope.dataSample) delete $scope.dataSample;
     };
 
