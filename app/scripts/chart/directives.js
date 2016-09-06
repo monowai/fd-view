@@ -18,42 +18,41 @@
  *  along with FlockData.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-angular.module('ab.graph.matrix.directives', [])
+angular.module('fd.graph.matrix.directives', [])
   .directive('chordDiagram', ['$timeout', function ($timeout) {
     function drawChords(ele, matrix, mmap, scope) {
       var el = ele[0];
       var w = 1024, h = 640, r1 = h / 2, r0 = r1 - 100;
       var graphID = ele.parent()[0].id;
-      var fill = d3.scale.ordinal()
+      var fill = d3.scaleOrdinal()
         .domain(d3.range(6))
         .range(['#788b92', '#A2AC72', '#cab8a1', '#89b4fd', '#9eac74', '#f6f0ba']);
 
-      var chord = d3.layout.chord()
-        .padding(.03)
+      var chord = d3.chord()
+        .padAngle(.03)
         .sortSubgroups(d3.descending)
         .sortChords(d3.ascending);
 
-      var arc = d3.svg.arc()
+      var arc = d3.arc()
         .innerRadius(r0)
         .outerRadius(r0 + 20);
 
       d3.select('#' + graphID + ' svg').remove();
 
-      var svgP = d3.select(el).append('svg:svg');
-//            .attr('width', w)
-//            .attr('height', h);
+      var svgP = d3.select(el).append('svg:svg')
+           .attr('width', w)
+           .attr('height', h);
       var svg = svgP.append('svg:g')
-        .attr('id', 'circle');
-//            .attr('transform', 'translate(' + w / 2 + ',' + h / 2 + ')');
+        .attr('id', 'circle')
+           .attr('transform', 'translate(' + w / 2 + ',' + h / 2 + ')');
 
-      var circle = svg.append('circle');
-//                .attr('r', r0 + 20);
+      var circle = svg.append('circle')
+               .attr('r', r0 + 20);
 
       var rdr = chordRdr(matrix, mmap);
-      chord.matrix(matrix);
-
+      var chords = chord(matrix);
       var g = svg.selectAll('g.group')
-        .data(chord.groups())
+        .data(chords.groups)
         .enter().append('svg:g')
         .attr('class', 'group')
         .on('mouseover', mouseover)
@@ -94,7 +93,7 @@ angular.module('ab.graph.matrix.directives', [])
         });
 
       var chordPaths = svg.selectAll('path.chord')
-        .data(chord.chords())
+        .data(chords)
         .enter().append('svg:path')
         .attr('class', 'chord')
         .style('stroke', function (d) {
@@ -174,7 +173,7 @@ angular.module('ab.graph.matrix.directives', [])
             'translate(' + (r0 + 26) + ')' +
             (d.angle > Math.PI ? 'rotate(180)' : '');
         });
-        chordPaths.attr('d', d3.svg.chord().radius(r0));
+        chordPaths.attr('d', d3.ribbon().radius(r0));
 
       }
     }
@@ -189,7 +188,7 @@ angular.module('ab.graph.matrix.directives', [])
           if (!data || data.matrix.length === 0) {
             return
           }
-          ;
+
           drawChords(ele, data.matrix, data.mmap, scope);
         });
       }
@@ -207,10 +206,10 @@ angular.module('ab.graph.matrix.directives', [])
 
       var margin = {top: 60, right: 0, bottom: 0, left: 60}, width = 580, height = 580;
 
-      var x = d3.scale.ordinal().rangeBands([0, width]),
-        y = d3.scale.ordinal().rangeBands([height, 0]),
-        z = d3.scale.linear().domain([0, 4]).clamp(true),
-        c = d3.scale.category10().domain(d3.range(10));
+      var x = d3.scaleBand().range([0, width]),
+        y = d3.scaleBand().range([height, 0]),
+        z = d3.scaleLinear().domain([0, 4]).clamp(true),
+        c = d3.scaleOrdinal(d3.schemeCategory10).domain(d3.range(10));
       var graphID = ele.parent()[0].id;
 
       d3.select('#' + graphID + ' svg').remove();
@@ -246,7 +245,7 @@ angular.module('ab.graph.matrix.directives', [])
 
       row.append('text')
         .attr('x', -6)
-        .attr('y', x.rangeBand() / 2)
+        .attr('y', x.step() / 2)
         .attr('dy', '.32em')
         .attr('text-anchor', 'end')
         .text(function (d, i) {
@@ -266,7 +265,7 @@ angular.module('ab.graph.matrix.directives', [])
 
       column.append('text')
         .attr('x', 6)
-        .attr('y', x.rangeBand() / 2)
+        .attr('y', x.step() / 2)
         .attr('dy', '.32em')
         .attr('text-anchor', 'start')
         .text(function (d, i) {
@@ -283,8 +282,8 @@ angular.module('ab.graph.matrix.directives', [])
           .attr('x', function (d) {
             return x(d.x);
           })
-          .attr('width', x.rangeBand())
-          .attr('height', y.rangeBand())
+          .attr('width', x.step())
+          .attr('height', y.step())
           .style('fill-opacity', function (d) {
             return z(d.z);
           })
@@ -431,7 +430,7 @@ angular.module('ab.graph.matrix.directives', [])
           if (!data || data[0].dataLength === 0) {
             return
           }
-          ;
+
           var defer;
           if (data[0].dataLength > 200) {
             warnMsg($timeout, data[0].id + 'svg', defer, data[0].dataLength);
@@ -441,6 +440,98 @@ angular.module('ab.graph.matrix.directives', [])
 
       }
     };
+  }])
+  .directive('barChart', [function () {
+    'use strict';
+    var draw = function (svg, data) {
+      var margin = {top: 20, right: 20, bottom: 40, left: 40},
+          width = 960 - margin.left - margin.right,
+          height = 500 - margin.top - margin.bottom,
+
+          color = d3.scaleOrdinal(d3.schemeCategory20);
+
+      var x = d3.scaleBand().range([0, width]).padding(0.1);
+      var y = d3.scaleLinear().range([height, 0]);
+
+      svg.attr('width', width + margin.left + margin.right)
+        .attr('height', height + margin.top + margin.bottom);
+      svg.select('.data')
+        .attr('transform', 'translate('+margin.left+','+margin.top+')');
+
+      var div = d3.select('body').append('div')
+        .attr('class', 'tooltip')
+        .style('opacity', 0);
+
+      x.domain(data.map(function(d) { return d.key; }));
+      y.domain([0, d3.max(data, function (d) { return d.doc_count})]);
+
+      var bars = svg.select('.data').selectAll('rect').data(data);
+
+      bars
+        .exit().remove();
+
+      bars
+        .enter().append('rect')
+        .style('fill', function(d) { return color(d.key); })
+        .attr('x', function(d) { return x(d.key); })
+        .attr('width', x.bandwidth())
+        .attr('y', function(d) { return y(d.doc_count); })
+        .attr('height', function(d) { return height - y(d.doc_count); })
+        .on('mousemove', function(d) {
+          div.transition()
+            .duration(100)
+            .style('opacity', .9)
+            .style('height', 'auto');
+          div.html('<strong>'+d.key+'</strong><br/>'  + d.doc_count)
+            .style('left', (d3.event.pageX) + 'px')
+            .style('top', (d3.event.pageY - 28) + 'px');
+        })
+        .on('mouseout', function() {
+          div.transition()
+            .duration(500)
+            .style('opacity', 0);
+        });
+
+      bars
+        .transition()
+        .duration(500)
+        .attr('x', function(d) { return x(d.key); })
+        .attr('width', x.bandwidth())
+        .attr('y', function(d) { return y(d.doc_count); })
+        .attr('height', function(d) { return height - y(d.doc_count); });
+
+      svg.select(".x.axis")
+        .attr("transform", "translate(0," + height + ")")
+        .call(d3.axisBottom(x))
+        .selectAll("text")
+          .style("text-anchor", "end")
+          .attr("dx", "-.8em")
+          .attr("dy", ".15em")
+          .attr("transform", "rotate(-55)");
+
+      svg.select('.y.axis')
+        .call(d3.axisLeft(y));
+    };
+
+    return {
+      restrict: 'E',
+      scope: {
+        data: '='
+      },
+      compile: function (elem, attrs, transclude) {
+        var svg = d3.select(elem[0]).append('svg');
+        var data=svg.append('g').attr('class', 'data');
+          data.append('g').attr('class', 'x axis');
+          data.append('g').attr('class', 'y axis');
+
+        return function (scope, elem, attrs) {
+          scope.$watch('data', function (newVal, oldVal, scope) {
+            if(scope.data.length === 0) return;
+            draw(svg, scope.data);
+          }, true);
+        }
+      }
+    }
   }]);
 
 var warnMsg = function (timeout, graphID, defer, dataLength) {

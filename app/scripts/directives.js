@@ -637,9 +637,9 @@ angular.module('fdView.directives', [])
   .directive('statsChart', ['$filter', function ($filter) {
     function chart(element, width, height, data) {
       var radius = Math.min(width, height) / 2,
-          color = d3.scale.category20(),
+          color = d3.scaleOrdinal(d3.schemeCategory20),
           total = function() {return _.reduce(data, function (a, b) { return a+b; })},
-          pie = d3.layout.pie()
+          pie = d3.pie()
             .sort(null)
             .value(function (d) { return d.value; }),
 
@@ -649,7 +649,7 @@ angular.module('fdView.directives', [])
 
       object.render = function () {
         if (!svg) {
-          arc = d3.svg.arc()
+          arc = d3.arc()
             .outerRadius(radius)
             .innerRadius(radius - radius / 2);
           svg = element.append('svg')
@@ -915,6 +915,40 @@ angular.module('fdView.directives', [])
           ctrl.params.toRlxs = rlx;
         });
       };
+    }]
+  })
+  .component('fdAggForm', {
+    templateUrl: 'views/partials/agg-form.html',
+    controller: ['MatrixRequest', 'QueryService', function AggFormCtrl(MatrixRequest, QueryService){
+      var ctrl = this;
+      ctrl.params = MatrixRequest;
+      ctrl.aggTypes = ['Count', 'Average', 'Sum', 'Median', 'Min', 'Max'];
+      ctrl.params.aggType = MatrixRequest.aggType || 'Count';
+      ctrl.params.order = MatrixRequest.order || 'desc';
+      ctrl.params.sampleSize = 10;
+      QueryService.general('fortress').then(function (data) {
+        ctrl.params.fortresses = data;
+      });
+
+      ctrl.selectFortress = function (f) {
+        ctrl.params.fortress = f;
+        QueryService.doc(f).then(function (data) {
+          ctrl.params.documents = data;
+        });
+      };
+      ctrl.selectDocument = function (d) {;
+        if(d.length===0) return;
+        ctrl.params.document = d;
+        QueryService.fields(ctrl.params.fortress[0],d[0]).then(function (res) {
+          ctrl.params.fields = res.data.concat(res.links).concat(res.system);
+          ctrl.numFields = ctrl.params.fields.filter(function (f) {
+            return f.type !== 'string';
+          })
+        });
+      };
+      ctrl.selectAggType = function (at) {
+        if(at==='Count') delete ctrl.params.metric;
+      }
     }]
   });
 // Directives

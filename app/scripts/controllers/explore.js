@@ -42,7 +42,7 @@ fdView.controller('ExploreCtrl', ['$scope', '$http', 'MatrixRequest', '$compile'
       {name: 'dagre'}];
     $scope.layout = $scope.layouts[0];
 
-    var nodeColor = d3.scale.category20();
+    var nodeColor = d3.scaleOrdinal(d3.schemeCategory20);
 
     $scope.styles = [
       {'selector': 'node',
