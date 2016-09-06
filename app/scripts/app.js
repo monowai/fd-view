@@ -34,7 +34,7 @@ var fdView = angular.module('fdView', [
   'config',
   'fdView.directives',
   'http-auth-interceptor',
-  'ab.graph.matrix.directives',
+  'fd.graph.matrix.directives',
   'ng.jsoneditor',
   'agGrid',
   'monospaced.elastic',

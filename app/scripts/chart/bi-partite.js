@@ -24,7 +24,7 @@
   var b = 30, bb = 200, height = 600, buffMargin = 1, minHeight = 10;
   var offset = 120, txtLength = 35;
   var c1 = [-130, 40], c2 = [-50 + offset, 120 + offset], c3 = [-10 + offset, 160 + offset]; //Column positions of labels.
-  var colors = d3.scale.category20().domain(d3.range(20));
+  var colors = d3.scaleOrdinal(d3.schemeCategory20).domain(d3.range(20));
 
   bP.partData = function (data) {
     var sData = {};
