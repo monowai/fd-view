@@ -492,19 +492,14 @@ fdView.controller('EditModelCtrl', ['$scope', '$stateParams', '$window', 'toastr
         }
         var clean = lines.join('\n').trim();
 
-        var parser;
-        if (delim==='\\t') {
-          parser = d3.tsv;
-        } else parser = d3.dsv(delim, 'text/plain');
-        parser.parse(clean, function (d) {
-          data.push(d);
-        });
+        data = d3.dsvFormat(delim==='\\t' ? '\t' : delim).parse(clean);
+
       } else {
         toastr.warning('File is not loaded', 'Warning');
       }
       $scope.dataSample = data.slice(0,200);
       $scope.gridOptions = {
-        columnDefs: _.map(Object.keys($scope.dataSample[0]), function (k) {
+        columnDefs: _.map(data.columns, function (k) {
           return {field: k, headerName: k, editable: true, headerClass: function () {
             var obj = $scope.contentModel.content[k];
             if (obj) {
