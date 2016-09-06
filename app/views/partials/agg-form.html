@@ -1,0 +1,47 @@
+<div class="col-sm-6 col-md-4 col-lg-3">
+  <section class="form-group">
+    <label>Fortress</label>
+    <select class="form-control" ng-model="fortress" multiple
+            ng-options="f.name as f.name for f in $ctrl.params.fortresses"
+            ng-change="$ctrl.selectFortress(fortress)"></select>
+  </section>
+  <section class="form-group" ng-show="$ctrl.params.documents.length>0">
+    <label>Documents</label>
+    <select class="form-control" ng-model="document" multiple
+            ng-options="d.name as d.name for d in $ctrl.params.documents"
+            ng-change="$ctrl.selectDocument(document)"></select>
+  </section>
+</div>
+<div class="col-sm-6 col-md-4 col-lg-3">
+  <section class="form-group">
+    <label>Aggregation</label>
+    <select class="form-control" ng-model="$ctrl.params.aggType"
+            ng-options="at for at in $ctrl.aggTypes"
+            ng-change="$ctrl.selectAggType($ctrl.params.aggType)"></select>
+  </section>
+  <section class="form-group" ng-show="$ctrl.params.aggType!='Count' && $ctrl.params.fields.length>0">
+    <label>Metric</label>
+    <select class="form-control" ng-model="$ctrl.params.metric"
+            ng-options="f as (f.displayName || f.name) group by f.type for f in $ctrl.numFields"></select>
+  </section>
+  <section class="form-group" ng-show="$ctrl.params.fields.length>0">
+    <label>Term</label>
+    <select class="form-control" ng-model="$ctrl.params.term"
+            ng-options="f as (f.displayName || f.name) group by f.type for f in $ctrl.params.fields"></select>
+  </section>
+</div>
+<div class="col-sm-6 col-md-4 col-lg-3">
+  <section>
+    <div class="form-group col-md-6">
+      <label for="order">Order</label>
+      <select class="form-control" name="order" id="order" ng-model="$ctrl.params.order">
+        <option value="desc">Descending</option>
+        <option value="asc">Ascending</option>
+      </select>
+    </div>
+    <div class="form-group col-md-6">
+      <label for="resultSize">Sample Size</label>
+      <input type="number" min="0" class="form-control" name="resultSize" id="resultSize" ng-model="$ctrl.params.sampleSize">
+    </div>
+  </section>
+</div>

@@ -58,6 +58,11 @@ fdView.factory('QueryService', ['$http', 'configuration', function ($http, confi
         return $http.post(configuration.engineUrl() + '/api/v1/query/tagcloud/', tagCloudParams).then(function (response) {
           return response.data;
         });
+      },
+      fields: function(fortress, doctype) {
+        return $http.get(configuration.engineUrl() + '/api/v1/model/'+fortress+'/'+doctype+'/fields').then(function (response) {
+          return response.data;
+        });
       }
     };
   }]

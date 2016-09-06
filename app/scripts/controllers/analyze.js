@@ -23,6 +23,7 @@
 fdView.controller('AnalyzeCtrl', ['$scope', 'QueryService', 'MatrixRequest', '$window', '$timeout', 'toastr',
   function ($scope, QueryService, MatrixRequest, $window, $timeout, toastr) {
     $scope.matrix = MatrixRequest.lastMatrix().matrix;
+    $scope.chartTypes = ['Chord','Matrix','BiPartite','TagCloud','Barchart'];
     $scope.chartType = 'Chord';
     if(_.isEmpty($scope.matrix)) {
       angular.element('[data-target="#search"]').tab('show');
@@ -92,6 +93,39 @@ fdView.controller('AnalyzeCtrl', ['$scope', 'QueryService', 'MatrixRequest', '$w
               .start();
         });
       }
+      if($scope.chartType === 'Barchart') {
+        var terms = {
+            field: MatrixRequest.term.name,
+            size: MatrixRequest.sampleSize,
+            order: {
+              _count: MatrixRequest.order
+            }
+          },
+          query = {
+            size: 0,
+            fortress: MatrixRequest.fortress[0],
+            _type: MatrixRequest.document[0],
+            query: {query_string: { query: MatrixRequest.searchText || '*' }},
+            aggs: {
+              data : {
+                terms: terms
+              }
+            }
+          };
+
+        if (MatrixRequest.metric) {
+          var aggs = {"aggs": {"1": {"max": {"field": MatrixRequest.metric}}}};
+          aggs[MatrixRequest.aggType] = {
+
+          }
+        }
+        // console.log(query);
+        QueryService.query('es', query).then(function (res) {
+          console.log(res);
+          $scope.graphData = res.aggregations.data.buckets;
+          angular.element('[data-target="#view"]').tab('show');
+        });
+      }
       else {
         MatrixRequest.matrixSearch()
           .then(function (data) {
@@ -115,7 +149,7 @@ fdView.controller('AnalyzeCtrl', ['$scope', 'QueryService', 'MatrixRequest', '$w
 
     function draw(words) {
       jQuery('#tagCloudPrinted').empty();
-      var fill = d3.scale.category20();
+      var fill = d3.scaleOrdinal(d3.schemeCategory20);
       d3.select('#tagCloudPrinted').append('svg')
         .attr('width', 900)
         .attr('height', 600)

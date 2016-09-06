@@ -67,11 +67,6 @@ fdView.factory('EntityService', ['$http', 'configuration',
   ]
 );
 
-fdView.factory('DataSharingService', function () {
-    return {searchTerm: ''};
-  }
-);
-
 fdView.factory('Session', [
     function () {
       this.create = function (data) {
@@ -176,7 +171,6 @@ fdView.factory('AuthenticationSharedService', ['$rootScope', '$state', '$http', 
     }
   ]
 );
-
 
 fdView.factory('interceptorNgProgress', ['ngProgressFactory',function (ngProgressFactory) {
     var ngProgress = null, working = false;

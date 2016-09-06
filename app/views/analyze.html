@@ -39,11 +39,7 @@
           <div class="form-group" style="width: 180px; margin: 10px">
             <label class="col-sm-4 control-label">Type</label>
             <div class="col-sm-8">
-              <select ng-model="chartType"  ng-change="switchChart()">
-                <option value="Chord">Chord</option>
-                <option value="Matrix">Matrix</option>
-                <option value="BiPartite">BiPartite</option>
-                <option value="TagCloud">TagCloud</option>
+              <select ng-model="chartType" ng-options="c for c in chartTypes" ng-change="switchChart()">
               </select>
             </div>
           </div>
@@ -55,7 +51,8 @@
         <div class="tab-content">
           <div class="tab-pane fade" id="search">
             <fd-search search="search()">
-              <fd-matrix-form></fd-matrix-form>
+              <fd-matrix-form ng-if="chartType!='Barchart'"></fd-matrix-form>
+              <fd-agg-form ng-if="chartType=='Barchart'"></fd-agg-form>
             </fd-search>
           </div>
           <div class="tab-pane fade active in" id="view">
@@ -79,6 +76,10 @@
               </div>
               <!--Tag Cloud-->
               <div id="tagCloudPrinted" ng-show="chartType=='TagCloud'"></div>
+              <!--Count barchart-->
+              <div id="barchart" ng-show="chartType=='Barchart'">
+                <bar-chart data="graphData"></bar-chart>
+              </div>
             </div>
           </div>
         </div>

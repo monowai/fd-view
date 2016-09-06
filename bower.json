@@ -17,7 +17,7 @@
     "json3": "~3.3.2",
     "jsondiffpatch": "~0.1.43",
     "jsoneditor": "~5.5.7",
-    "d3": "~3.5.16",
+    "d3": "~4.2.2",
     "lodash": "~3.10.1",
     "ng-tags-input": "~3.1.1",
     "ngprogress": "~1.1.3",
