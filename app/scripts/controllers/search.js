@@ -70,7 +70,7 @@ fdView.controller('MetaHeaderCtrl', ['$scope', 'EntityService', '$timeout', '$an
     $scope.search = function () {
       var typesToBeSend = ctrl.types.map(function (t) { return t.name; });
 
-      $scope.sr = new SearchService(MatrixRequest.searchText || '*', ctrl.fortress, typesToBeSend, $scope.tf.disabled ? '' : $scope.tf);
+      $scope.sr = new SearchService(MatrixRequest.searchText || '*', ctrl.fortress, typesToBeSend, (!$scope.tf || $scope.tf.disabled) ? null : $scope.tf);
       $scope.sr.nextPage(function () {
         $timeout(function(){$anchorScroll('results')},100);
       });
@@ -197,12 +197,14 @@ fdView.factory('SearchService', ['EntityService', function (EntityService) {
     this.fortress = fortress;
     this.typesToBeSend = typesToBeSend;
     var query = {match:{}};
-    query.match[termFilter.name] = {
-      query: termFilter.value,
-      type: "phrase"
-    };
+    if (termFilter) {
+      query.match[termFilter.name] = {
+        query: termFilter.value,
+        type: "phrase"
+      };
 
-    this.termFilter = { bool: { must: [ { query: query }]}};
+      this.termFilter = {bool: {must: [{query: query}]}};
+    }
   };
 
   Search.prototype.nextPage = function (callback) {
