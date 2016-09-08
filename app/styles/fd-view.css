@@ -70,6 +70,53 @@ tags-input .tags .input {
     font: 13px/16px 'Open Sans', Helvetica, Arial, sans-serif;
 }
 
+.search-filter {
+  display: inline-block;
+  text-align: center;
+  padding: 4px 8px;
+  border-radius: 15px;
+}
+.search-filter.disabled {
+  opacity: 0.6;
+  background-image: -webkit-repeating-linear-gradient(135deg, transparent, transparent 10px, rgba(255, 255, 255, 0.3) 10px, rgba(255, 255, 255, 0.3) 20px);
+  background-image: repeating-linear-gradient(135deg, transparent, transparent 10px, rgba(255, 255, 255, 0.3) 10px, rgba(255, 255, 255, 0.3) 20px);
+}
+.filter-term {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: .1s linear all;
+  -webkit-transition: .1s linear all;
+}
+.search-filter:hover > .filter-term {
+  opacity: 0.1;
+  background: transparent;
+}
+.search-filter > .filter-control {
+  position: absolute;
+  padding: 4px 8px;
+  bottom: 0;
+  display: none;
+  text-align: center;
+  white-space: nowrap;
+}
+.search-filter > .filter-control > * {
+  margin-right: 5px;
+  border-right: 1px solid rgba(255, 255, 255, 0.4);
+  padding-right: 0;
+}
+.search-filter > .filter-control > *:last-child {
+  margin-right: 0;
+  border-right: 0;
+  padding-right: 0;
+}
+.filter-control a {
+  color: #fff;
+}
+.search-filter:hover > .filter-control {
+  display: inline-block;
+}
+
 .txt-color-blue {
     color: #57889c;
 }

@@ -37,6 +37,9 @@
             timer = null,
             cloud = {};
 
+        function d3_functor(v) {
+          return typeof v === "function" ? v : function() { return v; };
+        }
         cloud.start = function () {
             var board = zeroArray((size[0] >> 5) * size[1]),
                 bounds = null,
@@ -171,31 +174,31 @@
 
         cloud.font = function (x) {
             if (!arguments.length) return font;
-            font = d3.functor(x);
+            font = d3_functor(x);
             return cloud;
         };
 
         cloud.fontStyle = function (x) {
             if (!arguments.length) return fontStyle;
-            fontStyle = d3.functor(x);
+            fontStyle = d3_functor(x);
             return cloud;
         };
 
         cloud.fontWeight = function (x) {
             if (!arguments.length) return fontWeight;
-            fontWeight = d3.functor(x);
+            fontWeight = d3_functor(x);
             return cloud;
         };
 
         cloud.rotate = function (x) {
             if (!arguments.length) return rotate;
-            rotate = d3.functor(x);
+            rotate = d3_functor(x);
             return cloud;
         };
 
         cloud.text = function (x) {
             if (!arguments.length) return text;
-            text = d3.functor(x);
+            text = d3_functor(x);
             return cloud;
         };
 
@@ -207,17 +210,22 @@
 
         cloud.fontSize = function (x) {
             if (!arguments.length) return fontSize;
-            fontSize = d3.functor(x);
+            fontSize = d3_functor(x);
             return cloud;
         };
 
         cloud.padding = function (x) {
             if (!arguments.length) return padding;
-            padding = d3.functor(x);
+            padding = d3_functor(x);
             return cloud;
         };
 
-      return d3.rebind(cloud, event, 'on');
+        cloud.on = function () {
+          var value = event.on.apply(event, arguments);
+          return value === event ? cloud : value;
+        };
+
+      return cloud; // d3.rebind(cloud, event, 'on');
     }
 
     function cloudText(d) {

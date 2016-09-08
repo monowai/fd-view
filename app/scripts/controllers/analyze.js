@@ -20,16 +20,17 @@
 
 'use strict';
 
-fdView.controller('AnalyzeCtrl', ['$scope', 'QueryService', 'MatrixRequest', '$window', '$timeout', 'toastr',
-  function ($scope, QueryService, MatrixRequest, $window, $timeout, toastr) {
-    $scope.matrix = MatrixRequest.lastMatrix().matrix;
+fdView.controller('AnalyzeCtrl', ['$scope', 'QueryService', 'MatrixRequest', 'SearchService', '$window', '$timeout', 'toastr',
+  function ($scope, QueryService, MatrixRequest, SearchService, $window, $timeout, toastr) {
+    $scope.graphData = MatrixRequest.lastMatrix().matrix;
     $scope.chartTypes = ['Chord','Matrix','BiPartite','TagCloud','Barchart'];
-    $scope.chartType = 'Chord';
-    if(_.isEmpty($scope.matrix)) {
+    $scope.chartType = MatrixRequest.chart || 'Chord';
+    if(_.isEmpty($scope.graphData) && _.isEmpty(MatrixRequest.aggData)) {
       angular.element('[data-target="#search"]').tab('show');
       $scope.graphData = [];
+    } else if (MatrixRequest.aggData && $scope.chartType==='Barchart') {
+      $scope.aggData = MatrixRequest.aggData;
     } else {
-      $scope.graphData=$scope.matrix;
       if(MatrixRequest.reciprocalExcluded() && !MatrixRequest.sharedChecked()) {
         $scope.chartType = 'BiPartite';
       }
@@ -39,7 +40,7 @@ fdView.controller('AnalyzeCtrl', ['$scope', 'QueryService', 'MatrixRequest', '$w
     }
 
     var checkOptions = function () {
-      if (!$scope.matrix) return;
+      if (!$scope.graphData) return;
       if ((($scope.chartType === 'Chord'  || $scope.chartType === 'TagCloud') &&
         (MatrixRequest.reciprocalExcluded() && !MatrixRequest.sharedChecked())) ||
         (($scope.chartType === 'Matrix'  || $scope.chartType === 'BiPartite') &&
@@ -121,8 +122,11 @@ fdView.controller('AnalyzeCtrl', ['$scope', 'QueryService', 'MatrixRequest', '$w
         }
         // console.log(query);
         QueryService.query('es', query).then(function (res) {
-          console.log(res);
-          $scope.graphData = res.aggregations.data.buckets;
+          $scope.aggData = res.aggregations.data.buckets;
+          MatrixRequest.aggData = angular.copy($scope.aggData);
+          SearchService.fortress = MatrixRequest.fortress;
+          SearchService.types = [MatrixRequest.document];
+          SearchService.term = MatrixRequest.term;
           angular.element('[data-target="#view"]').tab('show');
         });
       }
@@ -176,6 +180,7 @@ fdView.controller('AnalyzeCtrl', ['$scope', 'QueryService', 'MatrixRequest', '$w
 
     $scope.switchChart = function () {
       checkOptions();
+      MatrixRequest.chart = $scope.chartType;
       if ($scope.chartType === 'Chord' && !$scope.cdData) {
         $scope.cdData = constructChordData($scope.graphData);
       } else if ($scope.chartType === 'Matrix' && !$scope.coData && $scope.coMgr) {
