@@ -33,7 +33,7 @@ fdView.controller('MetaHeaderCtrl', ['$scope', 'EntityService', '$timeout', '$an
     $scope.logsResults = [];
     $scope.selectedLog = [];
     $scope.fragments = [];
-    ctrl.fortress = SearchService.fortress || '';
+    ctrl.fortress = SearchService.fortress ? SearchService.fortress[0] : '';
     ctrl.types = SearchService.types ? SearchService.types.map(function (t) { return {name: t}; }) : [];
 
     $scope.tf = SearchService.term;

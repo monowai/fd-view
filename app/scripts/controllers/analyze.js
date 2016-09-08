@@ -125,7 +125,7 @@ fdView.controller('AnalyzeCtrl', ['$scope', 'QueryService', 'MatrixRequest', 'Se
           $scope.aggData = res.aggregations.data.buckets;
           MatrixRequest.aggData = angular.copy($scope.aggData);
           SearchService.fortress = MatrixRequest.fortress;
-          SearchService.types = [MatrixRequest.document];
+          SearchService.types = MatrixRequest.document;
           SearchService.term = MatrixRequest.term;
           angular.element('[data-target="#view"]').tab('show');
         });
