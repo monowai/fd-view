@@ -50,12 +50,28 @@
             </div>
           </div>
           <div class="col-md-6">
-            <label for="types">Types</label>
-            <tags-input id="types" type="text" placeholder="Types..." ng-model="$ctrl.types" key-property="name" display-property="name">
+            <label>Types</label>
+            <tags-input type="text" placeholder="Types..." ng-model="$ctrl.types" key-property="name" display-property="name">
               <auto-complete source="loadTypes($ctrl.fortress)" min-length="1"></auto-complete>
             </tags-input>
           </div>
           </fd-search>
+          <div class="col-md-12" ng-show="tf">
+            <label>Filter</label>
+            <br>
+            <div class="search-filter bg-light-blue-active" ng-class="{'disabled' : tf.disabled}">
+              <div class="filter-term">
+                <span>{{tf.name}}</span> : <span>{{tf.value}}</span>
+              </div>
+              <div class="filter-control">
+                <a href ng-click="tf.disabled=!tf.disabled">
+                  <i class="fa fa-check-square-o" ng-hide="tf.disabled" uib-tooltip="disable"></i>
+                  <i class="fa fa-square-o" ng-show="tf.disabled" uib-tooltip="enable"></i>
+                </a>
+                <a href ng-click="tf=null;"><i class="fa fa-trash" uib-tooltip="delete"></i></a>
+              </div>
+            </div>
+          </div>
         </div>
       </div><!-- /.box -->
     </div>

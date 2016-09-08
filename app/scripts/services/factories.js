@@ -379,7 +379,7 @@ fdView.factory('QueryService', ['$http', 'configuration', function ($http, confi
 
 }])
 
-.service('MatrixRequest', ['$http', 'configuration', function ($http, configuration) {
+.service('MatrixRequest', ['$http', '$q', 'configuration', function ($http, $q, configuration) {
   var lastMatrixQuery={}, lastMatrixResult={};
 
   this.minCount = 1;
@@ -409,24 +409,28 @@ fdView.factory('QueryService', ['$http', 'configuration', function ($http, confi
       reciprocalExcluded: this.reciprocalExcludedChecked,
       byKey: true
     };
-    if(angular.equals(dataParam, lastMatrixQuery)) return lastMatrixResult;
-    lastMatrixQuery = angular.copy(dataParam);
-    var promise = $http.post(configuration.engineUrl() + '/api/v1/query/matrix/', dataParam).then(function (response) {
-      lastMatrixResult = angular.copy(response.data);
-      lastMatrixResult.matrix = _.map(lastMatrixResult.edges, function (edge) {
-        return {
-          count: edge.data.count,
-          source: _.find(lastMatrixResult.nodes, function (node) {
-            return node.data.id === edge.data.source;
-          }).data.name,
-          target: _.find(lastMatrixResult.nodes, function (node) {
-            return node.data.id === edge.data.target;
-          }).data.name
-        }
+    if(angular.equals(dataParam, lastMatrixQuery)) {
+      var deferred = $q.defer();
+      deferred.resolve(lastMatrixResult);
+      return deferred.promise;
+    } else {
+      lastMatrixQuery = angular.copy(dataParam);
+      return $http.post(configuration.engineUrl() + '/api/v1/query/matrix/', dataParam).then(function (response) {
+        lastMatrixResult = angular.copy(response.data);
+        lastMatrixResult.matrix = _.map(lastMatrixResult.edges, function (edge) {
+          return {
+            count: edge.data.count,
+            source: _.find(lastMatrixResult.nodes, function (node) {
+              return node.data.id === edge.data.source;
+            }).data.name,
+            target: _.find(lastMatrixResult.nodes, function (node) {
+              return node.data.id === edge.data.target;
+            }).data.name
+          }
+        });
+        return lastMatrixResult;
       });
-      return lastMatrixResult;
-    });
-    return promise;
+    }
   };
   this.sharedChecked = function () {
     return lastMatrixQuery.toRlxs===lastMatrixQuery.fromRlxs;

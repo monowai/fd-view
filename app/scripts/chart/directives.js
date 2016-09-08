@@ -441,7 +441,7 @@ angular.module('fd.graph.matrix.directives', [])
       }
     };
   }])
-  .directive('barChart', [function () {
+  .directive('barChart', ['$state', 'SearchService', function ($state, SearchService) {
     'use strict';
     var draw = function (svg, data) {
       var margin = {top: 20, right: 20, bottom: 40, left: 40},
@@ -477,6 +477,13 @@ angular.module('fd.graph.matrix.directives', [])
         .attr('width', x.bandwidth())
         .attr('y', function(d) { return y(d.doc_count); })
         .attr('height', function(d) { return height - y(d.doc_count); })
+        .on("mouseover", function(d, i) {
+          svg.selectAll("rect").transition()
+            .duration(250)
+            .attr("opacity", function(d, j) {
+              return j != i ? 0.6 : 1;
+            })
+        })
         .on('mousemove', function(d) {
           div.transition()
             .duration(100)
@@ -490,6 +497,15 @@ angular.module('fd.graph.matrix.directives', [])
           div.transition()
             .duration(500)
             .style('opacity', 0);
+          svg.selectAll("rect")
+            .transition()
+            .duration(250)
+            .attr("opacity", "1");
+        })
+        .on('click', function (d) {
+          div.remove();
+          SearchService.term.value = d.key;
+          $state.go('search');
         });
 
       bars
@@ -526,7 +542,7 @@ angular.module('fd.graph.matrix.directives', [])
 
         return function (scope, elem, attrs) {
           scope.$watch('data', function (newVal, oldVal, scope) {
-            if(scope.data.length === 0) return;
+            if(!scope.data) return;
             draw(svg, scope.data);
           }, true);
         }

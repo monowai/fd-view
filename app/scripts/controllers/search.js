@@ -33,7 +33,10 @@ fdView.controller('MetaHeaderCtrl', ['$scope', 'EntityService', '$timeout', '$an
     $scope.logsResults = [];
     $scope.selectedLog = [];
     $scope.fragments = [];
-    ctrl.types = [];
+    ctrl.fortress = SearchService.fortress || '';
+    ctrl.types = SearchService.types ? SearchService.types.map(function (t) { return {name: t}; }) : [];
+
+    $scope.tf = SearchService.term;
 
     $scope.openGraphExplorer = function (entityKey) {
       EntityService.getEntityPK(entityKey).then(function (id) {
@@ -65,12 +68,9 @@ fdView.controller('MetaHeaderCtrl', ['$scope', 'EntityService', '$timeout', '$an
     };
 
     $scope.search = function () {
-      var typesToBeSend = [];
-      for (var type in ctrl.types) {
-        typesToBeSend.push(ctrl.types[type].text);
-      }
+      var typesToBeSend = ctrl.types.map(function (t) { return t.name; });
 
-      $scope.sr = new SearchService(MatrixRequest.searchText, ctrl.fortress, typesToBeSend);
+      $scope.sr = new SearchService(MatrixRequest.searchText || '*', ctrl.fortress, typesToBeSend, $scope.tf.disabled ? '' : $scope.tf);
       $scope.sr.nextPage(function () {
         $timeout(function(){$anchorScroll('results')},100);
       });
@@ -188,7 +188,7 @@ var ModalInstanceSingleLogCtrl = ['$scope', '$uibModalInstance', 'log1', functio
 }];
 
 fdView.factory('SearchService', ['EntityService', function (EntityService) {
-  var Search = function (searchText, fortress, typesToBeSend) {
+  var Search = function (searchText, fortress, typesToBeSend, termFilter) {
     this.entities = [];
     this.busy = false;
     this.index=0;
@@ -196,13 +196,20 @@ fdView.factory('SearchService', ['EntityService', function (EntityService) {
     this.searchText = searchText;
     this.fortress = fortress;
     this.typesToBeSend = typesToBeSend;
+    var query = {match:{}};
+    query.match[termFilter.name] = {
+      query: termFilter.value,
+      type: "phrase"
+    };
+
+    this.termFilter = { bool: { must: [ { query: query }]}};
   };
 
   Search.prototype.nextPage = function (callback) {
     if (this.busy || this.index===this.total) return;
     this.busy = true;
 
-    EntityService.search(this.searchText, this.fortress, this.typesToBeSend, this.index)
+    EntityService.search(this.searchText, this.fortress, this.typesToBeSend, this.index, this.termFilter)
       .then(function (data) {
         angular.forEach(data.results, function (d) {
           d.resources = [];

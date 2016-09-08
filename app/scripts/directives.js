@@ -844,7 +844,7 @@ angular.module('fdView.directives', [])
     transclude: true,
     template: '<form class="panel" ng-submit="$ctrl.search()">\
         <div class="input-group">\
-          <input type="search" class="form-control" value="*" placeholder="Select criteria before applying a filter ..." ng-model="$ctrl.req.searchText"\
+          <input type="search" class="form-control" placeholder="Select criteria before applying a filter ..." ng-model="$ctrl.req.searchText"\
                  size="100" autocomplete="on" autofocus/>\
           <div class="input-group-btn">\
             <button type="submit" class="btn btn-primary">\
