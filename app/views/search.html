@@ -21,8 +21,8 @@
 <!-- Content Header (Page header) -->
 <section class="content-header">
   <h1>
-    Search
-    <small>database entities</small>
+    Search Content
+    <small></small>
   </h1>
   <ol class="breadcrumb">
     <li><a ui-sref="welcome"><i class="fa fa-home"></i> Home</a></li>
@@ -36,7 +36,6 @@
     <div class="col-md-10">
       <div class="box box-primary">
         <div class="box-header with-border">
-          <h3 class="box-title">Search documents</h3>
           <div class="box-tools pull-right">
             <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
           </div><!-- /.box-tools -->
@@ -45,7 +44,7 @@
           <fd-search search="search()">
           <div class="col-md-6">
             <div class="form-group">
-              <label for="fortress">Fortress</label>
+              <label for="fortress">Data Provider</label>
               <fortress-input id="fortress" model="$ctrl.fortress" autocomplete="off"></fortress-input>
             </div>
           </div>
@@ -56,7 +55,7 @@
             </tags-input>
           </div>
           </fd-search>
-          <div class="col-md-12" ng-show="tf">
+          <div class="col-md-12" ng-show="!!tf">
             <label>Filter</label>
             <br>
             <div class="search-filter bg-light-blue-active" ng-class="{'disabled' : tf.disabled}">

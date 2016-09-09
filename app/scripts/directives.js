@@ -580,7 +580,7 @@ angular.module('fdView.directives', [])
         model: '=',
         class: '@'
       },
-      template: '<input type="text" class="form-control {{class}}" ng-model="model" placeholder="Data Provider" \
+      template: '<input type="text" class="form-control {{class}}" ng-model="model" placeholder="Optional System" \
         uib-typeahead="f.name as f.name for f in fortresses | filter:$viewValue">',
       link: function (scope, element, attrs) {
         QueryService.general('fortress').then(function (data) {
@@ -844,7 +844,7 @@ angular.module('fdView.directives', [])
     transclude: true,
     template: '<form class="panel" ng-submit="$ctrl.search()">\
         <div class="input-group">\
-          <input type="search" class="form-control" placeholder="Select criteria before applying a filter ..." ng-model="$ctrl.req.searchText"\
+          <input type="search" class="form-control" placeholder="Text to search for ..." ng-model="$ctrl.req.searchText"\
                  size="100" autocomplete="on" autofocus/>\
           <div class="input-group-btn">\
             <button type="submit" class="btn btn-primary">\
