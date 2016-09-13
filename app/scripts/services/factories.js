@@ -393,14 +393,19 @@ fdView.factory('QueryService', ['$http', 'configuration', function ($http, confi
     function ConceptModalCtrl($uibModalInstance, $http, configuration, fortress) {
       var ctrl = this;
       ctrl.title = fortress.name;
-      ctrl.layout = {name: 'dagre'};
+      ctrl.layouts = [{name: 'dagre'},
+        {name: 'circle'}, {name: 'cose'},
+        {name: 'grid'}, {name: 'concentric'},
+        {name: 'random'}, {name: 'breadthfirst'} ];
+      ctrl.layout = ctrl.layouts[0];
+
       ctrl.styles = [
         {
           'selector': 'node',
           'css': {
             'content': 'data(name)',
             // 'font-size': '12pt',
-            // 'min-zoomed-font-size': '9pt',
+            'min-zoomed-font-size': '9pt',
             'text-halign': 'center',
             'text-valign': 'center',
             'color': '#222D32',
@@ -419,9 +424,12 @@ fdView.factory('QueryService', ['$http', 'configuration', function ($http, confi
           'selector': 'edge',
           'css': {
             'content': 'data(relationship)',
-            'width': 5,
-            'target-arrow-color': '#ccc',
-            'target-arrow-shape': 'triangle'
+            'width': 2,
+            'color': '#fff',
+            'line-color': '#888',
+            'target-arrow-color': '#888',
+            'target-arrow-shape': 'triangle',
+            'edge-text-rotation': 'autorotate'
           }
         },
         {
@@ -434,13 +442,33 @@ fdView.factory('QueryService', ['$http', 'configuration', function ($http, confi
             'text-outline-width': 2,
             'text-outline-color': '#888'
           }
+        },
+        {
+          'selector': 'node:selected',
+          'css': {
+            'border-width': 2,
+            'border-color': '#888'
+          }
         }
       ];
       $http.get(configuration.engineUrl()+'/api/v1/concept/'+fortress.name+'/structure/').then(function (res) {
         ctrl.conceptGraph = res.data;
       });
 
+
+
       ctrl.qtip = function () {
+        var id = this.data('id'),
+            edges = ctrl.conceptGraph.edges;
+        if (this.data().label==='Concept') {
+          return _(edges)
+            .filter({target: id})
+            .map(function (e) { return e.data.relationship})
+            .uniq()
+            .reduce(function (s, r) {
+              return s + '<br>' + r ;
+            }, '<strong>'+this.data('name')+':</strong>');
+        }
         return this.data().label || this.data().relationship;
       };
 

@@ -177,6 +177,13 @@ div.tooltip {
 
 .concept-explorer {
   background: rgba(0,0,0,0.4);
+  position: relative;
+}
+.layout-select {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  z-index: 999;
 }
 .file-box {
     font-size: 1.25rem;
