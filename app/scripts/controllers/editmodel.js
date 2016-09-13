@@ -33,9 +33,7 @@ fdView.controller('EditModelCtrl', ['$scope', '$stateParams', '$window', 'toastr
     $scope.getAllModels = function () {
       return ContentModel.getAll().then(function (res) {
         $scope.allModels = res.data;
-        $scope.tagModels = _.filter(res.data, function (m) {
-          return m.documentType==='TagModel';
-        });
+        $scope.tagModels = _.filter(res.data, {documentType: 'TagModel'});
       });
     };
 
@@ -278,7 +276,7 @@ fdView.controller('EditModelCtrl', ['$scope', '$stateParams', '$window', 'toastr
     ];
     $scope.layouts = [{name: 'circle'}, {name: 'cose'},
       {name: 'grid'}, {name: 'concentric'},
-      {name: 'random'}, {name: 'breadthfirst'}];
+      {name: 'random'}, {name: 'breadthfirst'}, {name: 'dagre'}];
     $scope.layout = $scope.layouts[0];
     $scope.nodes = [];
     $scope.qtip = function () { return this.data().code; };

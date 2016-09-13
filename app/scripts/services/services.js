@@ -139,9 +139,8 @@ fdView.factory('AuthenticationSharedService', ['$rootScope', '$state', '$http', 
           }
 
           var isAuthorized = false;
-          angular.forEach(authorizedRoles, function (authorizedRole) {
-            var authorized = (!!Session.login &&
-            Session.userRoles.indexOf(authorizedRole) !== -1);
+          _.forEach(authorizedRoles, function (authorizedRole) {
+            var authorized = (!!Session.login && Session.userRoles.includes(authorizedRole));
 
             if (authorized || authorizedRole === '*') {
               isAuthorized = true;

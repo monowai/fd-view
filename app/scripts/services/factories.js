@@ -379,6 +379,77 @@ fdView.factory('QueryService', ['$http', 'configuration', function ($http, confi
 
 }])
 
+.service('ConceptModal', ['modalService', function (modalService) {
+  this.display = function (fortress) {
+    modalService.show({
+      size: 'lg',
+      templateUrl: 'views/partials/concept-modal.html',
+      controller: ['$uibModalInstance', '$http', 'configuration', 'fortress', ConceptModalCtrl],
+      controllerAs: 'ctrl',
+      resolve: {
+        fortress: function () {return fortress; }
+      }
+    });
+    function ConceptModalCtrl($uibModalInstance, $http, configuration, fortress) {
+      var ctrl = this;
+      ctrl.title = fortress.name;
+      ctrl.layout = {name: 'dagre'};
+      ctrl.styles = [
+        {
+          'selector': 'node',
+          'css': {
+            'content': 'data(name)',
+            // 'font-size': '12pt',
+            // 'min-zoomed-font-size': '9pt',
+            'text-halign': 'center',
+            'text-valign': 'center',
+            'color': '#222D32',
+            'background-color': '#499ef5',
+            'width': '120',
+            'height': '55'
+          }
+        },
+        {
+          'selector': 'node[label="Concept"]',
+          'css': {
+            'background-color': '#ff7701'
+          }
+        },
+        {
+          'selector': 'edge',
+          'css': {
+            'content': 'data(relationship)',
+            'width': 5,
+            'target-arrow-color': '#ccc',
+            'target-arrow-shape': 'triangle'
+          }
+        },
+        {
+          'selector': ':selected',
+          'css': {
+            'background-color': 'f2b871',
+            'line-color': 'black',
+            'target-arrow-color': 'black',
+            'source-arrow-color': 'black',
+            'text-outline-width': 2,
+            'text-outline-color': '#888'
+          }
+        }
+      ];
+      $http.get(configuration.engineUrl()+'/api/v1/concept/'+fortress.name+'/structure/').then(function (res) {
+        ctrl.conceptGraph = res.data;
+      });
+
+      ctrl.qtip = function () {
+        return this.data().label || this.data().relationship;
+      };
+
+      ctrl.close = $uibModalInstance.dismiss;
+
+    }
+  }
+}])
+
 .service('MatrixRequest', ['$http', '$q', 'configuration', function ($http, $q, configuration) {
   var lastMatrixQuery={}, lastMatrixResult={};
 

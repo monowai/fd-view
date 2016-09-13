@@ -35,7 +35,7 @@ fdView.controller('AdminCtrl', ['$scope', '$state', '$rootScope', '$http', 'moda
     };
 
     $scope.allowEdit = function (profile) {
-      return profile.userRoles.indexOf('ROLE_FD_ADMIN')>-1 && !profile.apiKey;
+      return profile.userRoles.includes('ROLE_FD_ADMIN') && !profile.apiKey;
     };
 
     $scope.editProfile = function (profile) {
@@ -55,8 +55,8 @@ fdView.controller('AdminCtrl', ['$scope', '$state', '$rootScope', '$http', 'moda
     };
   }]);
 
-fdView.controller('AdminFortressCtrl', ['$scope', '$rootScope', 'QueryService', 'AuthenticationSharedService', '$state', '$http', '$timeout', 'modalService', 'configuration', 'USER_ROLES',
-  function ($scope, $rootScope, QueryService, AuthenticationSharedService, $state, $http, $timeout, modalService, configuration, USER_ROLES) {
+fdView.controller('AdminFortressCtrl', ['$scope', '$rootScope', 'QueryService', 'AuthenticationSharedService', '$state', '$http', '$timeout', 'modalService', 'ConceptModal', 'configuration', 'USER_ROLES',
+  function ($scope, $rootScope, QueryService, AuthenticationSharedService, $state, $http, $timeout, modalService, ConceptModal, configuration, USER_ROLES) {
 
     QueryService.general('fortress').then(function (data) {
       $scope.fortresses = data;
@@ -73,6 +73,10 @@ fdView.controller('AdminFortressCtrl', ['$scope', '$rootScope', 'QueryService', 
         $scope.documents = data;
         $scope.isOpen = false;
       });
+    };
+
+    $scope.openConcept = function (fortress) {
+      ConceptModal.display(fortress);
     };
 
     $scope.next = function () {

@@ -1,0 +1,11 @@
+<div class="modal-header">
+  <button type="button" class="close" data-dismiss="modal" aria-label="Close" ng-click="ctrl.close()">
+    <span aria-hidden="true">&times;</span></button>
+  <h4 class="modal-title">{{ctrl.title}} concept structure</h4>
+</div>
+<div class="modal-body">
+  <cytoscape class="concept-explorer" elements="ctrl.conceptGraph" layout="ctrl.layout" styles="ctrl.styles" ng-height="300" qtip="ctrl.qtip"></cytoscape>
+</div>
+<div class="modal-footer">
+  <button type="button" class="btn btn-primary" ng-click="ctrl.close()">Ok</button>
+</div>

@@ -627,7 +627,7 @@
                 <legend>'{{entity}}' Relationships  &nbsp;<button type="button" class="btn btn-sm btn-primary" uib-tooltip="Add new" ng-click="addEntityRel()"><i class="fa fa-plus"></i></button></legend>
 
                 <uib-accordion class="box-group">
-                  <uib-accordion-group ng-repeat="link in cd.entityTagLinks" class="box box-solid fader" ng-init="isOpen = $last" is-open="isOpen">
+                  <div uib-accordion-group ng-repeat="link in cd.entityTagLinks" class="box box-solid fader" ng-init="isOpen = $last" is-open="isOpen">
                     <uib-accordion-heading>
                       <div class="box-title" >{{link.relationshipName}} <i class="pull-right glyphicon" ng-class="isOpen ? 'glyphicon-chevron-down' : 'glyphicon-chevron-right'"></i></div>
                     </uib-accordion-heading>
@@ -692,7 +692,7 @@
                         </fieldset>
                       </div>
                     </div>
-                  </uib-accordion-group>
+                  </div>
                 </uib-accordion>
               </fieldset>
             </div>
