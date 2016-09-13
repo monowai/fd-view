@@ -22,7 +22,6 @@
       <h3 class="box-title">{{fortress.name}}</h3>
 
       <div class="box-tools pull-right">
-        <button type="button" class="btn btn-box-tool" uib-tooltip="Concept Structure" ng-click="openConcept(fortress)"><i class="fa fa-share-alt"></i></button>
         <button type="button" class="btn btn-box-tool" uib-tooltip="Previous" ng-click="previous()"><i class="fa fa-chevron-left"></i></button>
         <button type="button" class="btn btn-box-tool" uib-tooltip="Next" ng-click="next()"><i class="fa fa-chevron-right"></i></button>
       </div>
@@ -32,7 +31,7 @@
         <div class="box-tools pull-right">
           <button type="button" class="btn btn-default btn-sm" uib-tooltip="Create DocType" ng-click="editType()" ng-show="typeOpen"><i class="fa fa-lg fa-plus"></i></button>
           <div class="btn-group">
-            <button type="button" class="btn btn-default btn-sm" uib-tooltip="Analyze" ng-click="analyzeFortress(fortress)"><i class="fa fa-lg fa-search"></i></button>
+            <button type="button" class="btn btn-default btn-sm" uib-tooltip="Analyze" ng-click="openConcept(fortress)"><i class="fa fa-lg fa-search"></i></button>
             <button type="button" class="btn btn-default btn-sm" uib-tooltip="Reindex" ng-click="rebuildFortress(fortress)" ng-if="isAdmin()"><i class="fa fa-lg fa-recycle"></i></button>
             <button type="button" class="btn btn-default btn-sm" uib-tooltip="Delete" ng-click="deleteFortress(fortress)" ng-if="isAdmin()"><i class="fa fa-lg fa-trash"></i></button>
           </div>
