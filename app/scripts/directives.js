@@ -211,7 +211,7 @@ angular.module('fdView.directives', [])
         elements: '=',
         styles: '=',
         layout: '=',
-        selectedNodes: '=',
+        selectedNodes: '=?',
         highlightByName: '=',
         onComplete: '=',
         onChange: '=',
@@ -390,7 +390,7 @@ angular.module('fdView.directives', [])
                     var doHighlight = function(i, node) {
                       var currentName = node.data().name.toLowerCase()
                         .trim();
-                      if (currentName.indexOf(cleanName) > -1)
+                      if (currentName.includes(cleanName))
                         node.removeClass('searched');
                     };
                     cy.nodes().each(doHighlight);
@@ -793,6 +793,8 @@ angular.module('fdView.directives', [])
       <div class="box-header with-border">\
         <h3 class="box-title">{{$ctrl.fortress.name}}</h3>\
         <div class="box-tools pull-right">\
+          <button type="button" class="btn btn-box-tool" uib-tooltip="Concept Structure" ng-click="$ctrl.openConcept($ctrl.fortress)">\
+          <i class="fa fa-share-alt"></i></button>\
           <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse">\
           <i class="fa fa-minus"></i></button>\
           <button type="button" class="btn btn-box-tool" data-widget="remove" data-toggle="tooltip" title="Remove">\
@@ -803,7 +805,7 @@ angular.module('fdView.directives', [])
         <stats-chart data="$ctrl.chartData"></stats-chart></div>\
       </div>\
     </div>',
-    controller: ['QueryService', function FortStatCtrl(QueryService) {
+    controller: ['QueryService', 'ConceptModal', function FortStatCtrl(QueryService, ConceptModal) {
       var ctrl = this;
       var payload = {
         'size': 0,
@@ -833,6 +835,10 @@ angular.module('fdView.directives', [])
             ctrl.show = true;
           } else ctrl.show=false;
         });
+      };
+
+      ctrl.openConcept = function(fortress) {
+        ConceptModal.display(fortress);
       };
     }],
     bindings: {
@@ -896,7 +902,7 @@ angular.module('fdView.directives', [])
       ctrl.selectAllFromRlx = function () {
         var filtered = filter(ctrl.params.fromRlxs);
 
-        angular.forEach(filtered, function (item) {
+        _.forEach(filtered, function (item) {
           item.selected = true;
         });
       };

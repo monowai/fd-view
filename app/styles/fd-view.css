@@ -175,6 +175,9 @@ div.tooltip {
   display: block;
 }
 
+.concept-explorer {
+  background: rgba(0,0,0,0.4);
+}
 .file-box {
     font-size: 1.25rem;
     text-align: center;

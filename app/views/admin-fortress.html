@@ -22,8 +22,9 @@
       <h3 class="box-title">{{fortress.name}}</h3>
 
       <div class="box-tools pull-right">
-        <button type="button" class="btn btn-box-tool" data-toggle="tooltip" title="" data-original-title="Previous" ng-click="previous()"><i class="fa fa-chevron-left"></i></button>
-        <button type="button" class="btn btn-box-tool" data-toggle="tooltip" title="" data-original-title="Next" ng-click="next()"><i class="fa fa-chevron-right"></i></button>
+        <button type="button" class="btn btn-box-tool" uib-tooltip="Concept Structure" ng-click="openConcept(fortress)"><i class="fa fa-share-alt"></i></button>
+        <button type="button" class="btn btn-box-tool" uib-tooltip="Previous" ng-click="previous()"><i class="fa fa-chevron-left"></i></button>
+        <button type="button" class="btn btn-box-tool" uib-tooltip="Next" ng-click="next()"><i class="fa fa-chevron-right"></i></button>
       </div>
     </div>
     <div class="box-body">
@@ -41,7 +42,7 @@
         <h5><b>Root Index: </b>{{fortress.indexName}}</h5>
       </div>
       <uib-accordion class="box-group">
-        <uib-accordion-group ng-repeat="d in documents" class="box box-solid fader" is-open="isOpen">
+        <div uib-accordion-group ng-repeat="d in documents" class="box box-solid fader" is-open="isOpen">
           <uib-accordion-heading>
             <div class="box-title" ng-click="selectDocType(d)">{{d.name}} <i class="pull-right glyphicon" ng-class="isOpen ? 'glyphicon-chevron-down' : 'glyphicon-chevron-right'"></i></div>
           </uib-accordion-heading>
@@ -70,7 +71,7 @@
               </div>
             </div>
           </div>
-        </uib-accordion-group>
+        </div>
       </uib-accordion>
     </div>
   </div>

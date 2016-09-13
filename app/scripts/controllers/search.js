@@ -214,7 +214,7 @@ fdView.factory('SearchService', ['EntityService', function (EntityService) {
 
     EntityService.search(this.searchText, this.fortress, this.typesToBeSend, this.index, this.termFilter)
       .then(function (data) {
-        angular.forEach(data.results, function (d) {
+        _.forEach(data.results, function (d) {
           d.resources = [];
           var uniqueList = [];
           _.find(d.fragments, function (ele, k) {
