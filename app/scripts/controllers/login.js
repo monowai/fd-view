@@ -22,8 +22,30 @@
  * Created by Nabil on 09/08/2014.
  */
 
-fdView.controller('LoginCtrl', ['$scope', '$stateParams', 'AuthenticationSharedService',
-  function ($scope, $stateParams, AuthenticationSharedService) {
+"use strict";
+
+fdView.controller('LoginCtrl', ['$scope', '$http', '$interval', '$stateParams', 'AuthenticationSharedService', 'configuration',
+  function ($scope, $http, $interval, $stateParams, AuthenticationSharedService, configuration) {
+    var ping = $interval(function () {
+      $http({
+        method: 'GET',
+        url: configuration.engineUrl()+'/api/ping/',
+        transformResponse: []
+      }).then(function () {
+          stopPing();
+        },function () {
+          $scope.failed = true;
+        });
+    }, 5000);
+
+    var stopPing = function () {
+      if (angular.isDefined(ping)){
+        $interval.cancel(ping);
+        ping = undefined;
+        $scope.failed = undefined;
+      }
+    };
+
     $scope.login = function () {
       AuthenticationSharedService.login($scope.username, $scope.password)
         .then(function (res) {
@@ -31,17 +53,13 @@ fdView.controller('LoginCtrl', ['$scope', '$stateParams', 'AuthenticationSharedS
         });
     };
 
-    $scope.$on('event:auth-loginRequired', function () {
-      if ($scope.username || $scope.password) {
-        $scope.message = 'Login Error: The Username or Password you entered is incorrect.';
-      }
-    });
-    $scope.$on('event:auth-notAuthorized', function () {
-      $scope.message = 'Login Error: Forbidden';
-    });
-
     $scope.logout = function () {
       AuthenticationSharedService.logout();
     };
+
+    $scope.$on('$destroy', function () {
+      stopPing();
+    })
+
 
 }]);

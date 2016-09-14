@@ -24,7 +24,12 @@
   </div>
   <!-- /.login-logo -->
   <div class="login-box-body">
-    <p class="login-box-msg">Sign in to start your session</p>
+    <p class="login-box-msg">Sign in to start your session
+      <span>
+        <i class="fa fa-times text-danger" ng-show="failed" uib-tooltip="Connection problem"></i>
+        <i class="fa fa-check text-success" ng-hide="failed" uib-tooltip="Connection established"></i>
+      </span></p>
+
 
     <form ng-submit="login()">
       <div class="form-group has-feedback">
@@ -37,7 +42,7 @@
       </div>
       <div class="row">
         <div class="col-xs-4 pull-right">
-          <button type="submit" class="btn btn-primary btn-block btn-flat">Sign In</button>
+          <button type="submit" class="btn btn-primary btn-block btn-flat" ng-disabled="failed">Sign In</button>
         </div>
         <!-- /.col -->
         <div class="col-xs-4">
