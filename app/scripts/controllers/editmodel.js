@@ -67,7 +67,6 @@ fdView.controller('EditModelCtrl', ['$scope', '$stateParams', '$window', 'toastr
 
     $scope.loadModel = function (key) {
       ContentModel.getModel(key).then(function (res) {
-        toastr.success(res.statusText,'Success');
         $scope.contentModel = res.data.contentModel;
         $scope.name = $scope.contentModel.code || $scope.contentModel.documentType.name;
         originalModel = angular.copy($scope.contentModel);
