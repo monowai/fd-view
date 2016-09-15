@@ -489,7 +489,12 @@ fdView.controller('EditModelCtrl', ['$scope', '$stateParams', '$window', 'toastr
         }
         var clean = lines.join('\n').trim();
 
-        data = d3.dsvFormat(delim==='\\t' ? '\t' : delim).parse(clean);
+        data = d3.dsvFormat(delim==='\\t' ? '\t' : delim).parse(clean, function (d) {
+          return _.forIn(d, function (v, k) {
+            if(/^\s*-?(\d*\.?\d+|\d+\.?\d*)(e[-+]?\d+)?\s*$/i.test(v)) // /^(\-|\+)?([0-9]+(\.[0-9]+)?|Infinity)$/
+              d[k] = Number(v);
+          });
+        });
 
       } else {
         toastr.warning('File is not loaded', 'Warning');
@@ -532,9 +537,52 @@ fdView.controller('EditModelCtrl', ['$scope', '$stateParams', '$window', 'toastr
         $scope.contentModel = res;
         $scope.modelGraph = ContentModel.graphModel();
         $scope.tags = ContentModel.getTags();
+        var dataStats = $scope.buildStats(data, res.content);
+        console.log(dataStats);
       }).error(function (res) {
         toastr.error(res, 'Error');
       });
+    };
+
+    $scope.buildStats = function (sample, model) {
+      // console.log(sample);
+      return _(sample.columns)
+        .map(function (c) {
+          var col = {
+            type: model[c].dataType,
+            missing: _(sample).omit('columns')
+              .map(c)
+              .filter(function (d) { return d===''; })
+              .pairs()
+              .value()
+              .length
+          };
+          if (model[c].tag || col.type==='string') {
+            var count = _(sample).omit('columns')
+              .map(c)
+              .countBy()
+              .omit('')
+              .pairs()
+              .sortByOrder(_.last, 'desc')
+              .value();
+            return Object.assign(col,{stats:{
+              unique: count.length,
+              least: _.last(count),
+              most: _.first(count),
+              values: count
+            }});
+          }
+          if (col.type==='number' || col.type==='date') {
+            if (!model[c].callerRef)
+              return Object.assign(col,{stats: {
+                min: d3.min(sample, function(d) { return d[c]}),
+                max: d3.max(sample, function(d) { return d[c]}),
+                mean: d3.mean(sample, function(d) { return d[c]})
+              }});
+          }
+          return model[c].dataType;
+        })
+        .value();
     };
 
     $scope.cleanSample = function () {
