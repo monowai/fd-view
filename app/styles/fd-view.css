@@ -372,13 +372,6 @@ li.dropdown:hover>.dropdown-menu {
   padding: 5px;
 }
 
-/* no padding */
-.scroll-col-np {
-  width: 100%;
-  overflow-y: auto;
-  overflow-x: hidden;
-}
-
 .fader {
   transition: .5s linear all;
   -webkit-transition: .5s linear all;
