@@ -5,8 +5,5 @@
 </div>
 <div class="modal-body">
   <select class="layout-select" ng-model="ctrl.layout" ng-options="l.name for l in ctrl.layouts"></select>
-  <cytoscape class="concept-explorer" elements="ctrl.conceptGraph" layout="ctrl.layout" styles="ctrl.styles" ng-height="300" qtip="ctrl.qtip"></cytoscape>
-</div>
-<div class="modal-footer">
-  <button type="button" class="btn btn-primary" ng-click="ctrl.close()">Ok</button>
+  <cytoscape class="concept-explorer" elements="ctrl.conceptGraph" layout="ctrl.layout" styles="ctrl.styles" ng-height="250" qtip="ctrl.qtip"></cytoscape>
 </div>
