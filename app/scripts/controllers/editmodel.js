@@ -414,7 +414,7 @@ fdView.controller('EditModelCtrl', ['$scope', '$stateParams', '$window', 'toastr
       });
     };
 
-    $scope.showColDef = function (key, options) {
+    $scope.showColDef = function (key, options={}) {
       var cp = ContentModel.getCurrent(),
           col = {},
           tag;
@@ -500,6 +500,7 @@ fdView.controller('EditModelCtrl', ['$scope', '$stateParams', '$window', 'toastr
         toastr.warning('File is not loaded', 'Warning');
       }
       $scope.dataSample = data.slice(0,200);
+      $scope.dataSample.totalImport = data.length;
       $scope.gridOptions = {
         columnDefs: _.map(data.columns, function (k) {
           return {field: k, headerName: k, editable: true, headerClass: function () {
@@ -537,26 +538,29 @@ fdView.controller('EditModelCtrl', ['$scope', '$stateParams', '$window', 'toastr
         $scope.contentModel = res;
         $scope.modelGraph = ContentModel.graphModel();
         $scope.tags = ContentModel.getTags();
-        var dataStats = $scope.buildStats(data, res.content);
-        console.log(dataStats);
+        $scope.dataStats = $scope.buildStats(data, res.content);
+        console.log($scope.dataStats);
       }).error(function (res) {
         toastr.error(res, 'Error');
       });
     };
 
     $scope.buildStats = function (sample, model) {
-      // console.log(sample);
       return _(sample.columns)
         .map(function (c) {
           var col = {
-            type: model[c].dataType,
-            missing: _(sample).omit('columns')
-              .map(c)
-              .filter(function (d) { return d===''; })
-              .pairs()
-              .value()
-              .length
-          };
+              type: model[c].dataType,
+              missing: _(sample).omit('columns')
+                .map(c)
+                .filter(function (d) { return d===''; })
+                .pairs()
+                .value()
+                .length
+            },
+            o = {};
+          if (model[c].callerRef) {
+            o[c] = col;
+          }
           if (model[c].tag || col.type==='string') {
             var count = _(sample).omit('columns')
               .map(c)
@@ -565,7 +569,7 @@ fdView.controller('EditModelCtrl', ['$scope', '$stateParams', '$window', 'toastr
               .pairs()
               .sortByOrder(_.last, 'desc')
               .value();
-            return Object.assign(col,{stats:{
+            o[c] = Object.assign(col,{stats:{
               unique: count.length,
               least: _.last(count),
               most: _.first(count),
@@ -573,15 +577,17 @@ fdView.controller('EditModelCtrl', ['$scope', '$stateParams', '$window', 'toastr
             }});
           }
           if (col.type==='number' || col.type==='date') {
-            if (!model[c].callerRef)
-              return Object.assign(col,{stats: {
+            if (!model[c].callerRef) {
+              o[c] = Object.assign(col,{stats: {
                 min: d3.min(sample, function(d) { return d[c]}),
                 max: d3.max(sample, function(d) { return d[c]}),
                 mean: d3.mean(sample, function(d) { return d[c]})
               }});
+            }
           }
-          return model[c].dataType;
+          return o;
         })
+        .transform(_.ary(_.extend, 2), {})
         .value();
     };
 

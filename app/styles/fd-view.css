@@ -348,6 +348,32 @@ th.col>span:hover:after {
   transition: transform 150ms ease-in-out;
 }
 
+.stats-panel {
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+.stats-label {
+  position: absolute;
+  top: -17px;
+  left: 10px;
+  font-size: 9px;
+  padding: 4px 4px;
+  line-height: .9;
+}
+
+.stats-label.col-name {
+  left: 35px;
+}
+
+.truncate {
+  display: inline-block;
+  height: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .fortress-info {
   border-bottom: 1px solid #f4f4f4;
 }
