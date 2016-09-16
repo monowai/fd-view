@@ -40,6 +40,7 @@
           <li uib-tooltip="Model Settings"><a href data-target="#settings" data-toggle="tab"><i class="fa fa-lg fa-cog"></i></a></li>
           <li uib-tooltip="Source"><a href data-target="#json" data-toggle="tab" ng-click="checkModel()"><i class="fa fa-lg fa-edit"></i></a></li>
           <li uib-tooltip="Structure" class="active" ng-show="canSave()"><a href data-target="#structure" data-toggle="tab" ng-click="updateModel()"><i class="fa fa-lg fa-sitemap"></i></a></li>
+          <li uib-tooltip="Data Statistics" ng-show="dataStats"><a href data-target="#stats" data-toggle="tab"><i class="fa fa-lg fa-signal"></i></a></li>
           <li uib-tooltip="Data" ng-show="canSave()"><a href data-target="#sample" data-toggle="tab"><i class="fa fa-lg fa-file-text"></i></a></li>
           <li uib-tooltip="Validation" ng-show="validationResult"><a href data-target="#validate" data-toggle="tab"><i class="fa fa-lg fa-check-square-o"></i></a></li>
           <li uib-dropdown>
@@ -195,6 +196,62 @@
               <div ag-grid="gridOptions" class="ag-blue" ng-height="250"></div>
             </div>
             <p ng-show="dataSample.length>199"><i>* Only first 200 rows are displayed</i></p>
+          </div>
+
+          <div id="stats" class="tab-pane fade">
+            <div class="row">
+              <div class="col-sm-2">Name</div>
+              <div class="col-sm-1">Type</div>
+              <div class="col-sm-1">Missing</div>
+              <div class="col-sm-8">Statistics</div>
+            </div>
+            <div role="tablist" class="panel-group">
+              <div class="box panel panel-default" ng-repeat="(name, col) in dataStats"
+                   ng-class="{'box-warning': contentModel.content[name].tag, 'box-success': contentModel.content[name].callerRef }">
+                <div aria-selected class="panel-heading">
+                  <h4 class="panel-title">
+                    <div class="box-title row stats-panel">
+                      <div class="col-sm-2">
+                        <div class="label stats-label label-warning col-name" ng-show="contentModel.content[name].tag">Tag</div>
+                        <div class="label stats-label label-success col-name" ng-show="contentModel.content[name].callerRef">Primary Key</div>
+                        <div class="truncate"><i class="pull-left glyphicon" ng-class="isOpen ? 'glyphicon-chevron-down' : 'glyphicon-chevron-right'"></i>&nbsp;
+                        <a href ng-click="showColDef(name)">{{name}}</a></div>
+                      </div>
+                      <div class="col-sm-1">{{col.type}}</div>
+                      <div class="col-sm-1">{{col.missing}}</div>
+                      <div class="col-sm-8" ng-if="col.type=='string'" ng-show="col.missing!==dataSample.totalImport">
+                        <div class="col-sm-3">
+                          <div class="label stats-label label-primary">Least</div>
+                          {{col.stats.least[0]}}: {{col.stats.least[1]}}
+                        </div>
+                        <div class="col-sm-3">
+                          <div class="label stats-label label-primary">Most</div>
+                          {{col.stats.most[0]}}: {{col.stats.most[1]}}
+                        </div>
+                        <div class="col-sm-6">
+                          <div class="label stats-label label-primary">Values</div>
+                          <span>{{col.stats.values | limitTo:3}}</span>
+                        </div>
+                      </div>
+                      <div class="col-sm-7" ng-if="col.type!='string'">
+                        <div class="col-sm-2">
+                          <div class="label stats-label label-primary">Min</div>
+                          {{col.stats.min}}
+                        </div>
+                        <div class="col-sm-2">
+                          <div class="label stats-label label-primary">Max</div>
+                          {{col.stats.max}}
+                        </div>
+                        <div class="col-sm-8">
+                          <div class="label stats-label label-primary">Average</div>
+                          {{col.stats.mean}}
+                        </div>
+                      </div>
+                    </div>
+                  </h4>
+                </div>
+              </div>
+            </div>
           </div>
 
           <!-- Model structure -->
