@@ -152,14 +152,12 @@
                   <fieldset>
                     <legend>Sample </legend>
                     <div class="row">
-
                       <div class="form-group">
                         <label for="data-delim" class="col-xs-4 control-label">Delimiter</label>
                         <div class="col-xs-7">
                           <input type="text" class="form-control" id="data-delim" ng-model="delim" ng-init="delim=','">
                         </div>
                       </div>
-
                       <div class="col-sm-6">
                         <div class="form-group">
                           <div class="checkbox">
@@ -177,6 +175,9 @@
                             </label>
                           </div>
                         </div>
+                      </div>
+                      <div class="col-sm-3">
+                        <button type="button" class="btn btn-primary" ng-show="previouslyLoaded" ng-click="loadPrevious()">Load the Last</button>
                       </div>
                     </div>
                   </fieldset>
@@ -283,7 +284,7 @@
               <div ng-height="400" class="scroll-col" ng-show="list==='Columns'">
                 <div class="btn-toolbar" id="Columns">
                   <button id="{{col}}" class="btn btn-xs" ng-class="{'btn-warning' : val.tag, 'btn-primary': !val.tag, 'dim': val.persistent===false, 'btn-success':val.callerRef, 'btn-alias': !!val.$$alias}"
-                          draggable options="{opacity: .5,revert: true}" style="margin: 2px;" ng-repeat="(col, val) in contentModel.content" ng-click="showColDef(col, {})" uib-tooltip="{{val.label}}">{{col}}</button>
+                          draggable options="{opacity: .5,revert: true}" style="margin: 2px;" ng-repeat="(col, val) in contentModel.content" ng-click="showColDef(col)" uib-tooltip="{{val.label}}">{{col}}</button>
                 </div>
               </div>
               <div ng-height="400" class="scroll-col" ng-show="list==='Tags'">
