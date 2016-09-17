@@ -414,12 +414,12 @@ fdView.controller('EditModelCtrl', ['$scope', '$stateParams', '$window', 'toastr
       });
     };
 
-    $scope.showColDef = function (key, options={}) {
+    $scope.showColDef = function (key, options) {
       var cp = ContentModel.getCurrent(),
           col = {},
           tag;
 
-      options.openAsTag = options.openAsTag || false;
+      var options = options || {openAsTag: false};
       if (options.openAsTag) {
         var t = ContentModel.findTag(key);
         col[t.label] = t;
@@ -478,27 +478,15 @@ fdView.controller('EditModelCtrl', ['$scope', '$stateParams', '$window', 'toastr
 
     $scope.hasHeader=true;
 
-    $scope.loadFile = function(fileContent, fileName, delim){
-      var data=[];
-      if (fileContent) {
-        var lines = fileContent.match(/[^\r\n]+/g);
-        var i = 0;
-        while (lines[i].match(/^#.*/)) {
-          lines[i]='';
-          i++;
-        }
-        var clean = lines.join('\n').trim();
+    $scope.previouslyLoaded = $window.localStorage.hasOwnProperty('import-data');
 
-        data = d3.dsvFormat(delim==='\\t' ? '\t' : delim).parse(clean, function (d) {
-          return _.forIn(d, function (v, k) {
-            if(/^\s*-?(\d*\.?\d+|\d+\.?\d*)(e[-+]?\d+)?\s*$/i.test(v)) // /^(\-|\+)?([0-9]+(\.[0-9]+)?|Infinity)$/
-              d[k] = Number(v);
-          });
-        });
+    $scope.loadPrevious = function () {
+      var data = JSON.parse($window.localStorage.getItem('import-data'));
+      data.columns = JSON.parse($window.localStorage.getItem('import-data-cols'));
+      setGrid(data);
+    };
 
-      } else {
-        toastr.warning('File is not loaded', 'Warning');
-      }
+    var setGrid = function (data) {
       $scope.dataSample = data.slice(0,200);
       $scope.dataSample.totalImport = data.length;
       $scope.gridOptions = {
@@ -539,10 +527,35 @@ fdView.controller('EditModelCtrl', ['$scope', '$stateParams', '$window', 'toastr
         $scope.modelGraph = ContentModel.graphModel();
         $scope.tags = ContentModel.getTags();
         $scope.dataStats = $scope.buildStats(data, res.content);
-        console.log($scope.dataStats);
       }).error(function (res) {
         toastr.error(res, 'Error');
       });
+    };
+
+    $scope.loadFile = function(fileContent, fileName, delim){
+      var data=[];
+      if (fileContent) {
+        var lines = fileContent.match(/[^\r\n]+/g);
+        var i = 0;
+        while (lines[i].match(/^#.*/)) {
+          lines[i]='';
+          i++;
+        }
+        var clean = lines.join('\n').trim();
+
+        data = d3.dsvFormat(delim==='\\t' ? '\t' : delim).parse(clean, function (d) {
+          return _.forIn(d, function (v, k) {
+            if(/^\s*-?(\d*\.?\d+|\d+\.?\d*)(e[-+]?\d+)?\s*$/i.test(v)) // /^(\-|\+)?([0-9]+(\.[0-9]+)?|Infinity)$/
+              d[k] = Number(v);
+          });
+        });
+        $window.localStorage.setItem('import-data', JSON.stringify(data));
+        $window.localStorage.setItem('import-data-cols', JSON.stringify(data.columns));
+        $scope.previouslyLoaded = $window.localStorage.hasOwnProperty('import-data');
+      } else {
+        toastr.warning('File is not loaded', 'Warning');
+      }
+      setGrid(data);
     };
 
     $scope.buildStats = function (sample, model) {
@@ -550,7 +563,7 @@ fdView.controller('EditModelCtrl', ['$scope', '$stateParams', '$window', 'toastr
         .map(function (c) {
           var col = {
               type: model[c].dataType,
-              missing: _(sample).omit('columns')
+              missing: _(sample)
                 .map(c)
                 .filter(function (d) { return d===''; })
                 .pairs()
@@ -562,7 +575,7 @@ fdView.controller('EditModelCtrl', ['$scope', '$stateParams', '$window', 'toastr
             o[c] = col;
           }
           if (model[c].tag || col.type==='string') {
-            var count = _(sample).omit('columns')
+            var count = _(sample)
               .map(c)
               .countBy()
               .omit('')
@@ -600,15 +613,22 @@ fdView.controller('EditModelCtrl', ['$scope', '$stateParams', '$window', 'toastr
       ContentModel.validate(data).then(function (res) {
         $scope.validationResult = res.data;
         $scope.rows = $scope.contentModel.tagModel ? res.data.tags : res.data.entity;
+        if (_.isEmpty($scope.rows))
+          $scope.rows = _.map(res.data.results, function (r, i) { return {code: i}; });
       });
       angular.element('[data-target="#validate"]').tab('show');
     };
 
     $scope.showResult = function ($index) {
       $scope.rowResult = $scope.rows[$index];
-      $scope.rowResult.messages = _.filter($scope.validationResult.results[$index], function (res) {
-        return res.messages.length > 0;
-      });
+      $scope.rowResult.messages = _($scope.validationResult.results[$index])
+        .filter( function (res) { return res.messages.length > 0; })
+        .map(function (m) {
+          var msg = {};
+          msg[m.sourceColumn]=m.messages;
+          return msg;
+        }).transform(_.ary(_.extend, 2), {})
+        .value();
 
       $scope.loadViewer = function (instance) {
         $scope.resultViewer = instance;
