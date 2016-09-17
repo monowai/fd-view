@@ -33,6 +33,11 @@ fdView.constant('USER_ROLES',
       return array.indexOf(element) > -1;
     };
   })
+  .filter('notEmpty', function () {
+    return function (obj) {
+      return !_.isEmpty(obj);
+    }
+  })
   .filter('megaNum', function () {
     return function(number, fractionSize) {
 
