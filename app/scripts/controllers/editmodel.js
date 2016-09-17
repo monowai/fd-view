@@ -612,23 +612,25 @@ fdView.controller('EditModelCtrl', ['$scope', '$stateParams', '$window', 'toastr
       ContentModel.updateModel($scope.contentModel);
       ContentModel.validate(data).then(function (res) {
         $scope.validationResult = res.data;
-        $scope.rows = $scope.contentModel.tagModel ? res.data.tags : res.data.entity;
-        if (_.isEmpty($scope.rows))
-          $scope.rows = _.map(res.data.results, function (r, i) { return {code: i}; });
+        var entry = $scope.contentModel.tagModel ? res.data.tags : res.data.entity;
+        $scope.rows = _.map(res.data.results, function (r, i) {
+          return Object.assign(entry[i] || {code: i},
+            { messages: _(r)
+              .filter( function (res) { return res.messages.length > 0; })
+              .map(function (m) {
+                var msg = {};
+                msg[m.sourceColumn]=m.messages;
+                return msg;
+              }).transform(_.ary(_.extend, 2), {})
+              .value()
+            });
+        });
       });
       angular.element('[data-target="#validate"]').tab('show');
     };
 
     $scope.showResult = function ($index) {
       $scope.rowResult = $scope.rows[$index];
-      $scope.rowResult.messages = _($scope.validationResult.results[$index])
-        .filter( function (res) { return res.messages.length > 0; })
-        .map(function (m) {
-          var msg = {};
-          msg[m.sourceColumn]=m.messages;
-          return msg;
-        }).transform(_.ary(_.extend, 2), {})
-        .value();
 
       $scope.loadViewer = function (instance) {
         $scope.resultViewer = instance;

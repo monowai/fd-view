@@ -320,7 +320,7 @@
                   </tr>
                   </thead>
                   <tbody>
-                  <tr ng-if="!contentModel.tagModel" ng-repeat="row in rows" ng-click="showResult($index)">
+                  <tr ng-if="!contentModel.tagModel" ng-repeat="row in rows" ng-click="showResult($index)" ng-class="{'bg-warning': (row.messages | notEmpty)}">
                     <td>{{row.code}}</td>
                     <td>{{row.name}}</td>
                     <td>{{row.description}}</td>
@@ -334,7 +334,7 @@
               </div>
               <div class="col-md-6" ng-show="rowResult">
                 <div sticky>
-                  <div class="row" ng-show="rowResult.messages">
+                  <div class="row" ng-show="rowResult.messages | notEmpty">
                     <label class="control-label">Messages:</label>
                     <div class="col-md-12">
                       <div ng-jsoneditor="loadMsgViewer" ng-model="rowResult.messages" options="{mode:'tree'}" style="height: 20em"></div>
