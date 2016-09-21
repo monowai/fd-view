@@ -634,6 +634,7 @@ fdView.controller('EditModelCtrl', ['$scope', '$stateParams', '$window', 'toastr
     };
 
     $scope.validate = function(data){
+      if ($scope.validationResult) delete $scope.validationResult;
       ContentModel.updateModel($scope.contentModel);
       ContentModel.validate(data).then(function (res) {
         $scope.validationResult = res.data;
