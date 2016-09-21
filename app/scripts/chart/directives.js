@@ -443,15 +443,19 @@ angular.module('fd.graph.matrix.directives', [])
   }])
   .directive('barChart', ['$state', 'SearchService', function ($state, SearchService) {
     'use strict';
-    var draw = function (svg, data) {
+    var draw = function (svg, data, width, height, agg) {
       var margin = {top: 20, right: 20, bottom: 40, left: 40},
-          width = 960 - margin.left - margin.right,
-          height = 500 - margin.top - margin.bottom,
-
           color = d3.scaleOrdinal(d3.schemeCategory20);
+
+      width = width - margin.left - margin.right;
+      height = height - margin.top - margin.bottom;
 
       var x = d3.scaleBand().range([0, width]).padding(0.1);
       var y = d3.scaleLinear().range([height, 0]);
+
+
+      d3.select('.bar-title')
+        .text(agg.aggType+': '+ (agg.metric || agg.term));
 
       svg.attr('width', width + margin.left + margin.right)
         .attr('height', height + margin.top + margin.bottom);
@@ -463,7 +467,7 @@ angular.module('fd.graph.matrix.directives', [])
         .style('opacity', 0);
 
       x.domain(data.map(function(d) { return d.key; }));
-      y.domain([0, d3.max(data, function (d) { return d.doc_count})]);
+      y.domain([0, d3.max(data, function (d) { return d.metric ? d.metric.value : d.doc_count})]);
 
       var bars = svg.select('.data').selectAll('rect').data(data);
 
@@ -475,8 +479,8 @@ angular.module('fd.graph.matrix.directives', [])
         .style('fill', function(d) { return color(d.key); })
         .attr('x', function(d) { return x(d.key); })
         .attr('width', x.bandwidth())
-        .attr('y', function(d) { return y(d.doc_count); })
-        .attr('height', function(d) { return height - y(d.doc_count); })
+        .attr('y', function(d) { return y( d.metric ? d.metric.value : d.doc_count); })
+        .attr('height', function(d) { return height - y( d.metric ? d.metric.value : d.doc_count); })
         .on("mouseover", function(d, i) {
           svg.selectAll("rect").transition()
             .duration(250)
@@ -489,7 +493,9 @@ angular.module('fd.graph.matrix.directives', [])
             .duration(100)
             .style('opacity', .9)
             .style('height', 'auto');
-          div.html('<strong>'+d.key+'</strong><br/>'  + d.doc_count)
+          div.html('<strong>'+d.key+'</strong>' +
+                    (d.metric ? '<br>' + d.metric.value.toFixed(2) : '') +
+                    '<br/><b>doc_count:</b>'  + d.doc_count)
             .style('left', (d3.event.pageX) + 'px')
             .style('top', (d3.event.pageY - 28) + 'px');
         })
@@ -513,8 +519,8 @@ angular.module('fd.graph.matrix.directives', [])
         .duration(500)
         .attr('x', function(d) { return x(d.key); })
         .attr('width', x.bandwidth())
-        .attr('y', function(d) { return y(d.doc_count); })
-        .attr('height', function(d) { return height - y(d.doc_count); });
+        .attr('y', function(d) { return y(d.metric ? d.metric.value : d.doc_count); })
+        .attr('height', function(d) { return height - y(d.metric ? d.metric.value : d.doc_count); });
 
       svg.select(".x.axis")
         .attr("transform", "translate(0," + height + ")")
@@ -532,18 +538,27 @@ angular.module('fd.graph.matrix.directives', [])
     return {
       restrict: 'E',
       scope: {
-        data: '='
+        data: '=',
+        agg: '=?'
       },
       compile: function (elem, attrs, transclude) {
-        var svg = d3.select(elem[0]).append('svg');
-        var data=svg.append('g').attr('class', 'data');
-          data.append('g').attr('class', 'x axis');
-          data.append('g').attr('class', 'y axis');
+        var svg = d3.select(elem[0]).append('svg'),
+            data=svg.append('g').attr('class', 'data'),
+            width = 960, height = 500;
+
+        data.append('g').attr('class', 'x axis');
+        data.append('g').attr('class', 'y axis');
+
+        svg.append('text')          // Chart title
+          .attr('x', (width / 2))
+          .attr('y', 20)           // (margin.top)
+          .attr('text-anchor', 'middle')
+          .attr('class', 'bar-title');
 
         return function (scope, elem, attrs) {
           scope.$watch('data', function (newVal, oldVal, scope) {
             if(!scope.data) return;
-            draw(svg, scope.data);
+            draw(svg, scope.data, width, height, scope.agg);
           }, true);
         }
       }

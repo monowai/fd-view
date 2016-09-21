@@ -98,9 +98,7 @@ fdView.controller('AnalyzeCtrl', ['$scope', 'QueryService', 'MatrixRequest', 'Se
         var terms = {
             field: MatrixRequest.term.name,
             size: MatrixRequest.sampleSize,
-            order: {
-              _count: MatrixRequest.order
-            }
+            order: {}
           },
           query = {
             size: 0,
@@ -114,15 +112,22 @@ fdView.controller('AnalyzeCtrl', ['$scope', 'QueryService', 'MatrixRequest', 'Se
             }
           };
 
-        if (MatrixRequest.metric) {
-          var aggs = {"aggs": {"1": {"max": {"field": MatrixRequest.metric}}}};
-          aggs[MatrixRequest.aggType] = {
+        terms.order[MatrixRequest.aggType === '_count' ? '_count' : 'metric'] = MatrixRequest.order;
 
-          }
+        if (MatrixRequest.aggType !== '_count') {
+          if (MatrixRequest.metric) {
+            query.aggs.data.aggs = {metric: {}};
+            query.aggs.data.aggs.metric[MatrixRequest.aggType] = {"field": MatrixRequest.metric.name};
+          } else return;
         }
         // console.log(query);
         QueryService.query('es', query).then(function (res) {
           $scope.aggData = res.aggregations.data.buckets;
+          $scope.aggDetails = {
+            aggType: MatrixRequest.aggType,
+            metric: MatrixRequest.metric.displayName,
+            term: MatrixRequest.term.name
+          };
           MatrixRequest.aggData = angular.copy($scope.aggData);
           SearchService.fortress = MatrixRequest.fortress;
           SearchService.types = MatrixRequest.document;
