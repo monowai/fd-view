@@ -417,7 +417,8 @@ fdView.controller('EditModelCtrl', ['$scope', '$stateParams', '$window', 'toastr
     $scope.showColDef = function (key, options) {
       var cp = ContentModel.getCurrent(),
           col = {},
-          tag;
+          tag,
+          dataType;
 
       var options = options || {openAsTag: false};
       if (options.openAsTag) {
@@ -428,6 +429,7 @@ fdView.controller('EditModelCtrl', ['$scope', '$stateParams', '$window', 'toastr
         col = _.pick(cp.content, key);
       }
       tag = t || col[key];
+      dataType = col.dataType;
       $uibModal.open({
         backdrop: 'static',
         templateUrl: 'edit-coldef.html',
@@ -461,6 +463,20 @@ fdView.controller('EditModelCtrl', ['$scope', '$stateParams', '$window', 'toastr
           cp.content[key] = res;
         }
 
+        if (dataType !== res.dataType) {
+          var convertFn;
+          if (res.dataType === 'number')
+            convertFn = function (d) { return Number(d); };
+          if (res.dataType === 'string')
+            convertFn = function (d) { return d.toString(); };
+          if (res.dataType === 'date')
+            convertFn = function (d) { return moment(d); };
+
+          _.forEach($scope.dataSample, function (row) {
+            row[key] = convertFn(row[key]);
+          });
+        }
+
         if (!!res.$$alias) {
           var atag = ContentModel.findTag(res.$$alias.tag);
           if (!atag.aliases) atag.aliases = [];
@@ -483,6 +499,11 @@ fdView.controller('EditModelCtrl', ['$scope', '$stateParams', '$window', 'toastr
     $scope.loadPrevious = function () {
       var data = JSON.parse($window.localStorage.getItem('import-data'));
       data.columns = JSON.parse($window.localStorage.getItem('import-data-cols'));
+      // function adjustDataTypes(data, model) {
+      //
+      // }
+      //
+      // adjustDataTypes(data, $scope.contentModel.content);
       setGrid(data);
     };
 
@@ -515,7 +536,7 @@ fdView.controller('EditModelCtrl', ['$scope', '$stateParams', '$window', 'toastr
           params.$scope.editColDef = $scope.showColDef;
 
           var eCell = document.createElement('span');
-          eCell.innerHTML = '<span class="ag-click-ico" ng-click="showColDef(\''+params.colDef.headerName+'\', {})"><i class="fa fa-edit"></i></span>&nbsp;'+params.colDef.headerName;
+          eCell.innerHTML = '<span class="ag-click-ico" ng-click="showColDef(\''+params.colDef.headerName+'\')"><i class="fa fa-edit"></i></span>&nbsp;'+params.colDef.headerName;
           return eCell;
         }
       };
@@ -614,30 +635,81 @@ fdView.controller('EditModelCtrl', ['$scope', '$stateParams', '$window', 'toastr
         $scope.validationResult = res.data;
         var entry = $scope.contentModel.tagModel ? res.data.tags : res.data.entity;
         $scope.rows = _.map(res.data.results, function (r, i) {
-          return Object.assign(entry[i] || {code: i},
-            { messages: _(r)
+          var row = entry[i] ? _.clone(entry[i].content.data) : {code: i};
+          row._entry = entry[i];
+          return Object.assign(row,
+            { _messages: _(r)
               .filter( function (res) { return res.messages.length > 0; })
               .map(function (m) {
                 var msg = {};
-                msg[m.sourceColumn]=m.messages;
+                msg[m.sourceColumn]= {
+                  expression: m.expression,
+                  messages: m.messages
+                };
                 return msg;
               }).transform(_.ary(_.extend, 2), {})
               .value()
             });
         });
+        $scope.valGridOptions = {
+          columnDefs: _($scope.contentModel.content).map(function (v, k) {
+              return {field: k, headerName: k, editable: false,
+                headerClass: function () {
+                  if (v.tag) return 'tag';
+                  if (v.$$alias) return 'alias';
+                  if (v.callerRef) return 'bg-green';
+                  if (!v.persistent) return 'dim';
+              }, cellClass: function (params) {
+                  return params.data._messages[k]==null ? null : 'bg-danger';
+                }, cellRenderer: function (params) {
+                  return params.data._messages[k]==null ? params.value || '' : '<a href ng-click="showValidMsg('+params.rowIndex+')" uib-tooltip="Click to see messages" tooltip-append-to-body="true"><i class="fa fa-warning"></i></a>';
+                }
+              };
+            })
+            .unshift({field: 'code', headerName: 'Code', suppressSorting: true, suppressMenu: true, pinned: true,
+              cellRenderer: function (params) {
+                var msgsTpl = _.isEmpty(params.data._messages) ? '' :
+                      '<a href ng-click="showValidMsg('+params.rowIndex+')" tooltip-placement="auto top-right" tooltip-append-to-body="true" uib-tooltip="Click to see messages"><i class="fa fa-warning"></i></a>',
+                    entityTpl = params.data._entry==null ? '' :
+                      '<a href ng-click="showResult('+params.rowIndex+')" tooltip-placement="auto top-right" tooltip-append-to-body="true" uib-tooltip="Click to see result entity"><i class="fa fa-info"></i></a>';
+                return  msgsTpl + entityTpl+'&nbsp;<span>'+params.value+'</span>';
+              }
+            })
+            .value(),
+          rowData: $scope.rows,
+          enableColResize: true,
+          enableSorting: true,
+          enableFilter: true,
+          rowSelection: 'multiple',
+          angularCompileHeaders: true,
+          angularCompileRows: true,
+          headerCellRenderer: function (params) {
+            params.$scope.editColDef = $scope.showColDef;
+
+            var eCell = document.createElement('span');
+            eCell.innerHTML = '<span class="ag-click-ico" ng-click="showColDef(\''+params.colDef.headerName+'\')" ng-hide="Code"><i class="fa fa-edit"></i></span>&nbsp;'+params.colDef.headerName;
+            return eCell;
+          }
+        };
+
       });
       angular.element('[data-target="#validate"]').tab('show');
     };
 
-    $scope.showResult = function ($index) {
-      $scope.rowResult = $scope.rows[$index];
+    $scope.showResult = function (rowIndex) {
+      modalService.showModal({
+        templateUrl: 'views/partials/validationResModal.html'
+      }, {
+        entry: $scope.rows[rowIndex]._entry
+      });
+    };
 
-      $scope.loadViewer = function (instance) {
-        $scope.resultViewer = instance;
-      };
-      $scope.loadMsgViewer = function (instance) {
-        $scope.resultMsgViewer = instance;
-      };
+    $scope.showValidMsg = function (rowIndex) {
+      modalService.showModal({
+        templateUrl: 'views/partials/validationMsgModal.html'
+      }, {
+        msgs: $scope.rows[rowIndex]._messages
+      });
     };
 
     $scope.trackResult = function (validResult) {

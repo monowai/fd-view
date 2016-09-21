@@ -459,7 +459,7 @@ angular.module('fd.graph.matrix.directives', [])
         .attr('transform', 'translate('+margin.left+','+margin.top+')');
 
       var div = d3.select('body').append('div')
-        .attr('class', 'tooltip')
+        .attr('class', 'bar-tooltip')
         .style('opacity', 0);
 
       x.domain(data.map(function(d) { return d.key; }));

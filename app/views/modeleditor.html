@@ -171,13 +171,10 @@
                         <div class="form-group">
                           <div class="checkbox">
                             <label>
-                              <input type="checkbox" ng-model="hasHeader"> <b>Has Header</b>
+                              <input type="checkbox" ng-model="hasHeader" disabled> <b>Has Header</b>
                             </label>
                           </div>
                         </div>
-                      </div>
-                      <div class="col-sm-3">
-                        <button type="button" class="btn btn-primary" ng-show="previouslyLoaded" ng-click="loadPrevious()">Load the Last</button>
                       </div>
                     </div>
                   </fieldset>
@@ -186,7 +183,11 @@
                   <div class="well well-sm">
                     <div class="row">
                       <div class="col-md-12">
-                        <div class="file-box" file-box="loadFile($fileContent, $fileName, delim)"></div>
+                        <div class="file-box" file-box="loadFile($fileContent, $fileName, delim)">
+                          <label ng-click="loadPrevious()" ng-show="previouslyLoaded"><strong>Use</strong>
+                            <span>uploaded earlier</span>
+                          </label>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -194,7 +195,7 @@
               </div>
             </div>
             <div class="hscroll-table fader" ng-if="!!dataSample">
-              <div ag-grid="gridOptions" class="ag-blue" ng-height="250"></div>
+              <div ag-grid="gridOptions" class="ag-blue" ng-height="200"></div>
             </div>
             <p ng-show="dataSample.length>199"><i>* Only first 200 rows are displayed</i></p>
           </div>
@@ -305,52 +306,10 @@
           </div>
 
           <div id="validate" class="tab-pane fade">
-            <div class="row">
-              <div ng-class="rowResult ? 'col-md-6' : 'col-md-12'">
-                <table id="validRes" class="table table-bordered table-hover">
-                  <thead>
-                  <tr ng-if="!contentModel.tagModel">
-                    <th>Code</th>
-                    <th>Name</th>
-                    <th>Description</th>
-                  </tr>
-                  <tr ng-if="contentModel.tagModel">
-                    <th>#</th>
-                    <th>Message</th>
-                  </tr>
-                  </thead>
-                  <tbody>
-                  <tr ng-if="!contentModel.tagModel" ng-repeat="row in rows" ng-click="showResult($index)" ng-class="{'bg-warning': (row.messages | notEmpty)}">
-                    <td>{{row.code}}</td>
-                    <td>{{row.name}}</td>
-                    <td>{{row.description}}</td>
-                  </tr>
-                  <tr ng-if="contentModel.tagModel" ng-repeat="row in rows" ng-click="showResult($index)">
-                    <td>{{$index}}</td>
-                    <td>{{validationResult.messages[$index]}}</td>
-                  </tr>
-                  </tbody>
-                </table>
-              </div>
-              <div class="col-md-6" ng-show="rowResult">
-                <div sticky>
-                  <div class="row" ng-show="rowResult.messages | notEmpty">
-                    <label class="control-label">Messages:</label>
-                    <div class="col-md-12">
-                      <div ng-jsoneditor="loadMsgViewer" ng-model="rowResult.messages" options="{mode:'tree'}" style="height: 20em"></div>
-                    </div>
-                  </div>
-                  <div class="row">
-                    <label class="control-label">Entity/Tag:</label>
-                    <div class="col-md-12" ng-if="rowResult">
-                      <div ng-jsoneditor="loadViewer" ng-model="rowResult" options="{mode:'tree'}" style="height: 35em"></div>
-                    </div>
-                  </div>
-                </div>
-              </div>
+            <div class="hscroll-table fader" ng-if="!!validationResult">
+              <div ag-grid="valGridOptions" class="ag-blue" ng-height="200"></div>
             </div>
           </div>
-
         </div>
         <br>
       </div>
