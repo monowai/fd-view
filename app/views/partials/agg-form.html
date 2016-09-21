@@ -16,13 +16,15 @@
   <section class="form-group">
     <label>Aggregation</label>
     <select class="form-control" ng-model="$ctrl.params.aggType"
-            ng-options="at for at in $ctrl.aggTypes"
+            ng-options="k as v for (k, v) in $ctrl.aggTypes"
             ng-change="$ctrl.selectAggType($ctrl.params.aggType)"></select>
   </section>
-  <section class="form-group" ng-show="$ctrl.params.aggType!='Count' && $ctrl.params.fields.length>0">
+  <section class="form-group" ng-show="$ctrl.params.aggType!='_count' && $ctrl.params.fields.length>0">
     <label>Metric</label>
     <select class="form-control" ng-model="$ctrl.params.metric"
-            ng-options="f as (f.displayName || f.name) group by f.type for f in $ctrl.numFields"></select>
+            ng-options="f as (f.displayName || f.name) group by f.type for f in $ctrl.numFields"
+            ng-required="$ctrl.params.aggType!='_count'"
+            uib-tooltip="Metric is required for this aggregation" tooltip-enable="!$ctrl.params.metric"></select>
   </section>
   <section class="form-group" ng-show="$ctrl.params.fields.length>0">
     <label>Term</label>

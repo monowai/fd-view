@@ -164,6 +164,11 @@ div.bar-tooltip {
   border-radius: 3px;
   pointer-events: none;
 }
+.bar-title {
+  font-size: 2em;
+  text-decoration: underline;
+  font-weight: bold;
+}
 
 .tick line {
   stroke: #000;
@@ -387,7 +392,6 @@ th.col>span:hover:after {
   top: 1em;
   z-index: 9999;
   background: #f8f8f8;
-
 }
 .truncate {
   display: inline-block;
