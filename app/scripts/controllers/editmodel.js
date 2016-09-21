@@ -566,6 +566,10 @@ fdView.controller('EditModelCtrl', ['$scope', '$stateParams', '$window', 'toastr
 
         data = d3.dsvFormat(delim==='\\t' ? '\t' : delim).parse(clean, function (d) {
           return _.forIn(d, function (v, k) {
+            if(/^\s*$/.test(v)) {
+              d[k] = null;
+              return;
+            }
             if(/^\s*-?(\d*\.?\d+|\d+\.?\d*)(e[-+]?\d+)?\s*$/i.test(v)) // /^(\-|\+)?([0-9]+(\.[0-9]+)?|Infinity)$/
               d[k] = Number(v);
           });
