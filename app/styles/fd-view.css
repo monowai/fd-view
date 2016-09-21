@@ -151,7 +151,7 @@ h4.paragraph-header {
   opacity: 0;
 }
 
-div.tooltip {
+div.bar-tooltip {
   position: absolute;
   text-align: center;
   width: 100px;
@@ -163,6 +163,11 @@ div.tooltip {
   border: 0;
   border-radius: 3px;
   pointer-events: none;
+}
+.bar-title {
+  font-size: 2em;
+  text-decoration: underline;
+  font-weight: bold;
 }
 
 .tick line {
@@ -212,7 +217,8 @@ div.tooltip {
 .file-box-success {
     display: none;
 }
-.file-box-input label {
+.file-box-input label,
+.file-box-input + div > label {
     font-size: 1.75em;
     cursor: pointer;
     font-weight: normal;
@@ -245,15 +251,17 @@ div.tooltip {
         75%     { transform: translateY( -50% ) scale( 1.1 ); }
         to      { transform: translateY( -50% ) scale( 1 ); }
     }
-.box-file + label {
+.box-file + label,
+.file-box-input + div > label{
     max-width: 80%;
     text-overflow: ellipsis;
     cursor: pointer;
     display: inline-block;
     overflow: hidden;
 }
-.box-file + label:hover strong,
-.box-file:focus + label strong {
+.box-file + label:hover > strong,
+.box-file:focus + label > strong,
+.file-box-input + div > label:hover > strong{
     color: #3c8dbc;
 }
 
@@ -366,6 +374,25 @@ th.col>span:hover:after {
   left: 35px;
 }
 
+.ag-cell.bg-danger {
+  text-align: right;
+}
+.hscroll-table {
+  width:100%;
+  overflow-x:auto;
+  position: relative;
+}
+
+.hscroll-table > .col-md-6 {
+  position: absolute;
+  margin-left: auto;
+  margin-right: auto;
+  left: 0;
+  right: 0;
+  top: 1em;
+  z-index: 9999;
+  background: #f8f8f8;
+}
 .truncate {
   display: inline-block;
   height: 100%;
@@ -386,10 +413,6 @@ li.dropdown:hover>.dropdown-menu {
   opacity: 0.65;
 }
 
-.hscroll-table {
-  width:100%;
-  overflow-x:auto;
-}
 
 .scroll-col {
   width: 100%;

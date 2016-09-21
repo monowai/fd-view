@@ -153,12 +153,14 @@ angular.module('fdView.directives', [])
       return {
         restrict: 'AE',
         scope: false,
-        template: '<div class="file-box-input">'+
-                  '<input type="file" id="file" class="box-file">'+
-                  '<label for="file" align="center"><strong>'+
-                  '<i class="fa fa-cloud-download"></i> Click</strong>'+
-                  '<span> to select a delimited file, or drop it here</span>.</label></div>'+
-                  '<div class="file-box-success"><strong>Done!</strong>&nbsp;{{fileName}} is loaded</div>',
+        transclude: true,
+        template: '<div class="file-box-input">\
+                  <input type="file" id="file" class="box-file">\
+                  <label for="file" align="center"><strong>\
+                  <i class="fa fa-cloud-download"></i> Click</strong>\
+                  <span> to select a delimited file, or drop it here</span>.</label></div>\
+                  <div ng-transclude></div>\
+                  <div class="file-box-success"><strong>Done!</strong>&nbsp;{{fileName}} is loaded</div>',
         link: function(scope, element, attrs) {
           var fn = $parse(attrs.fileBox);
 
@@ -667,22 +669,14 @@ angular.module('fdView.directives', [])
             .attr('class', 'arc');
 
           g.append('path')
-            .each(function (d) {
-              this._current = d;
-            })
+            .each(function (d) { this._current = d; })
             .attr('d', arc)
-            .style('fill', function (d) {
-              return color(d.data.key);
-            });
+            .style('fill', function (d) { return color(d.data.key); });
           g.append('text')
-            .attr('transform', function (d) {
-              return 'translate(' + arc.centroid(d) + ')';
-            })
+            .attr('transform', function (d) { return 'translate(' + arc.centroid(d) + ')'; })
             .attr('dy', '.35em')
             .style('text-anchor', 'middle');
-          g.select('text').text(function (d) {
-            return d.data.key;
-          });
+          g.select('text').text(function (d) { return d.data.key; });
 
           svg.append('text')
             .datum(data)
@@ -691,7 +685,7 @@ angular.module('fdView.directives', [])
             .attr('class', 'text-tooltip')
             .style('text-anchor', 'middle')
             .attr('font-weight', 'bold')
-            .style('font-size', radius / 2.5 + 'px');
+            .style('font-size', radius / 3 + 'px');
 
           svg.select('text.text-tooltip')
             .attr('fill', '#3c8dbc')
@@ -699,12 +693,8 @@ angular.module('fdView.directives', [])
 
           g.on('mouseover', function (obj) {
             svg.select('text.text-tooltip')
-              .attr('fill', function (d) {
-                return color(obj.data.key);
-              })
-              .text(function (d) {
-                return $filter('megaNum')(d[obj.data.key]);
-              });
+              .attr('fill', function (d) { return color(obj.data.key); })
+              .text(function (d) { return $filter('megaNum')(d[obj.data.key]); });
           });
 
           g.on('mouseout', function (obj) {
@@ -720,15 +710,11 @@ angular.module('fdView.directives', [])
             .attrTween('d', function (a) {
               var i = d3.interpolate(this._current, a);
               this._current = i(0);
-              return function (t) {
-                return arc(i(t));
-              };
+              return function (t) { return arc(i(t)); };
             });
 
           g.select('text')
-            .attr('transform', function (d) {
-              return 'translate(' + arc.centroid(d) + ')';
-            });
+            .attr('transform', function (d) { return 'translate(' + arc.centroid(d) + ')'; });
 
           svg.select('text.text-tooltip').datum(data);
         }
@@ -770,7 +756,7 @@ angular.module('fdView.directives', [])
         data: '='
       },
       link: function (scope, element, attrs) {
-        var width = 350, height = 350;
+        var width = 300, height = 300;
         var getData = function(dataSet){
           var data = {};
           _.map(dataSet, function (e) {
@@ -928,8 +914,9 @@ angular.module('fdView.directives', [])
     controller: ['MatrixRequest', 'QueryService', function AggFormCtrl(MatrixRequest, QueryService){
       var ctrl = this;
       ctrl.params = MatrixRequest;
-      ctrl.aggTypes = ['Count', 'Average', 'Sum', 'Median', 'Min', 'Max'];
-      ctrl.params.aggType = MatrixRequest.aggType || 'Count';
+      ctrl.aggTypes = {_count: 'Count', avg: 'Average', sum: 'Sum',
+                        percentiles: 'Median', min: 'Min', max: 'Max'};
+      ctrl.params.aggType = MatrixRequest.aggType || '_count';
       ctrl.params.order = MatrixRequest.order || 'desc';
       ctrl.params.sampleSize = 10;
       QueryService.general('fortress').then(function (data) {
