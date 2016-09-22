@@ -16,7 +16,7 @@
   <section class="form-group">
     <label>Aggregation</label>
     <select class="form-control" ng-model="$ctrl.params.aggType"
-            ng-options="k as v for (k, v) in $ctrl.aggTypes"
+            ng-options="k as v for (k, v) in $ctrl.params.aggTypes"
             ng-change="$ctrl.selectAggType($ctrl.params.aggType)"></select>
   </section>
   <section class="form-group" ng-show="$ctrl.params.aggType!='_count' && $ctrl.params.fields.length>0">

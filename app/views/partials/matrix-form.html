@@ -25,7 +25,7 @@
     <select class="form-control" ng-model="$ctrl.params.fromRlx" multiple
             ng-options="rf.name as rf.name for rf in $ctrl.params.fromRlxs"></select>
   </section>
-  <section class="form-group" ng-show="!$ctrl.params.sharedRlxChecked && $ctrl.params.fromRlxs.length>0"">
+  <section class="form-group" ng-show="!$ctrl.params.sharedRlxChecked && $ctrl.params.fromRlxs.length>0">
     <label>Relationship To</label>
     <select class="form-control" ng-model="$ctrl.params.toRlx" multiple
             ng-options="rt.name as rt.name for rt in $ctrl.params.toRlxs"></select>

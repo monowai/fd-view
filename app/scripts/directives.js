@@ -500,7 +500,7 @@ angular.module('fdView.directives', [])
         placeholder: '@',
         disabled: '='
       },
-      template: '<textarea id="{{id}}" name="{{name}}" ng-model="message" type="text"  class="form-control code" msd-elastic ng-disabled="disabled" placeholder="{{placeholder}}"></textarea>',
+      template: '<textarea id="{{id}}" name="{{name}}" ng-model="message" type="text"  class="form-control" msd-elastic ng-disabled="disabled" placeholder="{{placeholder}}"></textarea>',
       link: function(scope, iElement, iAttrs) {
 
         var cols = scope.columns;
@@ -916,8 +916,6 @@ angular.module('fdView.directives', [])
     controller: ['MatrixRequest', 'QueryService', function AggFormCtrl(MatrixRequest, QueryService){
       var ctrl = this;
       ctrl.params = MatrixRequest;
-      ctrl.aggTypes = {_count: 'Count', avg: 'Average', sum: 'Sum',
-                        percentiles: 'Median', min: 'Min', max: 'Max'};
       ctrl.params.aggType = MatrixRequest.aggType || '_count';
       ctrl.params.order = MatrixRequest.order || 'desc';
       ctrl.params.sampleSize = 10;

@@ -97,7 +97,7 @@ fdView.factory('QueryService', ['$http', 'configuration', function ($http, confi
     },
       addCol: function (col) {
         var column = {};
-        column[col.name]={dataType: col.dataType, persistent:true};
+        column[col.name]={dataType: col.dataType, persistent:true, value: col.value};
         _.extend(cp.content,column);
       },
       addEntitylink: function (col, el) {
@@ -491,6 +491,8 @@ fdView.factory('QueryService', ['$http', 'configuration', function ($http, confi
   // } else {
   //   delete this.devMode;
   // }
+  this.aggTypes = {_count: 'Count', avg: 'Average', sum: 'Sum',
+    percentiles: 'Median', min: 'Min', max: 'Max'};
   this.matrixSearch = function () {
     if (this.sharedRlxChecked) {
       this.toRlx = this.fromRlx;
