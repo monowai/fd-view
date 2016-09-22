@@ -916,8 +916,6 @@ angular.module('fdView.directives', [])
     controller: ['MatrixRequest', 'QueryService', function AggFormCtrl(MatrixRequest, QueryService){
       var ctrl = this;
       ctrl.params = MatrixRequest;
-      ctrl.aggTypes = {_count: 'Count', avg: 'Average', sum: 'Sum',
-                        percentiles: 'Median', min: 'Min', max: 'Max'};
       ctrl.params.aggType = MatrixRequest.aggType || '_count';
       ctrl.params.order = MatrixRequest.order || 'desc';
       ctrl.params.sampleSize = 10;
