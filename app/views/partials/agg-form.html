@@ -27,7 +27,7 @@
             uib-tooltip="Metric is required for this aggregation" tooltip-enable="!$ctrl.params.metric"></select>
   </section>
   <section class="form-group" ng-show="$ctrl.params.fields.length>0">
-    <label>Term</label>
+    <label>Measure</label>
     <select class="form-control" ng-model="$ctrl.params.term"
             ng-options="f as (f.displayName || f.name) group by f.type for f in $ctrl.params.fields"></select>
   </section>
