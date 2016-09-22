@@ -30,6 +30,7 @@ fdView.controller('AnalyzeCtrl', ['$scope', 'QueryService', 'MatrixRequest', 'Se
       $scope.graphData = [];
     } else if (MatrixRequest.aggData && $scope.chartType==='Barchart') {
       $scope.aggData = MatrixRequest.aggData;
+      $scope.aggDetails = MatrixRequest.aggDetails;
     } else {
       if(MatrixRequest.reciprocalExcluded() && !MatrixRequest.sharedChecked()) {
         $scope.chartType = 'BiPartite';
@@ -95,7 +96,8 @@ fdView.controller('AnalyzeCtrl', ['$scope', 'QueryService', 'MatrixRequest', 'Se
         });
       }
       if($scope.chartType === 'Barchart') {
-        var terms = {
+        var at = MatrixRequest.aggType,
+          terms = {
             field: MatrixRequest.term.name,
             size: MatrixRequest.sampleSize,
             order: {}
@@ -112,23 +114,31 @@ fdView.controller('AnalyzeCtrl', ['$scope', 'QueryService', 'MatrixRequest', 'Se
             }
           };
 
-        terms.order[MatrixRequest.aggType === '_count' ? '_count' : 'metric'] = MatrixRequest.order;
 
-        if (MatrixRequest.aggType !== '_count') {
+        // TODO: sorting for Median seems not working
+        terms.order[(at === '_count') || (at === 'percentiles') ? '_count' : 'metric'] = MatrixRequest.order;
+
+        if (at !== '_count') {
           if (MatrixRequest.metric) {
             query.aggs.data.aggs = {metric: {}};
-            query.aggs.data.aggs.metric[MatrixRequest.aggType] = {"field": MatrixRequest.metric.name};
+            query.aggs.data.aggs.metric[at] = {"field": MatrixRequest.metric.name};
+            if (at === 'percentiles') _.extend(query.aggs.data.aggs.metric[at], {percents: [50]});
           } else return;
         }
         // console.log(query);
         QueryService.query('es', query).then(function (res) {
-          $scope.aggData = res.aggregations.data.buckets;
+          $scope.aggData = res.aggregations.data.buckets.filter(function (b) {
+            if (!b.metric) return b;
+            else
+              return b.metric.hasOwnProperty('value') ? b.metric.value != null : b.metric.values['50.0'] != 'NaN';
+          });
           $scope.aggDetails = {
-            aggType: MatrixRequest.aggType,
-            metric: MatrixRequest.metric.displayName,
+            aggType: MatrixRequest.aggTypes[at],
+            metric: MatrixRequest['metric.displayName' || 'term.name'],
             term: MatrixRequest.term.name
           };
           MatrixRequest.aggData = angular.copy($scope.aggData);
+          MatrixRequest.aggDetails = angular.copy($scope.aggDetails);
           SearchService.fortress = MatrixRequest.fortress;
           SearchService.types = MatrixRequest.document;
           SearchService.term = MatrixRequest.term;

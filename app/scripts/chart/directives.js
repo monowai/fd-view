@@ -467,7 +467,7 @@ angular.module('fd.graph.matrix.directives', [])
         .style('opacity', 0);
 
       x.domain(data.map(function(d) { return d.key; }));
-      y.domain([0, d3.max(data, function (d) { return d.metric ? d.metric.value : d.doc_count})]);
+      y.domain([0, d3.max(data, function (d) { return d.metric ? (d.metric.value || d.metric.values['50.0']) : d.doc_count})]);
 
       var bars = svg.select('.data').selectAll('rect').data(data);
 
@@ -479,8 +479,8 @@ angular.module('fd.graph.matrix.directives', [])
         .style('fill', function(d) { return color(d.key); })
         .attr('x', function(d) { return x(d.key); })
         .attr('width', x.bandwidth())
-        .attr('y', function(d) { return y( d.metric ? d.metric.value : d.doc_count); })
-        .attr('height', function(d) { return height - y( d.metric ? d.metric.value : d.doc_count); })
+        .attr('y', function(d) { return y( d.metric ? (d.metric.value || d.metric.values['50.0']) : d.doc_count); })
+        .attr('height', function(d) { return height - y( d.metric ? (d.metric.value || d.metric.values['50.0']) : d.doc_count); })
         .on("mouseover", function(d, i) {
           svg.selectAll("rect").transition()
             .duration(250)
@@ -494,7 +494,7 @@ angular.module('fd.graph.matrix.directives', [])
             .style('opacity', .9)
             .style('height', 'auto');
           div.html('<strong>'+d.key+'</strong>' +
-                    (d.metric ? '<br>' + d.metric.value.toFixed(2) : '') +
+                    (d.metric ? '<br>' + (d.metric.value || d.metric.values['50.0']).toFixed(2) : '') +
                     '<br/><b>doc_count:</b>'  + d.doc_count)
             .style('left', (d3.event.pageX) + 'px')
             .style('top', (d3.event.pageY - 28) + 'px');
@@ -519,8 +519,8 @@ angular.module('fd.graph.matrix.directives', [])
         .duration(500)
         .attr('x', function(d) { return x(d.key); })
         .attr('width', x.bandwidth())
-        .attr('y', function(d) { return y(d.metric ? d.metric.value : d.doc_count); })
-        .attr('height', function(d) { return height - y(d.metric ? d.metric.value : d.doc_count); });
+        .attr('y', function(d) { return y(d.metric ? (d.metric.value || d.metric.values['50.0']) : d.doc_count) || 0; })
+        .attr('height', function(d) { return (height || 0) - y(d.metric ? (d.metric.value || d.metric.values['50.0']) : d.doc_count) || 0; });
 
       svg.select(".x.axis")
         .attr("transform", "translate(0," + height + ")")
