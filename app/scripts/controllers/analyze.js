@@ -115,8 +115,9 @@ fdView.controller('AnalyzeCtrl', ['$scope', 'QueryService', 'MatrixRequest', 'Se
           };
 
 
-        // TODO: sorting for Median seems not working
-        terms.order[(at === '_count') || (at === 'percentiles') ? '_count' : 'metric'] = MatrixRequest.order;
+        terms.order[MatrixRequest.byMeasure ? '_term' :
+          (at === '_count') ? '_count' :
+            (at === 'percentiles') ? 'metric.50' : 'metric'] = MatrixRequest.order;
 
         if (at !== '_count') {
           if (MatrixRequest.metric) {
@@ -134,8 +135,8 @@ fdView.controller('AnalyzeCtrl', ['$scope', 'QueryService', 'MatrixRequest', 'Se
           });
           $scope.aggDetails = {
             aggType: MatrixRequest.aggTypes[at],
-            metric: MatrixRequest['metric.displayName' || 'term.name'],
-            term: MatrixRequest.term.name
+            metric: MatrixRequest['metric.displayName' || 'term.displayName'],
+            term: MatrixRequest.term.displayName
           };
           MatrixRequest.aggData = angular.copy($scope.aggData);
           MatrixRequest.aggDetails = angular.copy($scope.aggDetails);
