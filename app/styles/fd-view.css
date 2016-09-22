@@ -301,6 +301,10 @@ div.bar-tooltip {
   padding-right: 0;
 }
 
+textarea.code {
+  font-family: DejaVu Sans Mono,Bitstream Vera Sans Mono,Courier New, monospace;
+}
+
 select:invalid {
   color: gray;
 }

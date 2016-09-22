@@ -97,7 +97,7 @@ fdView.factory('QueryService', ['$http', 'configuration', function ($http, confi
     },
       addCol: function (col) {
         var column = {};
-        column[col.name]={dataType: col.dataType, persistent:true};
+        column[col.name]={dataType: col.dataType, persistent:true, value: col.value};
         _.extend(cp.content,column);
       },
       addEntitylink: function (col, el) {
