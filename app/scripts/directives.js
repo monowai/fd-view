@@ -877,9 +877,11 @@ angular.module('fdView.directives', [])
         ctrl.params.document = d;
         QueryService.concept('/', d).then(function (data) {
           var conceptMap = _.flatten(_.map(data, 'concepts'));
-          ctrl.params.concepts = _.uniq(conceptMap, function (c) {
-            return c.name;
-          });
+          if (conceptMap[0]) {
+            ctrl.params.concepts = _.uniq(conceptMap, function (c) {
+              return c.name;
+            });
+          }
         });
         ctrl.params.fromRlxs = [];
         ctrl.params.toRlxs = [];

@@ -377,6 +377,9 @@ th.col>span:hover:after {
 .ag-cell.bg-danger {
   text-align: right;
 }
+.ag-cell a + a {
+  margin-left: 5px;
+}
 .hscroll-table {
   width:100%;
   overflow-x:auto;
