@@ -59,13 +59,6 @@ fdView.controller('ExploreCtrl', ['$scope', '$http', 'MatrixRequest', '$compile'
         // 'width': '50',
         // 'height': '50'
       }},
-      {'selector':'edge',
-        'css':{
-          'width': 'data(count)',
-          'line-color': '#067B7B',
-          'target-arrow-color': '#067B7B',
-          'target-arrow-shape': 'triangle'
-        }},
       {'selector':':selected',
         'css':{
           'background-color': 'black',
@@ -99,6 +92,20 @@ fdView.controller('ExploreCtrl', ['$scope', '$http', 'MatrixRequest', '$compile'
           return data;
         }
         $scope.graphData = data;
+
+        var maxCount = d3.max(data.edges, function(d) { return d.data.count; }),
+          edgeWidth = d3.scaleLinear()
+            .domain([MatrixRequest.minCount, maxCount])
+            .range([1, maxCount < 15 ? maxCount : 15]);
+
+        $scope.styles.push({
+          'selector':'edge',
+          'css':{
+            'width': function (ele) { return edgeWidth(ele.data('count')); },
+            'line-color': '#067B7B',
+            'target-arrow-color': '#067B7B',
+            'target-arrow-shape': 'triangle'
+          }});
       });
     };
   }]);
