@@ -500,7 +500,7 @@ angular.module('fdView.directives', [])
         placeholder: '@',
         disabled: '='
       },
-      template: '<textarea id="{{id}}" name="{{name}}" ng-model="message" type="text"  class="form-control code" msd-elastic ng-disabled="disabled" placeholder="{{placeholder}}"></textarea>',
+      template: '<textarea id="{{id}}" name="{{name}}" ng-model="message" type="text"  class="form-control" msd-elastic ng-disabled="disabled" placeholder="{{placeholder}}"></textarea>',
       link: function(scope, iElement, iAttrs) {
 
         var cols = scope.columns;
