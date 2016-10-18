@@ -1,0 +1,150 @@
+
+/* global angular:true, browser:true */
+
+/**
+ * @license HTTP Auth Interceptor Module for AngularJS
+ * (c) 2012 Witold Szczerba
+ * License: MIT
+ */
+(function () {
+  'use strict';
+
+  angular.module('http-auth-interceptor', ['http-auth-interceptor-buffer'])
+
+    .factory('authService', ['$rootScope', 'httpBuffer', ($rootScope, httpBuffer) => {
+      return {
+        /**
+         * Call this function to indicate that authentication was successfull and trigger a
+         * retry of all deferred requests.
+         * @param data an optional argument to pass on to $broadcast which may be useful for
+         * example if you need to pass through details of the user that was logged in
+         * @param configUpdater an optional transformation function that can modify the
+         * requests that are retried after having logged in.  This can be used for example
+         * to add an authentication token.  It must return the request.
+         */
+        loginConfirmed: (data, configUpdater) => {
+          // var updater = configUpdater || function(config) {return config;};
+          $rootScope.$broadcast('event:auth-loginConfirmed', data);
+          // MKH - commented as it prevented logging in AFTER a failed login attempt
+          // suspect it's buffering a call to the /login page
+          // httpBuffer.retryAll(updater);
+        },
+
+        /**
+         * Call this function to indicate that authentication should not proceed.
+         * All deferred requests will be abandoned or rejected (if reason is provided).
+         * @param data an optional argument to pass on to $broadcast.
+         * @param reason if provided, the requests are rejected; abandoned otherwise.
+         */
+        loginCancelled: (data, reason) => {
+          httpBuffer.rejectAll(reason);
+          $rootScope.$broadcast('event:auth-loginCancelled', data);
+        }
+      };
+    }])
+
+  /**
+   * $http interceptor.
+   * On 401 response (without 'ignoreAuthModule' option) stores the request
+   * and broadcasts 'event:auth-loginRequired'.
+   * On 403 response (without 'ignoreAuthModule' option) discards the request
+   * and broadcasts 'event:auth-forbidden'.
+   */
+    .config(['$httpProvider', $httpProvider => {
+      $httpProvider.interceptors.push(['$rootScope', '$q', 'httpBuffer', ($rootScope, $q, httpBuffer) => {
+        return {
+          responseError: rejection => {
+            const config = rejection.config || {};
+            if (!config.ignoreAuthModule) {
+              switch (rejection.status) {
+                case 401: {
+                  const deferred = $q.defer();
+                  const bufferLength = httpBuffer.append(config, deferred);
+                  if (bufferLength === 1) {
+                    $rootScope.$broadcast('event:auth-loginRequired', rejection);
+                  }
+                  return deferred.promise;
+                }
+                case 403:
+                  $rootScope.$broadcast('event:auth-notAuthorized', rejection);
+                  break;
+                case 404:
+                  $rootScope.$broadcast('event:not-found', rejection);
+                  break;
+                case 500:
+                  $rootScope.$broadcast('event:server-error', rejection.data);
+                  break;
+                case 400:
+                  $rootScope.$broadcast('event:server-report', rejection.data);
+                  break;
+                default: {
+                  break;
+                }
+              }
+            }
+            // otherwise, default behaviour
+            return $q.reject(rejection);
+          }
+        };
+      }]);
+    }]);
+
+  /**
+   * Private module, a utility, required internally by 'http-auth-interceptor'.
+   */
+  angular.module('http-auth-interceptor-buffer', [])
+
+    .factory('httpBuffer', ['$injector', $injector => {
+      /** Holds all the requests, so they can be re-requested in future. */
+      let buffer = [];
+
+      /** Service initialized later because of circular dependency problem. */
+      let $http;
+
+      function retryHttpRequest(config, deferred) {
+        function successCallback(response) {
+          deferred.resolve(response);
+        }
+
+        function errorCallback(response) {
+          deferred.reject(response);
+        }
+
+        $http = $http || $injector.get('$http');
+        $http(config).then(successCallback, errorCallback);
+      }
+
+      return {
+        /**
+         * Appends HTTP request configuration object with deferred response attached to buffer.
+         * @return {Number} The new length of the buffer.
+         */
+        append: (config, deferred) => buffer.push({config, deferred}),
+
+        /**
+         * Abandon or reject (if reason provided) all the buffered requests.
+         */
+        rejectAll: reason => {
+          if (reason) {
+            for (let i = 0; i < buffer.length; ++i) {
+              buffer[i].deferred.reject(reason);
+            }
+          }
+          buffer = [];
+        },
+
+        /**
+         * Retries all the buffered requests clears the buffer.
+         */
+        retryAll: updater => {
+          for (let i = 0; i < buffer.length; ++i) {
+            const _cfg = updater(buffer[i].config);
+            if (_cfg !== false) {
+              retryHttpRequest(_cfg, buffer[i].deferred);
+            }
+          }
+          buffer = [];
+        }
+      };
+    }]);
+})();

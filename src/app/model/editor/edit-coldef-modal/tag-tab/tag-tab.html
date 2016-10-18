@@ -1,0 +1,106 @@
+<div class="row">
+  <div class="col-md-8">
+    <br>
+    <div class="form-group">
+      <label for="label" class="control-label col-xs-2">Tag Type</label>
+      <div class="col-xs-10">
+        <tag-input id="label" model="$ctrl.tag.label"></tag-input>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="code" class="control-label col-xs-2">Code</label>
+      <div class="col-xs-10">
+        <textarea id="code" name="tagCode" rows="1" class="form-control" ng-model="$ctrl.tag.code" placeholder="Defaults to column data value" textcomplete="columns" autofocus></textarea>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="nameCol" class="control-label col-xs-2">Name</label>
+      <div class="col-xs-10">
+        <!--<textarea id="nameCol" name="nameCol" rows="1" class="form-control" ng-model="$ctrl.tag.name" placeholder="Optional columnName, #data['expression'], or 'literal value'"></textarea>-->
+        <textcomplete id="nameCol" name="nameCol" message="$ctrl.tag.name" columns="$ctrl.columnNames" placeholder="Optional columnName, #data['expression'], or 'literal valueNames"></textcomplete>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="prefix" class="control-label col-xs-2">Prefix</label>
+      <div class="col-xs-10">
+        <input id="prefix" name="prefix" type="text" class="form-control" ng-model="$ctrl.tag.keyPrefix" placeholder="Optional prefix to a code e.g. us.ma.cambridge vs. uk.ca.cambridge"/>
+      </div>
+    </div>
+    <br>
+    <div class="form-group">
+      <div class="col-sm-offset-2 col-xs-5">
+        <div class="checkbox">
+          <label>
+            <input type="checkbox" id="mustExist" name="mustExist" ng-model="$ctrl.tag.mustExist"> <b>Must exist</b>
+          </label>
+        </div>
+      </div>
+      <div class="col-xs-5">
+        <div class="checkbox">
+          <label>
+            <input type="checkbox" id="merge" name="merge" ng-model="$ctrl.tag.merge" ng-checked="true"> <b>Merge if exists</b>
+          </label>
+        </div>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="valIfNull" class="control-label col-xs-3">If not found, set Code to</label>
+      <div class="col-xs-9">
+        <input id="valIfNull" name="valIfNull" type="text" class="form-control" ng-model="$ctrl.tag.notFound"/>
+      </div>
+    </div>
+    <div class="form-group" ng-show="openAsTag || $ctrl.tag.relationship">
+      <label for="relationship" class="control-label col-xs-3">Relationship name</label>
+      <div class="col-xs-9 col-sm-7">
+        <!--<input id="relationship" name="relationship" type="text" class="form-control" ng-model="$ctrl.tag.relationship"/>-->
+        <textcomplete id="relationship" name="relationship" message="$ctrl.tag.relationship" columns="$ctrl.columnNames"></textcomplete>
+      </div>
+      <div class="col-sm-2 checkbox">
+        <label>
+          <input type="checkbox" name="reverse" ng-model="$ctrl.tag.reverse"> <b>Reverse</b>
+        </label>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="delim" class="control-label col-xs-3">Delimiter</label>
+      <div class="col-xs-9 col-sm-7">
+        <input id="delim" name="delim" type="text" class="form-control" ng-model="$ctrl.tag.delimiter"/>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <fieldset>
+      <legend>Target Tags  &nbsp;<button type="button" class="btn btn-sm btn-primary" uib-tooltip="Add new" ng-click="$ctrl.addTarget($ctrl.tag)"><i class="fa fa-plus"></i></button></legend>
+
+      <div ui-tree>
+        <ol ui-tree-nodes="" ng-model="$ctrl.tag.targets" id="tree-root">
+          <li ng-repeat="tag in $ctrl.tag.targets" ui-tree-node ng-include="'targets_renderer.html'"></li>
+        </ol>
+      </div>
+
+    </fieldset>
+  </div>
+
+  <div class="col-md-12">
+    <col-properties column="$ctrl.tag"></col-properties>
+  </div>
+</div>
+
+<!-- Nested tags template -->
+<script type="text/ng-template" id="targets_renderer.html">
+  <div ui-tree-handle class="tree-node tree-node-content">
+    <button type="button" class="btn btn-box-tool btn-xs" ng-if="tag.targets && tag.targets.length > 0" data-nodrag ng-click="toggle(this)">
+      <i class="glyphicon" ng-class="{'glyphicon-chevron-right': collapsed,'glyphicon-chevron-down': !collapsed}"></i></button>
+    <div class="tools pull-right">
+      <button class="btn btn-box-tool" uib-tooltip="Add new" data-nodrag ng-click="$ctrl.addTarget(this)">
+        <i class="glyphicon glyphicon-plus"></i></button>
+      <button type="button" class="btn btn-box-tool" uib-tooltip="Delete" data-nodrag ng-click="remove(this)">
+        <i class="glyphicon glyphicon-remove"></i></button>
+    </div>
+    {{tag.label}}
+  </div>
+  <ol ui-tree-nodes="" ng-model="tag.targets" ng-class="{hidden: collapsed}">
+    <li ng-repeat="tag in tag.targets" ui-tree-node ng-include="'targets_renderer.html'">
+    </li>
+  </ol>
+</script>

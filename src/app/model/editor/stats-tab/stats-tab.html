@@ -1,0 +1,53 @@
+<div class="row">
+  <div class="col-sm-2">Name</div>
+  <div class="col-sm-1">Type</div>
+  <div class="col-sm-1">Missing</div>
+  <div class="col-sm-8">Statistics</div>
+</div>
+<div role="tablist" class="panel-group">
+  <div class="box panel panel-default" ng-repeat="(name, col) in $ctrl.stats"
+       ng-class="{'box-warning': $ctrl.model[name].tag, 'box-success': $ctrl.model[name].callerRef }">
+    <div aria-selected class="panel-heading">
+      <h4 class="panel-title">
+        <div class="box-title row stats-panel">
+          <div class="col-sm-2">
+            <div class="label stats-label label-warning col-name" ng-show="$ctrl.model[name].tag">Tag</div>
+            <div class="label stats-label label-success col-name" ng-show="$ctrl.model[name].callerRef">Primary Key</div>
+            <div class="truncate"><i class="pull-left glyphicon" ng-class="isOpen ? 'glyphicon-chevron-down' : 'glyphicon-chevron-right'"></i>&nbsp;
+              <a href ng-click="$ctrl.showColDef(name)">{{name}}</a></div>
+          </div>
+          <div class="col-sm-1">{{col.type}}</div>
+          <div class="col-sm-1">{{col.missing}}</div>
+          <div class="col-sm-8" ng-if="col.type=='string'" ng-show="col.missing!==$ctrl.totalImport">
+            <div class="col-sm-3">
+              <div class="label stats-label label-primary">Least</div>
+              {{col.stats.least[0]}}: {{col.stats.least[1]}}
+            </div>
+            <div class="col-sm-3">
+              <div class="label stats-label label-primary">Most</div>
+              {{col.stats.most[0]}}: {{col.stats.most[1]}}
+            </div>
+            <div class="col-sm-6">
+              <div class="label stats-label label-primary">Values</div>
+              <span>{{col.stats.values | limitTo:3}}</span>
+            </div>
+          </div>
+          <div class="col-sm-7" ng-if="col.type!='string'">
+            <div class="col-sm-2">
+              <div class="label stats-label label-primary">Min</div>
+              {{col.stats.min}}
+            </div>
+            <div class="col-sm-2">
+              <div class="label stats-label label-primary">Max</div>
+              {{col.stats.max}}
+            </div>
+            <div class="col-sm-8">
+              <div class="label stats-label label-primary">Average</div>
+              {{col.stats.mean}}
+            </div>
+          </div>
+        </div>
+      </h4>
+    </div>
+  </div>
+</div>

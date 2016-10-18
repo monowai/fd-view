@@ -1,0 +1,48 @@
+<!-- Content Header (Page header) -->
+<section class="content-header">
+  <h1>
+    Explore
+    <small>your Fortress as a graph</small>
+  </h1>
+  <ol class="breadcrumb">
+    <li><a ui-sref="welcome"><i class="fa fa-home"></i> Home</a></li>
+    <li class="active">Explore</li>
+  </ol>
+</section>
+
+<!-- Main content -->
+<section class="content">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="nav-tabs-custom">
+        <div class="box-tools pull-right">
+          <div class="form-group" style="width: 180px; margin: 10px">
+            <label class="col-sm-4 control-label">Layout</label>
+            <div class="col-sm-8">
+              <select ng-model="$ctrl.layout" ng-options="l.name for l in $ctrl.layouts"></select>
+            </div>
+          </div>
+        </div>
+        <ul class="nav nav-tabs">
+          <li><a href data-target="#search" data-toggle="tab"><i class="fa fa-search"></i> Search</a></li>
+          <li class="active"><a href data-target="#view" data-toggle="tab"><i class="fa fa-share-alt"></i> View</a></li>
+        </ul>
+        <div class="tab-content">
+          <div class="tab-pane fade" id="search">
+            <fd-search search="$ctrl.search()">
+              <fd-matrix-form></fd-matrix-form>
+            </fd-search>
+          </div>
+           <!--/.tab-pane -->
+          <div class="tab-pane fade active in" id="view">
+            <fd-search search="$ctrl.search()"></fd-search>
+            <cytoscape elements="$ctrl.graphData" layout="$ctrl.layout" styles="$ctrl.styles" selected-nodes="$ctrl.nodes" qtip="$ctrl.qtip"></cytoscape>
+          </div>
+           <!--/.tab-pane -->
+        </div>
+         <!--/.tab-content -->
+      </div>
+       <!--nav-tabs-custom -->
+    </div>
+  </div>
+</section>

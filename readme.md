@@ -10,8 +10,7 @@ fd-view provides
 
 Once node is installed, you should install the following
 
-* Grunt
-* Grunt-CLI
+* Gulp-CLI
 * Bower
 
 On Ubuntu, this is all achieved in the following manner
@@ -21,8 +20,7 @@ sudo apt-add-repository ppa:chris-lea/node.js -y
 sudo apt-get update
 sudo apt-get install nodejs -q -y
 
-sudo npm install -g grunt
-sudo npm install -g grunt-cli
+sudo npm install -g gulp-cli
 sudo npm install -g bower
 ```
 The -g flag indicates that the package should be installed globally (for all users)
@@ -38,19 +36,19 @@ bower install
 
 Testing :
 ```
-grunt test
+gulp test
 ```
 
 To build a production version
 ```
-grunt
+gulp
 ```
 
 the bundle will be available in dist folder - **!!this is not currently working!!**
 
 Run the server with
 ```
-grunt serve
+gulp serve
 ```
 By default you will find fd-view listening on 9000. 
 

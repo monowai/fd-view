@@ -1,0 +1,30 @@
+<div class="modal-header">
+  <button type="button" class="close" data-dismiss="modal" aria-label="Close" ng-click="$ctrl.cancel()">
+    <span aria-hidden="true">&times;</span></button>
+  <h4 class="modal-title">{{$ctrl.caption}} - {{$ctrl.cd.$name}}</h4>
+</div>
+<form name="colDefForm" class="form-horizontal" novalidate>
+  <div class="modal-body">
+    <uib-tabset class="nav-tabs-custom" active="$ctrl.tab">
+      <uib-tab heading="Column" ng-hide="$ctrl.openAsTag">
+        <column-tab column="$ctrl.cd"></column-tab>
+      </uib-tab>
+      <uib-tab heading="{{$ctrl.cd.label}} Properties" disable="!($ctrl.cd.tag || $ctrl.openAsTag)"  ng-show="($ctrl.cd.tag || $ctrl.openAsTag)">
+        <tag-tab tag="$ctrl.cd"></tag-tab>
+      </uib-tab>
+      <uib-tab heading="Relationships" ng-hide="!$ctrl.cd.tag|| !$ctrl.entity">
+        <relationships-tab tag="$ctrl.cd"></relationships-tab>
+      </uib-tab>
+      <uib-tab heading="Entity Links" ng-hide="!$ctrl.entity || $ctrl.cd.tag">
+        <entity-links-tab column="$ctrl.cd"></entity-links-tab>
+      </uib-tab>
+      <uib-tab heading="Geo Data" ng-show="$ctrl.cd.tag || $ctrl.openAsTag">
+        <geodata-tab tag="$ctrl.cd"></geodata-tab>
+      </uib-tab>
+    </uib-tabset>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-default pull-left" ng-click="$ctrl.cancel()">Cancel</button>
+    <button type="submit" class="btn btn-primary" ng-click="$ctrl.ok($ctrl.cd)" ng-disabled="colDefForm.$invalid"><i class="fa fa-bolt"></i>&nbsp; Ok</button>
+  </div>
+</form>

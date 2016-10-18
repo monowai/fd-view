@@ -1,0 +1,62 @@
+<div class="modal-header">
+  <button type="button" class="close" data-dismiss="modal" aria-label="Close" ng-click="$ctrl.cancel()">
+    <span aria-hidden="true">&times;</span></button>
+  <h4 class="modal-title">Edit Property</h4>
+</div>
+<form name="propertyForm" ng-submit="$ctrl.ok($ctrl.property)">
+  <div class="modal-body">
+    <div class="row">
+      <div class="col-md-6">
+        <div class="form-group">
+          <label for="source">Source</label>
+          <select id="source" name="source" class="form-control" ng-model="$ctrl.property.source"
+                  ng-options="col as col for (col,val) in $ctrl.columns" ng-change="$ctrl.setProperties($ctrl.property.source)">
+            <option value='' disabled selected>{{$ctrl.column}}</option>
+          </select>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="form-group">
+          <label for="target">Set as</label>
+          <input id="target" name="target" type="text" class="form-control" ng-model="$ctrl.property.target"/>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="form-group">
+          <label for="value">Value: </label>
+          <textarea id="value" class="form-control" ng-model="$ctrl.property.value"></textarea>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="form-group">
+          <label for="data-type" class="col-sm-3 control-label">Data Type: </label>
+          <div class="col-sm-9">
+            <select id="data-type" class="form-control" ng-model="$ctrl.property.dataType" ng-options="dt as dt for dt in $ctrl.dataTypes">
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-2">
+        <div class="form-group">
+          <div class="checkbox">
+            <label>
+              <input type="checkbox" id="storeNull" name="storeNull" ng-model="$ctrl.property.storeNull"> <b>Store null</b>
+            </label>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6" ng-show="$ctrl.property.dataType==='date'">
+        <div class="form-group">
+          <label for="date-format" class="col-sm-3 control-label">Date Format: </label>
+          <div class="col-sm-9">
+            <input type="text" id="date-format" class="form-control" ng-model="$ctrl.property.dateFormat" uib-typeahead="df for df in ['Automatic','timestamp','epoc']" uib-tooltip="Automatic, timestamp, epoc or cusom (like 'yyyy-MM-dd)" ng-required="$ctrl.property.dataType==='date'">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="submit" class="btn btn-primary" ng-click="$ctrl.ok($ctrl.property)" ng-disabled="!propertyForm.$valid"><i class="fa fa-bolt"></i>&nbsp; Ok</button>
+    <button type="button" class="btn btn-default pull-left" ng-click="$ctrl.cancel()">Cancel</button>
+  </div>
+</form>

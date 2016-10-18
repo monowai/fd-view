@@ -1,0 +1,53 @@
+<div class="modal-header">
+  <button type="button" class="close" data-dismiss="modal" aria-label="Close" ng-click="close()">
+    <span aria-hidden="true">&times;</span></button>
+  <h4 class="modal-title">Create New Tag</h4>
+</div>
+<form name="newTag" role="form" class="form-horizontal" ng-submit="ok(obj)" novalidate>
+  <div class="modal-body">
+    <div class="form-group">
+      <label for="name" class="col-sm-3 control-label">Name: </label>
+      <div class="col-sm-8">
+        <textarea id="name" name="name" class="form-control" ng-model="obj.name" rows="1" autofocus></textarea>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="code" class="col-sm-3 control-label">Code: </label>
+      <div class="col-sm-8">
+        <textarea id="code" name="code" class="form-control" ng-model="obj.code" ng-class="{'has-error': newTag.code.$invalid && !newTag.code.$pristine}" rows="1" required></textarea>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="tagLabel" class="col-sm-3 control-label">Label: </label>
+      <div class="col-sm-8">
+        <textarea id="tagLabel" name="label" class="form-control" ng-model="obj.label" ng-class="{'has-error': newTag.label.$invalid && !newTag.label.$pristine}" rows="1" required></textarea>
+      </div>
+    </div>
+    <div class="form-group" ng-show="obj.selected.id !== 0">
+      <label for="relationship" class="col-sm-3 control-label">Relationship: </label>
+      <div class="col-sm-8">
+        <textarea id="relationship" name="relationship" class="form-control" ng-model="obj.relationship" rows="1"></textarea>
+      </div>
+    </div>
+    <div class="form-group">
+      <div class="col-sm-offset-3 col-sm-3">
+        <div class="checkbox">
+          <label>
+            <input type="checkbox" id="reverse" name="reverse" ng-model="obj.reverse"> <b>Reverse</b>
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="active" class="col-sm-3 control-label">Connected to: </label>
+      <div class="col-sm-8">
+        <select id="active" name="active" class="form-control" ng-options="t as t.label for t in modalOptions.canConnect" ng-model="obj.selected"></select>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-default pull-left" ng-click="close()">Cancel</button>
+    <button type="submit" class="btn btn-primary" ng-disabled="newTag.$invalid"><i class="fa fa-bolt"></i>&nbsp; Ok</button>
+  </div>
+</form>

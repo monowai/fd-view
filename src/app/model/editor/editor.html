@@ -1,0 +1,74 @@
+<!-- Content Header (Page header) -->
+<section class="content-header">
+  <h1>
+    Model
+    <small>Content that describe the data you want to import</small>
+  </h1>
+  <ol class="breadcrumb">
+    <li><a ui-sref="welcome"><i class="fa fa-home"></i> Home</a></li>
+    <li class="active">Model</li>
+  </ol>
+</section>
+
+<!-- Main content -->
+<section class="content">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="nav-tabs-custom">
+        <ul class="nav nav-tabs pull-right">
+          <li uib-tooltip="Model Settings"><a href data-target="#settings" data-toggle="tab"><i class="fa fa-lg fa-cog"></i></a></li>
+          <li uib-tooltip="Source"><a href data-target="#json" data-toggle="tab" ng-click="editor.checkModel()"><i class="fa fa-lg fa-edit"></i></a></li>
+          <li uib-tooltip="Structure" class="active" ng-show="editor.canSave()"><a href data-target="#structure" data-toggle="tab" ng-click="editor.updateModel()"><i class="fa fa-lg fa-sitemap"></i></a></li>
+          <li uib-tooltip="Data Statistics" ng-show="editor.sample.stats"><a href data-target="#stats" data-toggle="tab"><i class="fa fa-lg fa-signal"></i></a></li>
+          <li uib-tooltip="Data" ng-show="editor.canSave()"><a href data-target="#sample" data-toggle="tab"><i class="fa fa-lg fa-file-text"></i></a></li>
+          <li uib-tooltip="Validation" ng-show="editor.sample.validationResult"><a href data-target="#validate" data-toggle="tab"><i class="fa fa-lg fa-check-square-o"></i></a></li>
+          <li uib-dropdown>
+            <a href id="action-menu" uib-dropdown-toggle>
+            Action <span class="caret"></span></a>
+            <ul class="dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="action-menu">
+              <li role="menuitem" ng-show="editor.canSave()"><a href ng-click="editor.save()">Save</a></li>
+              <li role="menuitem" ng-show="editor.sample.data"><a href ng-click="editor.validate(editor.sample.data)">Validate</a></li>
+              <li role="menuitem" ng-show="editor.sample.validationResult"><a href ng-click="editor.trackResult()">Track</a></li>
+              <li role="menuitem" ng-show="editor.sample.data"><a href ng-click="editor.cleanSample()">Reload Sample</a></li>
+              <li class="divider" ng-show="editor.canSave()"></li>
+              <li role="menuitem"><a href ng-click="editor.cancel()">Cancel</a></li>
+            </ul>
+          </li>
+
+          <li class="pull-left header"><i class="fa fa-share-alt"></i> Edit Content Model - {{editor.name}} <i ng-hide="editor.isSaved()">(not saved)</i> </li>
+        </ul>
+        <div class="tab-content clearfix">
+          <!-- General model settings-->
+          <div id="settings" class="tab-pane fade">
+            <settings-tab model="editor.model"></settings-tab>
+          </div>
+
+          <!-- View Data Sample -->
+          <div id="sample" class="tab-pane fade">
+            <sample-tab model="editor.model"></sample-tab>
+          </div>
+
+          <!-- Data stats-->
+          <div id="stats" class="tab-pane fade">
+            <stats-tab stats="editor.sample.stats" model="editor.model.content"></stats-tab>
+          </div>
+
+          <!-- Model structure -->
+          <div id="structure" class="tab-pane fade active in">
+            <structure-tab model="editor.model"></structure-tab>
+          </div>
+
+          <!-- Edit JSON -->
+          <div id="json" class="tab-pane fade">
+            <div ng-jsoneditor="editor.onEditorLoad" ng-model="editor.model" options="editor.jsonOptions" ng-height="180"></div>
+          </div>
+
+          <div id="validate" class="tab-pane fade">
+            <validate-tab result="editor.validationResult"></validate-tab>
+          </div>
+        </div>
+        <br>
+      </div>
+    </div>
+  </div>
+</section>

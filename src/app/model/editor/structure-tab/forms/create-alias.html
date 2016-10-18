@@ -1,0 +1,34 @@
+<div class="modal-header">
+  <button type="button" class="close" data-dismiss="modal" aria-label="Close" ng-click="close()">
+    <span aria-hidden="true">&times;</span></button>
+  <h4 class="modal-title">Create Alias</h4>
+</div>
+<form name="aliasForm" class="form-horizontal" ng-submit="ok(obj)">
+  <div class="modal-body">
+    <div class="row">
+      <div class="form-group">
+        <label for="alias-code" class="col-sm-3 control-label">Code: </label>
+        <div class="col-sm-8" ng-class="{'has-error': aliasForm.code.$invalid && !aliasForm.code.$pristine}">
+          <input id="alias-code" name="code" type="text" class="form-control" ng-model="obj.code" required autofocus/>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="description" class="col-sm-3 control-label">Description: </label>
+        <div class="col-sm-8" ng-class="{'has-error': aliasForm.description.$invalid && !aliasForm.description.$pristine}">
+          <input id="description" name="description" type="text" class="form-control" ng-model="obj.description" required />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="aliased" class="col-sm-3 control-label">Tag</label>
+        <div class="col-sm-6" ng-class="{'has-error': aliasForm.tag.$invalid && !aliasForm.tag.$pristine}">
+          <select id="aliased" name="tag" class="form-control" ng-model="obj.tag" ng-options="t as t.label for t in modalOptions.tags" required></select>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="submit" class="btn btn-primary" ng-click="ok(obj)" ng-disabled="aliasForm.$invalid"><i class="fa fa-bolt"></i>&nbsp; Ok</button>
+    <button type="button" class="btn btn-default pull-left" ng-click="close()">Cancel</button>
+  </div>
+</form>
