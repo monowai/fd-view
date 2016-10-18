@@ -1,0 +1,84 @@
+<div class="row">
+  <div class="col-md-12" ng-show="$ctrl.tag.tag">
+    <fieldset>
+      <legend>'{{$ctrl.entity}}' Relationships  &nbsp;
+        <button type="button" class="btn btn-sm btn-primary"
+                uib-tooltip="Add new" ng-click="$ctrl.addEntityRel()"><i class="fa fa-plus"></i>
+        </button></legend>
+
+      <uib-accordion class="box-group">
+        <div uib-accordion-group ng-repeat="link in $ctrl.tag.entityTagLinks" class="box box-solid fader" ng-init="isOpen = $last" is-open="isOpen">
+          <uib-accordion-heading>
+            <div class="box-title" >{{link.relationshipName}}
+              <i class="pull-right glyphicon" ng-class="isOpen ? 'glyphicon-chevron-down' : 'glyphicon-chevron-right'"></i></div>
+          </uib-accordion-heading>
+
+          <div class="row">
+            <div class="col-md-6">
+              <label for="rel-name" class="control-label col-xs-4">Relationship name</label>
+              <div class="input-group col-xs-8">
+                <input id="rel-name" name="relName" type="text" class="form-control" ng-model="link.relationshipName">
+              </div>
+            </div>
+            <div class="col-sm-2 form-group">
+              <div class="checkbox">
+                <label>
+                  <input type="checkbox" id="rel-geo" name="geo" ng-model="link.geo"> <b>Geo</b>
+                </label>
+              </div>
+            </div>
+            <div class="col-sm-2 form-group">
+              <div class="checkbox">
+                <label>
+                  <input type="checkbox" id="rel-reverse" name="reverse" ng-model="link.reverse" ng-change="$ctrl.tag.reverse=link.reverse"> <b>Reverse</b>
+                </label>
+              </div>
+            </div>
+            <div class="col-sm-2">
+              <div class="box-tools pull-right">
+                <button type="button" class="btn btn-default btn-sm" uib-tooltip="Add Property"
+                        ng-click="$ctrl.addProperty(link)"><i class="fa fa-lg fa-plus"></i></button>
+                <button type="button" class="btn btn-default btn-sm" uib-tooltip="Delete Link"
+                        ng-click="$ctrl.tag.entityTagLinks.splice($index,1)"><i class="fa fa-lg fa-trash"></i></button>
+              </div>
+            </div>
+          </div>
+          <div class="row" ng-show="link.properties">
+            <div class="col-md-12">
+              <fieldset>
+                <legend>Properties</legend>
+
+                <div class="row" ng-repeat="p in link.properties">
+                  <div class="col-md-12">
+                    <div class="col-md-5 form-group">
+                      <label for="source" class="control-label col-xs-4">Source</label>
+                      <div class="input-group col-xs-8">
+                        <select id="source" name="source" class="form-control" ng-model="p.source" ng-options="c as c for c in $ctrl.columnNames">
+                          <option value="" disabled selected>{{$ctrl.name}}</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <label for="target" class="control-label col-xs-3">Set as</label>
+                      <div class="input-group col-xs-9">
+                        <input id="target" name="target" type="text" class="form-control" ng-model="p.target"/>
+                        <span class="input-group-btn">
+                          <button type="button" class="btn btn-default" ng-click="$ctrl.editProperty(link.properties, p)"
+                                  uib-tooltip="Edit"><i class="fa fa-edit"></i></button>
+                        </span>
+                        <span class="input-group-btn">
+                          <button type="button" class="btn btn-default" ng-click="link.properties.splice($index,1)"
+                                  uib-tooltip="Delete"><i class="fa fa-trash"></i></button>
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </fieldset>
+            </div>
+          </div>
+        </div>
+      </uib-accordion>
+    </fieldset>
+  </div>
+</div>

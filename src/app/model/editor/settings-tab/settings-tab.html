@@ -1,0 +1,80 @@
+<div class="col-md-6">
+  <div class="form-group">
+    <div class="checkbox">
+      <label>
+        <input type="checkbox" id="tagModel" name="tagModel" ng-model="$ctrl.model.tagModel" ng-change="$ctrl.cleanTagModel()"> Tag model
+      </label>
+    </div>
+  </div>
+  <div class="form-group" ng-hide="$ctrl.model.tagModel">
+    <label class="control-label">Fortress:</label>
+    <fortress-input model="$ctrl.model.fortress.name" class="input-sm"></fortress-input>
+  </div>
+  <div class="form-group" ng-hide="$ctrl.model.tagModel">
+    <label class="control-label">Document Type:</label>
+    <doctype-input model="$ctrl.model.documentType.name" class="input-sm" fortress="$ctrl.model.fortress.name" on-select="$ctrl.findModel($ctrl.model)"></doctype-input>
+  </div>
+  <div class="form-group" ng-show="$ctrl.model.tagModel">
+    <label class="control-label">Code:</label>
+    <input type="text" class="form-control input-sm" ng-model="$ctrl.model.code" placeholder="Code" ng-focus="$ctrl.getAllModels()"
+           uib-typeahead="m.code for m in $ctrl.tagModels | filter:$viewValue" typeahead-on-select="$ctrl.findModel($ctrl.model)" />
+  </div>
+  <div class="form-group">
+    <label class="control-label">Description:</label>
+    <input type="text" class="form-control input-sm" ng-model="$ctrl.model.name" placeholder="Description">
+  </div>
+  <div class="form-group">
+    <div class="checkbox">
+      <label>
+        <input type="checkbox" id="emptyIgnored" name="emptyIgnored" ng-model="$ctrl.model.emptyIgnored"> Ignore empty
+      </label>
+    </div>
+  </div>
+  <div class="form-group" ng-hide="$ctrl.model.tagModel">
+    <div class="checkbox">
+      <label>
+        <input type="checkbox" id="archiveTags" name="archiveTags" ng-model="$ctrl.model.archiveTags"> Archive tags
+      </label>
+    </div>
+  </div>
+  <div class="form-group" ng-hide="$ctrl.model.tagModel">
+    <div class="checkbox">
+      <label>
+        <input type="checkbox" id="entityOnly" name="entityOnly" ng-model="$ctrl.model.entityOnly"> Entity only
+      </label>
+    </div>
+  </div>
+  <div class="form-group">
+    <div class="checkbox">
+      <label>
+        <input type="checkbox" id="trackSuppressed" name="trackSuppressed" ng-model="$ctrl.model.trackSuppressed"> Track suppressed
+      </label>
+    </div>
+  </div>
+  <div class="form-group">
+    <div class="checkbox">
+      <label>
+        <input type="checkbox" id="searchSuppressed" name="searchSuppressed" ng-model="$ctrl.model.searchSuppressed"> Search suppressed
+      </label>
+    </div>
+  </div>
+  <div class="form-group">
+    <label class="control-label">Pre-parse Expression:</label>
+    <input type="text" class="form-control input-sm" ng-model="$ctrl.model.preParseRowExp" placeholder="Pre-parse row expression">
+  </div>
+  <div class="form-group" ng-hide="$ctrl.model.tagModel">
+    <label class="control-label">Segment Expression:</label>
+    <input type="text" class="form-control input-sm" ng-model="$ctrl.model.segmentExpression" placeholder="Segment expression">
+  </div>
+</div>
+
+<div class="col-md-6 fader" ng-show="$ctrl.editor.canSave()">
+  <label class="control-label">Next: </label><br>
+  <button type="button" class="btn btn-success" ng-click="$ctrl.sampleData()">Upload Sample</button>
+  <button type="button" class="btn btn-primary" ng-click="$ctrl.editor.updateModel()">Edit Structure</button>
+</div>
+
+<div class="col-md-6" ng-show="$ctrl.modelToLoad">
+  <label class="control-label">This model already exists!</label><br>
+  <button type="button" class="btn btn-success" ng-click="$ctrl.loadModel($ctrl.modelToLoad.key)">Load Existing</button>
+</div>

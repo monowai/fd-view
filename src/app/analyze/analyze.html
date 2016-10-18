@@ -1,0 +1,69 @@
+<!-- Content Header (Page header) -->
+<section class="content-header">
+  <h1>
+    Analyze
+    <small>Relationships between concepts</small>
+  </h1>
+  <ol class="breadcrumb">
+    <li><a href="#"><i class="fa fa-home"></i> Home</a></li>
+    <li class="active">Analyze</li>
+  </ol>
+</section>
+
+<!-- Main content -->
+<section class="content">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="nav-tabs-custom">
+        <div class="box-tools pull-right">
+          <div class="form-group" style="width: 180px; margin: 10px">
+            <label class="col-sm-4 control-label">Type</label>
+            <div class="col-sm-8">
+              <select ng-model="$ctrl.chartType" ng-options="c for c in $ctrl.chartTypes" ng-change="$ctrl.switchChart()">
+              </select>
+            </div>
+          </div>
+        </div>
+        <ul class="nav nav-tabs">
+          <li><a href data-target="#search" data-toggle="tab"><i class="fa fa-search"></i> Search</a></li>
+          <li class="active"><a href data-target="#view" data-toggle="tab"><i class="fa fa-area-chart"></i> View</a></li>
+        </ul>
+        <div class="tab-content">
+          <div class="tab-pane fade" id="search">
+            <fd-search search="$ctrl.search()">
+              <fd-matrix-form ng-if="$ctrl.chartType!='Barchart'"></fd-matrix-form>
+              <fd-agg-form ng-if="$ctrl.chartType=='Barchart'"></fd-agg-form>
+            </fd-search>
+          </div>
+          <div class="tab-pane fade active in" id="view">
+            <div class="box-body">
+              <fd-search search="$ctrl.search()"></fd-search>
+              <!--Chord chart-->
+              <div id="chordGraph" ng-if="$ctrl.chartType=='Chord'">
+                <chord-diagram data="$ctrl.cdData"></chord-diagram>
+              </div>
+              <!--Matrix chart-->
+              <div id="cooccurrenceGraph" ng-if="$ctrl.chartType=='Matrix'">
+                <cooccurrence-diagram data="$ctrl.coData" ordered-nodes="$ctrl.orderedNodes"></cooccurrence-diagram>
+                <select ng-model="$ctrl.order" ng-change="$ctrl.orderMatrix()">
+                  <option value="name">by Name</option>
+                  <option value="count">by Occurrence</option>
+                </select>
+              </div>
+              <!--BiPartite chart-->
+              <div id="bipartiteGraph" ng-if="$ctrl.chartType=='BiPartite'">
+                <bipartite-diagram data="data" ng-repeat="data in $ctrl.bpData"></bipartite-diagram>
+              </div>
+              <!--Tag Cloud-->
+              <tag-cloud terms="$ctrl.data"  ng-if="$ctrl.chartType=='TagCloud'"></tag-cloud>
+              <!--Count barchart-->
+              <div id="barchart" ng-if="$ctrl.chartType=='Barchart'">
+                <bar-chart data="$ctrl.aggData" agg="$ctrl.aggDetails"></bar-chart>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

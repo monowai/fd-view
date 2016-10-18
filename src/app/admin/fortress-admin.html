@@ -1,0 +1,77 @@
+<div class="col-md-3">
+  <div class="box box-solid">
+    <div class="box-header with-border">
+      <h3 class="box-title">Data Providers</h3>
+
+      <div class="box-tools pull-right">
+        <button type="button" class="btn btn-box-tool" uib-tooltip="Create New" tooltip-placement="right" ng-click="$ctrl.editFortress()">
+          <i class="fa fa-2x fa-plus-square"></i></button>
+      </div>
+    </div>
+    <div class="box-body no-padding">
+      <ul class="nav nav-pills nav-stacked">
+        <li ng-class="{active:$ctrl.fortress===f}" ng-repeat="f in $ctrl.fortresses"><a href="#" ng-click="$ctrl.selectFortress(f)"><i class="fa fa-inbox"></i> {{f.name}}</a></li>
+      </ul>
+    </div>
+    <!-- /.box-body -->
+  </div>
+</div>
+<div class="col-md-6" ng-show="!!$ctrl.fortress">
+  <div class="box box-warning">
+    <div class="box-header with-border">
+      <h3 class="box-title">{{$ctrl.fortress.name}}</h3>
+
+      <div class="box-tools pull-right">
+        <button type="button" class="btn btn-box-tool" uib-tooltip="Previous" ng-click="$ctrl.previous()"><i class="fa fa-chevron-left"></i></button>
+        <button type="button" class="btn btn-box-tool" uib-tooltip="Next" ng-click="$ctrl.next()"><i class="fa fa-chevron-right"></i></button>
+      </div>
+    </div>
+    <div class="box-body">
+      <div class="fortress-info">
+        <div class="box-tools pull-right">
+          <button type="button" class="btn btn-default btn-sm" uib-tooltip="Create DocType" ng-click="$ctrl.editType()" ng-show="$ctrl.typeOpen"><i class="fa fa-lg fa-plus"></i></button>
+          <div class="btn-group">
+            <button type="button" class="btn btn-default btn-sm" uib-tooltip="Analyze" ng-click="$ctrl.openConcept($ctrl.fortress)"><i class="fa fa-lg fa-search"></i></button>
+            <button type="button" class="btn btn-default btn-sm" uib-tooltip="Reindex" ng-click="$ctrl.rebuildFortress($ctrl.fortress)" ng-if="$ctrl.isAdmin()"><i class="fa fa-lg fa-recycle"></i></button>
+            <button type="button" class="btn btn-default btn-sm" uib-tooltip="Delete" ng-click="$ctrl.deleteFortress($ctrl.fortress)" ng-if="$ctrl.isAdmin()"><i class="fa fa-lg fa-trash"></i></button>
+          </div>
+        </div>
+
+        <h4><b>Name: </b><a ng-click="$ctrl.editFortress($ctrl.fortress)" href="#">{{$ctrl.fortress.name}}</a></h4>
+        <h5><b>Root Index: </b>{{$ctrl.fortress.indexName}}</h5>
+      </div>
+      <uib-accordion class="box-group">
+        <div uib-accordion-group ng-repeat="d in $ctrl.documents" class="box box-solid fader" is-open="isOpen">
+          <uib-accordion-heading>
+            <div class="box-title" ng-click="$ctrl.selectDocType(d)">{{d.name}} <i class="pull-right glyphicon" ng-class="isOpen ? 'glyphicon-chevron-down' : 'glyphicon-chevron-right'"></i></div>
+          </uib-accordion-heading>
+          <div class="row">
+            <div class="col-md-12">
+              <div class="box-tools pull-right">
+                <button type="button" class="btn btn-box-tool" uib-tooltip="Analyze" ng-click="$ctrl.analyzeDocType(d)"><i class="fa fa-lg fa-search"></i></button>
+                <button type="button" class="btn btn-box-tool" uib-tooltip="Reindex" ng-click="$ctrl.rebuildFortressDoc($ctrl.fortress, d)" ng-if="$ctrl.isAdmin()"><i class="fa fa-lg fa-recycle"></i></button>
+                <button type="button" class="btn btn-box-tool" uib-tooltip="Delete" ng-click="$ctrl.deleteDocType($ctrl.fortress, d)" ng-if="$ctrl.isAdmin()"><i class="fa fa-lg fa-trash"></i></button>
+              </div>
+              <h4><b>Document Type: </b><a ng-click="$ctrl.editType(d)" href="#">{{d.name}}</a></h4>
+
+              <div ng-show="$ctrl.segments.length>0">
+                <h4>Data Segments</h4>
+
+                <div ng-repeat="seg in $ctrl.segments" class="row">
+                  <div class="col-md-12">
+                    <div class="box-tools pull-right">
+                      <button type="button" class="btn btn-box-tool" uib-tooltip="Analyze" ng-click=""><i class="fa fa-lg fa-search"></i></button>
+                      <button type="button" class="btn btn-box-tool" uib-tooltip="Reindex" ng-click=""><i class="fa fa-lg fa-recycle" ng-if="$ctrl.isAdmin()"></i></button>
+                      <button type="button" class="btn btn-box-tool" uib-tooltip="Delete" ng-click="deleteSegment($ctrl.fortress,d,seg)"  ng-if="$ctrl.isAdmin()"><i class="fa fa-lg fa-trash"></i></button>
+                    </div>
+                    <b> Code: </b>&nbsp; {{seg}}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </uib-accordion>
+    </div>
+  </div>
+</div>

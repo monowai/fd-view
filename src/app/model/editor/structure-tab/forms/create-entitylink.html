@@ -1,0 +1,39 @@
+<div class="modal-header">
+  <button type="button" class="close" data-dismiss="modal" aria-label="Close" ng-click="close()">
+    <span aria-hidden="true">&times;</span></button>
+  <h4 class="modal-title">Create Entity Link</h4>
+</div>
+<form name="elink" class="form-horizontal" ng-submit="ok(obj)">
+  <div class="modal-body">
+    <div class="row">
+      <div class="form-group">
+        <label class="col-sm-3 control-label">Fortress: </label>
+        <div class="col-sm-8" ng-class="{'has-error': elink.fortress.$invalid && !elink.fortress.$pristine}">
+          <fortress-input name="fortress" model="obj.fortress" required autofocus></fortress-input>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="col-sm-3 control-label">Document Name: </label>
+        <div class="col-sm-8" ng-class="{'has-error': elink.docname.$invalid && !elink.docname.$pristine}">
+          <doctype-input name="docname" model="obj.documentName" fortress="obj.fortress" required></doctype-input>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="relname" class="col-sm-3 control-label">Relationship: </label>
+        <div class="col-sm-8" ng-class="{'has-error': elink.relname.$invalid && !elink.relname.$pristine}">
+          <input id="relname" name="relname" type="text" class="form-control" ng-model="obj.relationshipName" required />
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="col" class="col-sm-3 control-label">Source Datacolumn</label>
+        <div class="col-sm-6" ng-class="{'has-error': elink.col.$invalid && !elink.col.$pristine}">
+          <select id="col" name="col" class="form-control" ng-model="obj.col" ng-options="c for c in modalOptions.colDefs" required></select>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="submit" class="btn btn-primary" ng-click="ok(obj)" ng-disabled="elink.$invalid"><i class="fa fa-bolt"></i>&nbsp; Ok</button>
+    <button type="button" class="btn btn-default pull-left" ng-click="close()">Cancel</button>
+  </div>
+</form>

@@ -1,0 +1,31 @@
+<fieldset>
+  <legend>Properties to set into {{$ctrl.entity}} &nbsp;<button type="button" class="btn btn-sm btn-primary" uib-tooltip="Add new" ng-click="$ctrl.addProperty($ctrl.column)">
+    <i class="fa fa-plus"></i></button></legend>
+
+  <div class="row" ng-repeat="p in $ctrl.column.properties">
+    <div class="col-md-12">
+      <div class="col-md-5 form-group">
+        <label for="source" class="control-label col-xs-4">Source</label>
+        <div class="input-group col-xs-8">
+          <select id="source" name="source" class="form-control" ng-model="p.source" ng-options="c as c for c in $ctrl.columns">
+            <option value="" disabled selected>{{$ctrl.$name}}</option>
+          </select>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <label for="target" class="control-label col-xs-3">Set as</label>
+        <div class="input-group col-xs-9">
+          <input id="target" name="target" type="text" class="form-control" ng-model="p.target"/>
+          <span class="input-group-btn">
+            <button type="button" class="btn btn-default" ng-click="$ctrl.editProperty($ctrl.column.properties, p)" uib-tooltip="Edit">
+              <i class="fa fa-edit"></i></button>
+          </span>
+          <span class="input-group-btn">
+            <button type="button" class="btn btn-default" ng-click="$ctrl.column.properties.splice($index,1)" uib-tooltip="Delete">
+              <i class="fa fa-trash"></i></button>
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</fieldset>

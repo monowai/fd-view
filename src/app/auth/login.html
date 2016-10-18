@@ -1,0 +1,39 @@
+<div class="login-box">
+  <div class="login-logo">
+    <span id="logo"> <img src="/images/site-logo.png" alt="FlockData"> </span>
+    <h4 class="paragraph-header">Collect | Connect | Compare</h4>
+  </div>
+  <!-- /.login-logo -->
+  <div class="login-box-body">
+    <p class="login-box-msg">Sign in to start your session
+      <span>
+        <i class="fa fa-times text-danger" ng-show="$ctrl.failed" uib-tooltip="Connection problem"></i>
+        <i class="fa fa-check text-success" ng-hide="$ctrl.failed" uib-tooltip="Connection established"></i>
+      </span></p>
+
+
+    <form ng-submit="$ctrl.login()">
+      <div class="form-group has-feedback">
+        <input type="text" class="form-control" ng-model="$ctrl.username" placeholder="Username" autofocus>
+        <span class="glyphicon glyphicon-user form-control-feedback"></span>
+      </div>
+      <div class="form-group has-feedback">
+        <input type="password" class="form-control" ng-model="$ctrl.password" placeholder="Password">
+        <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+      </div>
+      <div class="row">
+        <div class="col-xs-4 pull-right">
+          <button type="submit" class="btn btn-primary btn-block btn-flat" ng-disabled="$ctrl.failed">Sign In</button>
+        </div>
+        <!-- /.col -->
+        <div class="col-xs-4">
+          <button ui-sref="settings" class="btn btn-default btn-block btn-flat">Settings</button>
+        </div>
+        <!-- /.col -->
+
+      </div>
+    </form>
+
+  </div>
+  <!-- /.login-box-body -->
+</div>

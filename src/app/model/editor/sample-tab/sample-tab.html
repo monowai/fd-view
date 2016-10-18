@@ -1,0 +1,52 @@
+<div ng-if="!$ctrl.sample.data">
+  <div class="row">
+    <div class="col-sm-3">
+      <fieldset>
+        <legend>Sample </legend>
+        <div class="row">
+          <div class="form-group">
+            <label for="data-delim" class="col-xs-4 control-label">Delimiter</label>
+            <div class="col-xs-7">
+              <input type="text" class="form-control" id="data-delim" ng-model="$ctrl.delim" ng-init="$ctrl.delim=','">
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="form-group">
+              <div class="checkbox">
+                <label>
+                  <input type="checkbox" ng-model="$ctrl.ignoreEmpty"> <b>Ignore empty Cols</b>
+                </label>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="form-group">
+              <div class="checkbox">
+                <label>
+                  <input type="checkbox" ng-model="$ctrl.hasHeader" disabled> <b>Has Header</b>
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </fieldset>
+    </div>
+    <div class="col-sm-9">
+      <div class="well well-sm">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="file-box" file-box="$ctrl.loadFile($fileContent, $fileName, $ctrl.delim)">
+              <label ng-click="$ctrl.loadPrevious()" ng-show="$ctrl.previouslyLoaded()"><strong>Use</strong>
+                <span>uploaded earlier</span>
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="hscroll-table fader" ng-if="$ctrl.sample.data">
+  <div ag-grid="$ctrl.gridOptions" class="ag-blue" ng-height="200"></div>
+</div>
+<p ng-show="$ctrl.sample.data.length>199"><i>* Only first 200 rows are displayed</i></p>

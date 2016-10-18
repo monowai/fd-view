@@ -7,7 +7,7 @@ FROM nginx:mainline-alpine
 MAINTAINER Mike Holdsworth "https://github.com/monowai"
 
 # bower install
-# grunt dist
+# gulp
 # docker build -t flockdata/fd-view .
 # docker run -p 80:80 flockdata/fd-view
 

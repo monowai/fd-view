@@ -1,0 +1,168 @@
+<div class="row">
+  <div class="col-md-6">
+    <div class="form-group">
+      <label for="target" class="col-sm-3 control-label">Store as: </label>
+      <div class="col-sm-9">
+        <input type="text" id="target" name="target" class="form-control" ng-model="$ctrl.column.target" placeholder="Rename the source column to..." autofocus>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-6">
+    <div class="form-group">
+      <label for="dataType" class="col-sm-3 control-label">Data Type: </label>
+      <div class="col-sm-9">
+        <select id="dataType" class="form-control" ng-model="$ctrl.column.dataType" ng-options="dt as dt for dt in $ctrl.dataTypes" ng-change="$ctrl.checkFormat()">
+        </select>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row" ng-show="$ctrl.column.dataType==='date'">
+  <div class="col-md-6" >
+    <div class="form-group">
+      <label for="dateFormat" class="col-sm-3 control-label">Date Format: </label>
+      <div class="col-sm-9">
+        <select id="dateFormat" class="form-control" ng-model="$ctrl.column.dateFormat" ng-options="df as df for df in $ctrl.dateFormats" ng-required="$ctrl.column.dataType==='date'">
+        </select>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-6" ng-show="$ctrl.column.dateFormat==='custom'">
+    <div class="form-group">
+      <label for="customDate" class="col-sm-3 control-label">Custom Date: </label>
+      <div class="col-sm-9">
+        <input type="text" id="customDate" name="customDate" class="form-control" ng-model="$ctrl.column.customDate" ng-required="$ctrl.column.dateFormat==='custom'" placeholder="Select your date format like 'yyyy-MM-dd' ">
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row">
+  <div class="col-sm-12">
+    <div class="form-group">
+      <div class="col-sm-offset-1 col-xs-4 col-sm-3" ng-hide="tagModel">
+        <div class="checkbox">
+          <label>
+            <input type="checkbox" id="isPK" name="isPK" ng-model="$ctrl.column.callerRef"> <b>Primary Key</b>
+          </label>
+        </div>
+      </div>
+      <div class="col-xs-4 col-sm-2" ng-hide="tagModel">
+        <div class="checkbox">
+          <label>
+            <input type="checkbox" id="isTitle" name="isTitle" ng-model="$ctrl.column.title"> <b>Entity Name</b>
+          </label>
+        </div>
+      </div>
+      <div class="col-xs-4 col-sm-2" ng-hide="tagModel">
+        <div class="checkbox">
+          <label>
+            <input type="checkbox" id="isDescr" name="isDescr" ng-model="$ctrl.column.description"> <b>Search Description</b>
+          </label>
+        </div>
+      </div>
+      <div class="col-xs-4 col-sm-2">
+        <div class="checkbox">
+          <label>
+            <input type="checkbox" id="isTag" name="isTag" ng-model="$ctrl.column.tag" ng-change="$ctrl.convertTag($ctrl.column)"> <b>Tag</b>
+          </label>
+        </div>
+      </div>
+      <div class="col-xs-4 col-sm-2">
+        <div class="checkbox">
+          <label>
+            <input type="checkbox" id="isAlias" name="isAlias" ng-model="isAlias" ng-change="$ctrl.toggleAlias(isAlias)"> <b>Alias</b>
+          </label>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-12">
+    <div class="form-group">
+      <label for="value" class="col-sm-1 control-label">Value: </label>
+      <div class="col-sm-11">
+        <!--<textarea id="value" name="value" class="form-control code" ng-model="$ctrl.column.value" rows="1" ng-disabled="$ctrl.column.tag" ng-trim="false" msd-elastic smart-area="codeConf" placeholder="Default is value in the column. You can use a SPeL expression, e.g. #data['colA']+'-'+#data['colB']"></textarea>-->
+        <textcomplete id="value" name="value" message="$ctrl.column.value" columns="$ctrl.columnNames" disabled="$ctrl.column.tag" placeholder="Default is value in the column. You can use a SPeL expression, e.g. #data['colA']+'-'+#data['colB']"></textcomplete>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row" ng-show="$ctrl.column.dataType==='date'">
+  <div class="col-xs-offset-1 col-md-5">
+    <div class="form-group">
+      <div class="checkbox">
+        <label>
+          <input type="checkbox" id="createDate" name="createDate" ng-model="$ctrl.column.createDate"> <b>Create date</b>
+        </label>
+      </div>
+    </div>
+  </div>
+  <div class="col-xs-offset-1 col-md-5">
+    <div class="form-group">
+      <div class="checkbox">
+        <label>
+          <input type="checkbox" id="lastupDate" name="lastupDate" ng-model="$ctrl.column.lastupDate"> <b>Last update date</b>
+        </label>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row" ng-show="$ctrl.column.dataType==='string'">
+  <div class="col-xs-offset-1 col-md-5">
+    <div class="form-group">
+      <div class="checkbox">
+        <label>
+          <input type="checkbox" id="createUser" name="createUser" ng-model="$ctrl.column.createUser"> <b>Create user</b>
+        </label>
+      </div>
+    </div>
+  </div>
+  <div class="col-xs-offset-1 col-md-5">
+    <div class="form-group" ng-show="$ctrl.column.dataType==='string'">
+      <div class="checkbox">
+        <label>
+          <input type="checkbox" id="updateUser" name="updateUser" ng-model="$ctrl.column.updateUser"> <b>Update user</b>
+        </label>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row">
+  <div class="col-xs-offset-1 col-md-5">
+    <div class="form-group">
+      <div class="checkbox">
+        <label>
+          <input type="checkbox" id="ignore" name="ignore" ng-model="$ctrl.column.persistent"> <b>Capture this column</b>
+        </label>
+      </div>
+    </div>
+  </div>
+</div>
+<fieldset ng-show="$ctrl.column.$alias">
+  <legend>Alias properties required</legend>
+  <div class="row">
+    <div class="col-sm-3">
+      <label for="tg-alias" class="control-label col-xs-4">Tag</label>
+      <div class="input-group col-xs-8">
+        <select id="tg-alias" name="tg-alias" class="form-control" ng-model="$ctrl.column.$alias.tag" ng-options="t.id as t.label for t in $ctrl.tags" ng-required="isAlias">
+          <option value="" disabled selected>Select tag</option>
+        </select>
+      </div>
+    </div>
+    <div class="col-sm-4">
+      <label for="code-alias" class="control-label col-xs-4">Code</label>
+      <div class="input-group col-xs-8">
+        <input type="text" id="code-alias" name="code-alias" class="form-control" ng-model="$ctrl.column.$alias.code" ng-required="isAlias" disabled />
+      </div>
+    </div>
+    <div class="col-sm-5">
+      <label for="dsc-alias" class="control-label col-xs-4">Description</label>
+      <div class="input-group col-xs-8">
+        <input type="text" id="dsc-alias" name="dsc-alias" class="form-control" ng-model="$ctrl.column.$alias.description" ng-required="isAlias" />
+      </div>
+    </div>
+  </div>
+</fieldset>
+
+<col-properties column="$ctrl.column" ng-show="!$ctrl.column.tag && !tagModel"></col-properties>

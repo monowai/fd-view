@@ -1,0 +1,26 @@
+<div class="modal-header">
+    <h3>Events</h3>
+</div>
+<div class="modal-body">
+  <uib-tabset>
+    <uib-tab heading="Delta">
+      <input type="checkbox" ng-model="$ctrl.showUnchangedFlag" ng-click="$ctrl.showUnchanged()"> Show unchanged
+      values
+      <div id="visual"></div>
+    </uib-tab>
+    <uib-tab heading="What Difference Analysis">
+      <div fd-jsondiff ab-left="$ctrl.log1" ab-right="$ctrl.log2">
+        <div id="annotated"></div>
+      </div>
+    </uib-tab>
+    <uib-tab heading="What 1">
+      <div id="log1" fd-jsonabview ab-data="$ctrl.log1"></div>
+    </uib-tab>
+    <uib-tab heading="What 2">
+      <div id="log2" fd-jsonabview ab-data="$ctrl.log2"></div>
+    </uib-tab>
+  </uib-tabset>
+</div>
+<div class="modal-footer">
+  <button class="btn btn-primary" ng-click="$ctrl.ok()">OK</button>
+</div>
