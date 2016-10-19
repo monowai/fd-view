@@ -9,9 +9,9 @@
   <label class="control-label">Create</label>
 
   <button id="coldef" class="btn btn-sm btn-block btn-default" ng-click="$ctrl.createColumn()">Calculated Column</button>
-  <button id="tag" class="btn btn-sm btn-block btn-warning" draggable options="{opacity: .5,revert: true}" ng-click="$ctrl.createTag()">Tag</button>
-  <button id="alias" class="btn btn-sm btn-block btn-alias" draggable options="{opacity: .5,revert: true}" ng-click="$ctrl.createAlias()">Alias</button>
-  <button id="entity" class="btn btn-sm btn-block btn-primary" draggable droppable="$ctrl.buttonDrop" options="{opacity: .5,revert: true}" ng-click="$ctrl.createEntitylink()">Entity Link</button>
+  <button id="tag" class="btn btn-sm btn-block btn-warning" ng-click="$ctrl.createTag()">Tag</button>
+  <button id="alias" class="btn btn-sm btn-block btn-alias" ng-click="$ctrl.createAlias()">Alias</button>
+  <button id="entity" class="btn btn-sm btn-block btn-primary" ng-click="$ctrl.createEntitylink()">Entity Link</button>
 
   <label uib-dropdown>
     <a href id="list-menu" uib-dropdown-toggle>
@@ -35,6 +35,6 @@
     </div>
   </div>
 </div>
-<div class="col-md-10" droppable="handleDrop">
+<div class="col-md-10">
   <cytoscape class="modeler" elements="$ctrl.modelGraph" layout="$ctrl.layout" styles="$ctrl.styles" selected-nodes="$ctrl.nodes" on-edge="$ctrl.nodeLink(source, target)" qtip="$ctrl.qtip"></cytoscape>
 </div>
