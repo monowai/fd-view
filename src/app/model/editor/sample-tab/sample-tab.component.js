@@ -71,17 +71,25 @@ class SampleTab {
   }
 
   loadPrevious() {
-    const data = angular.fromJson(this._window.localStorage.getItem('import-data'));
+    const model = this._cm.getCurrent().content;
+    let data = angular.fromJson(this._window.localStorage.getItem('import-data'));
+    data = data.map(row => {
+      return _.forIn(row, (v, k) => {
+        if (v && typeof v !== model[k].dataType) {
+          if (model[k].dataType === 'number') {
+            row[k] = Number(v);
+          } else {
+            row[k] = String(v);
+          }
+        }
+      });
+    });
     data.columns = angular.fromJson(this._window.localStorage.getItem('import-data-cols'));
-    // function adjustDataTypes(data, model) {
-    //
-    // }
-    //
-    // adjustDataTypes(data, this.model.content);
     this._setGrid(data);
   }
 
   loadFile(fileContent, fileName, delim) {
+    const model = this._cm.getCurrent().content;
     if (fileContent) {
       const lines = fileContent.match(/[^\r\n]+/g);
       let i = 0;
@@ -95,6 +103,9 @@ class SampleTab {
         return _.forIn(d, (v, k) => {
           if (/^\s*$/.test(v)) {
             d[k] = null;
+            return;
+          }
+          if (model[k] && model[k].dataType === 'string') {
             return;
           }
           if (/^\s*-?(\d*\.?\d+|\d+\.?\d*)(e[-+]?\d+)?\s*$/i.test(v)) {// /^(\-|\+)?([0-9]+(\.[0-9]+)?|Infinity)$/
