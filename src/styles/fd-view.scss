@@ -274,11 +274,12 @@ div.bar-tooltip {
   display: block;
   border: 1px solid #ccc ;
   background: #3E3E3E;
+
+  &.modeler {
+    background: #f0f0f0;
+  }
 }
 
-#cy.modeler {
-  background: #f0f0f0;
-}
 
 .box-filter {
   width: 150px;
@@ -312,26 +313,6 @@ select:invalid {
   color: gray;
 }
 
-td > input {
-  /*padding: 6px 12px;*/
-  width: 100%;
-  border: 1px solid #fff;
-}
-
-td > input:focus {
-  border-color: #3c8dbc;
-  box-shadow: none;
-  outline: 0;
-}
-
-td > input:hover {
-  border-color: #3c8dbc;
-}
-
-td > input.ng-invalid-required {
-  border-color: #dd4b39;
-}
-
 th.col:hover {
   color: #0d6aad;
 }
@@ -363,23 +344,53 @@ th.col>span:hover:after {
   transition: transform 150ms ease-in-out;
 }
 
-.stats-panel {
-  padding-top: 10px;
-  padding-bottom: 10px;
+/* Model > Editor > Coldef-modal > Entity links*/
+.links-header {
+  border-bottom: 2px solid #f4f4f4;
+  margin: 3px;
 }
 
-.stats-label {
-  position: absolute;
-  top: -17px;
-  left: 10px;
-  font-size: 9px;
-  padding: 4px 4px;
-  line-height: .9;
+.links-row {
+  margin: 3px;
+
+  input {
+    border: 1px solid #fff;
+
+    &:hover {
+      border-color: #3c8dbc;
+    }
+    &:focus {
+      border-color: #3c8dbc;
+      box-shadow: none;
+      outline: 0;
+    }
+    &.ng-invalid-required {
+      border-color: #dd4b39;
+    }
+  }
 }
 
-.stats-label.col-name {
-  left: 35px;
+/* Model > Editor > Statistics */
+.stats {
+  &-panel {
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
+
+  &-label {
+    position: absolute;
+    top: -17px;
+    left: 10px;
+    font-size: 9px;
+    padding: 4px 4px;
+    line-height: .9;
+
+    &.col-name {
+      left: 35px;
+    }
+  }
 }
+
 
 .ag-cell.bg-danger {
   text-align: right;
@@ -432,42 +443,43 @@ li.dropdown:hover>.dropdown-menu {
 }
 
 .fader {
-  transition: .5s linear all;
-  -webkit-transition: .5s linear all;
+  transition: .3s linear all;
+  -webkit-transition: .3s linear all;
+
+  &.ng-enter {
+    opacity: 0;
+
+    .ng-enter-active {
+      opacity: 1;
+    }
+  }
+
+  &.ng-leave {
+    opacity: 1;
+
+    &.ng-leave-active {
+      opacity: 0;
+    }
+  }
+
+  &.ng-hide {
+    opacity: 0;
+
+    &-remove,
+    &-add {
+      display: block !important;
+    }
+
+    &-remove {
+      transition: all linear 500ms;
+    }
+  }
+
+  /*.fader.ng-hide-add {*/
+    /*transition: all linear 500ms;*/
+  /*}*/
 }
 
-.fader.ng-enter {
-  opacity: 0;
-}
-
-.fader.ng-enter.ng-enter-active {
-  opacity: 1;
-}
-
-.fader.ng-leave {
-  opacity: 1;
-}
-
-.fader.ng-leave.ng-leave-active {
-  opacity: 0;
-}
-
-.fader.ng-hide {
-  opacity: 0;
-}
-
-.fader.ng-hide-remove,
-.fader.ng-hide-add {
-  display: block !important;
-}
-
-.fader.ng-hide-remove {
-  transition: all linear 500ms;
-}
-
-/*.fader.ng-hide-add {*/
-  /*transition: all linear 500ms;*/
-/*}*/
 
 .angular-ui-tree-handle {
   background: #f8faff;

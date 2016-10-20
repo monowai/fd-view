@@ -5,42 +5,60 @@
         <button type="button" class="btn btn-sm btn-primary" uib-tooltip="Add new" ng-click="$ctrl.addLink()">
           <i class="fa fa-plus"></i></button>
       </legend>
-      <table class="table" ng-show="$ctrl.column.entityLinks.length>0">
-        <tr>
-          <th><i class="fa fa-external-link" uib-tooltip="Parent"></i></th>
-          <th>Fortress</th>
-          <th>Document Name</th>
-          <th>Relationship</th>
-          <th class="checkbox">
-            <label>
-              <input type="checkbox" name="reverse" ng-model="$ctrl.column.reverse"> <b>Reverse</b>
-            </label>
-          </th>
-        </tr>
-        <tr ng-repeat="e in $ctrl.column.entityLinks">
-          <td>
-            <label>
-              <input type="checkbox" ng-model="e.parent" uib-tooltip="Parent"
-                     ng-disabled="!e.parent && $ctrl.parentSelected($ctrl.column.entityLinks)">
-            </label>
-          </td>
-          <td class="col-xs-4">
-            <fortress-input model="e.fortress" ng-required="true"></fortress-input>
-          </td>
-          <td class="col-xs-4">
-            <doctype-input model="e.documentName" fortress="e.fortress" ng-required="true"></doctype-input>
-          </td>
-          <td class="col-xs-3">
-            <input class="form-control" ng-model="e.relationshipName" ng-required="true" type="text" placeholder="Relationship name">
-          </td>
-          <td>
-            <span class="input-group-btn">
-              <button type="button" class="btn btn-default btn-sm" ng-click="$ctrl.deleteLink(e)" uib-tooltip="Delete">
-                <i class="fa fa-trash"></i></button>
-            </span>
-          </td>
-        </tr>
-      </table>
+      <div class="row links-header">
+        <div class="col-xs-4">
+          <label>Data Provider</label>
+        </div>
+        <div class="col-xs-4">
+          <label>Document Name</label>
+        </div>
+        <div class="col-xs-3">
+          <label>Relationship</label>
+        </div>
+        <div class="col-xs-1 checkbox">
+          <label>
+            <input type="checkbox" name="reverse" ng-model="$ctrl.column.reverse"> <b>Reverse</b>
+          </label>
+        </div>
+      </div>
+      <div class="row links-row" ng-repeat="e in $ctrl.column.entityLinks">
+        <div class="col-sm-4">
+          <fortress-input model="e.fortress" ng-required="true"></fortress-input>
+        </div>
+        <div class="col-sm-4">
+          <doctype-input model="e.documentName" fortress="e.fortress" ng-required="true"></doctype-input>
+        </div>
+        <div class="col-sm-3">
+          <input class="form-control" ng-model="e.relationshipName" ng-required="true" type="text" placeholder="Relationship name">
+        </div>
+        <div class="col-sm-1">
+          <span class="input-group-btn">
+            <button type="button" class="btn btn-default btn-sm" ng-click="$ctrl.showRules[$index]=!$ctrl.showRules[$index]" uib-tooltip="Rules">
+              <i class="fa fa-external-link"></i></button>
+            <button type="button" class="btn btn-default btn-sm" ng-click="$ctrl.deleteLink(e)" uib-tooltip="Delete">
+              <i class="fa fa-trash"></i></button>
+          </span>
+        </div>
+        <div class="col-sm-8 pull-right" uib-collapse="!$ctrl.showRules[$index]">
+          <div class="well links-row clearfix">
+            <div class="col-sm-4">
+              <label>
+                <input type="checkbox" ng-model="e.parent" uib-tooltip="Parent"
+                       ng-disabled="!e.parent && $ctrl.parentSelected($ctrl.column.entityLinks)">
+                <strong>Parent</strong>
+              </label>
+            </div>
+            <div class="col-sm-8">
+              <h4>If the linked entity is missing then:</h4>
+              <div class="btn-group">
+                <label class="btn btn-primary" ng-model="e.missingAction" uib-btn-radio="'IGNORE'">Ignore</label>
+                <label class="btn btn-primary" ng-model="e.missingAction" uib-btn-radio="'CREATE'">Create</label>
+                <label class="btn btn-primary" ng-model="e.missingAction" uib-btn-radio="'ERROR'">Error</label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </fieldset>
   </div>
 </div>

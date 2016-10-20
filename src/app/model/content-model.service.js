@@ -263,6 +263,15 @@ class ContentModelService {
 
     return this._http.post(`${this._cfg.engineUrl()}/api/v1/model/${url}`, this._cp);
   }
+
+  clean() {
+    delete this._cp;
+    delete this._cpGraph;
+    delete this._cpFortress;
+    delete this._cpType;
+    delete this._code;
+    delete this._tags;
+  }
 }
 
 angular

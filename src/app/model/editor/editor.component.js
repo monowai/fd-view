@@ -147,6 +147,7 @@ class EditModelCtrl {
   }
 
   cancel() {
+    this._cm.clean();
     this._state.go('model');
   }
 }

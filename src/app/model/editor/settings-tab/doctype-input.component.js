@@ -20,11 +20,12 @@ angular
       model: '=',
       class: '@',
       fortress: '=',
-      onSelect: '&'
+      onSelect: '&',
+      ngRequired: '<'
     },
     controller: DoctypeInput,
     template: `
-      <input type="text" class="form-control {{$ctrl.class}}" placeholder="Document Type" \
-             ng-model="$ctrl.model" ng-focus="$ctrl.getDoctypes()" \
+      <input type="text" class="form-control {{$ctrl.class}}" placeholder="Document Type"
+             ng-model="$ctrl.model" ng-focus="$ctrl.getDoctypes()" ng-required="$ctrl.ngRequired"
              uib-typeahead="d.name for d in $ctrl.documents | filter:$viewValue" typeahead-on-select="$ctrl.onSelect()">`
   });
