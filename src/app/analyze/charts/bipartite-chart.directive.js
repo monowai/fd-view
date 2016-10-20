@@ -1,5 +1,4 @@
 class BipartiteDiagram {
-  /** @ngInject */
   constructor($timeout, BiPartiteService) {
     this.restrict = 'E';
     this.scope = {
@@ -67,10 +66,12 @@ class BipartiteDiagram {
     });
   }
 
-  static factory($timeout, BiPartiteService) {
-    return new BipartiteDiagram($timeout, BiPartiteService);
+  static factory() {
+    return new BipartiteDiagram(...arguments);
   }
 }
+
+BipartiteDiagram.factory.$inject = ['$timeout', 'BiPartiteService'];
 
 angular
   .module('fd-view.diagrams')

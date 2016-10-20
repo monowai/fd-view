@@ -44,7 +44,7 @@ To build a production version
 gulp
 ```
 
-the bundle will be available in dist folder - **!!this is not currently working!!**
+the bundle will be available in dist folder
 
 Run the server with
 ```

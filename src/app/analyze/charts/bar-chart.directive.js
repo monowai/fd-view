@@ -1,5 +1,4 @@
 class BarChart {
-  /** @ngInject */
   constructor($state, SearchService) {
     this.restrict = 'E';
     this.scope = {
@@ -73,8 +72,8 @@ class BarChart {
       })
       .on('click', d => {
         div.remove();
-        SearchService.term.value = d.key;
-        $state.go('search');
+        this._search.term.value = d.key;
+        this._state.go('search');
       });
 
     bars
@@ -119,10 +118,12 @@ class BarChart {
     }, true);
   }
 
-  static factory($state, SearchService) {
-    return new BarChart($state, SearchService);
+  static factory() {
+    return new BarChart(...arguments);
   }
 }
+
+BarChart.factory.$inject = ['$state', 'SearchService'];
 
 angular
   .module('fd-view.diagrams')
