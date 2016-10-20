@@ -1,7 +1,7 @@
 class EntityLinksTab {
   addLink() {
     this.column.entityLinks = this.column.entityLinks || [];
-    this.column.entityLinks.push({});
+    this.column.entityLinks.push({missingAction: 'IGNORE'});
   }
 
   deleteLink(entity) {

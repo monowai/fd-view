@@ -29,6 +29,7 @@ class ColumnTab {
       delete tag.dataType;
       delete tag.persistent;
       delete tag.storeNull;
+      delete tag.entityLinks;
       // ToDo: open tag properties tab
     } else {
       delete tag.$id;
