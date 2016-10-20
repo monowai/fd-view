@@ -1,5 +1,4 @@
 class StatsChart {
-  /** @ngInject */
   constructor($filter) {
     this._filter = $filter;
 
@@ -28,8 +27,8 @@ class StatsChart {
     }, true);
   }
 
-  static factory($filter) {
-    return new StatsChart($filter);
+  static factory() {
+    return new StatsChart(...arguments);
   }
 
   _chart(element, width, height, data) {
@@ -158,6 +157,8 @@ class StatsChart {
     return object;
   }
 }
+
+StatsChart.factory.$inject = ['$filter'];
 
 angular
   .module('fd-view')
