@@ -11,6 +11,6 @@ function scripts() {
     .pipe(eslint())
     .pipe(eslint.format())
 
-    .pipe(babel())
+    .pipe(babel()) // comment out to let browser to parse ES6
     .pipe(gulp.dest(conf.path.tmp()));
 }

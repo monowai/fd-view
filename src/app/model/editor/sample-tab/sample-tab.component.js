@@ -1,6 +1,6 @@
 class SampleTab {
   /** @ngInject */
-  constructor($window, ContentModel, DataSample, EditColdefModal, toastr) {
+  constructor($window, ContentModel, DataSample, EditColdefModal, toastr, $document) {
     this.hasHeader = true;
     this.lastProvider = angular.fromJson($window.localStorage.getItem('last-provider'));
 
@@ -9,6 +9,7 @@ class SampleTab {
     this.sample = DataSample;
     this._edit = EditColdefModal;
     this._toastr = toastr;
+    this._document = $document;
   }
 
   _setGrid(data) {
@@ -43,7 +44,7 @@ class SampleTab {
       headerCellRenderer: params => {
         params.$scope.editColDef = this.showColDef;
 
-        const eCell = document.createElement('span');
+        const eCell = this._document[0].createElement('span');
         eCell.innerHTML = `<span class="ag-click-ico" ng-click="$ctrl.showColDef('${params.colDef.headerName}')"><i class="fa fa-edit"></i></span>&nbsp;${params.colDef.headerName}`;
         return eCell;
       }
