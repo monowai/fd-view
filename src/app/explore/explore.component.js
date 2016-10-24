@@ -61,7 +61,10 @@ class ExploreCtrl {
       if (!this._matrix.reciprocalExcluded() && this._matrix.sharedChecked()) {
         this._toastr.warning('Search results are not optimal for the graph. You can change <strong>Search settings</strong>.', 'Warning',
           {allowHtml: true});
+        this._matrix.sharedRlxChecked = false;
+        this._matrix.reciprocalExcludedChecked = true;
       }
+      this.updateStyles(this.graphData);
     }
   }
 
@@ -83,21 +86,25 @@ class ExploreCtrl {
       }
       this.graphData = data;
 
-      const maxCount = d3.max(data.edges, d => d.data.count);
-      const minCount = this._matrix.minCount;
-      // const edgeWidth = d3.scaleLinear()
-      //   .domain([this._matrix.minCount, maxCount])
-      //   .range([1, maxCount < 15 ? maxCount : 15]);
+      this.updateStyles(data);
+    });
+  }
 
-      this.styles.push({
-        selector: 'edge',
-        css: {
-          'width': `mapData(count,${minCount}, ${maxCount}, 1,${maxCount < 15 ? maxCount : 15})`, // function(ele) {return edgeWidth(ele.data('count'))},
-          'line-color': '#067B7B',
-          'target-arrow-color': '#067B7B',
-          'target-arrow-shape': 'triangle'
-        }
-      });
+  updateStyles(data) {
+    const maxCount = d3.max(data.edges, d => d.data.count);
+    const minCount = this._matrix.minCount;
+    // const edgeWidth = d3.scaleLinear()
+    //   .domain([this._matrix.minCount, maxCount])
+    //   .range([1, maxCount < 15 ? maxCount : 15]);
+
+    this.styles.push({
+      selector: 'edge',
+      css: {
+        'width': `mapData(count,${minCount}, ${maxCount}, 1,${maxCount < 15 ? maxCount : 15})`, // function(ele) {return edgeWidth(ele.data('count'))},
+        'line-color': '#067B7B',
+        'target-arrow-color': '#067B7B',
+        'target-arrow-shape': 'triangle'
+      }
     });
   }
 }

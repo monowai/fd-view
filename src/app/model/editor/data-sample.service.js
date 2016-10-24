@@ -1,9 +1,10 @@
 class DataSampleService {
   /** ngInject */
-  constructor(ContentModel, $http, configuration, toastr) {
+  constructor(ContentModel, $http, configuration, $document, toastr) {
     this._cm = ContentModel;
     this._http = $http;
     this._cfg = configuration;
+    this._document = $document;
     this._toastr = toastr;
   }
 
@@ -150,7 +151,7 @@ class DataSampleService {
         headerCellRenderer: params => {
           // params.$scope.editColDef = $ctrl.showColDef;
 
-          const eCell = document.createElement('span');
+          const eCell = this._document[0].createElement('span');
           eCell.innerHTML = `<span class="ag-click-ico" ng-click="$ctrl.showColDef('${params.colDef.headerName}')" ng-hide="Code">
                                <i class="fa fa-edit"></i></span>&nbsp;${params.colDef.headerName}`;
           return eCell;

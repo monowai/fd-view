@@ -50,7 +50,7 @@ function droppable() {
           e.stopPropagation();
         }
 
-        const elementDropped = document.getElementById(e.dataTransfer.getData('id'));
+        const elementDropped = angular.element(e.dataTransfer.getData('id'));
         const dropMethod = scope.droppable;
 
         // call the drop passed drop function
