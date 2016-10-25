@@ -1,21 +1,20 @@
 class ChordDiagram {
-  constructor() {
-    this.restrict = 'EA';
-    this.scope = {
-      data: '='
-    };
+  /** ngInject */
+  constructor($window, $element) {
+    this._window = $window;
+    this._element = $element;
   }
 
-  drawChords(ele, matrix, mmap, scope) {
+  drawChords(ele, matrix, mmap) {
     const el = ele[0];
     let w = 1024;
-    let h = 640;
+    let h = 800;
     let r1 = h / 2;
     let r0 = r1 - 100;
-    const graphID = ele.parent()[0].id;
-    const fill = d3.scaleOrdinal()
-      .domain(d3.range(6))
-      .range(['#788b92', '#A2AC72', '#cab8a1', '#89b4fd', '#9eac74', '#f6f0ba']);
+
+    let lastLayout = null;
+
+    const fill = d3.scaleOrdinal(d3.schemeCategory20);
 
     const chord = d3.chord()
       .padAngle(0.03)
@@ -26,11 +25,15 @@ class ChordDiagram {
       .innerRadius(r0)
       .outerRadius(r0 + 20);
 
-    d3.select(`#${graphID} svg`).remove();
+    d3.select(el).select('svg').remove();
 
     const svgP = d3.select(el).append('svg:svg')
       .attr('width', w)
-      .attr('height', h);
+      .attr('height', h)
+      .attr('preserveAspectRatio', 'xMinYMin')
+      .attr('viewBox', `0 0 ${w} ${h}`);
+    const tooltip = d3.select(el).append('div')
+      .attr('id', 'tooltip');
     const svg = svgP.append('svg:g')
       .attr('id', 'circle')
       .attr('transform', `translate(${w / 2},${h / 2})`);
@@ -45,12 +48,27 @@ class ChordDiagram {
       .enter().append('svg:g')
       .attr('class', 'group')
       .on('mouseover', mouseover)
-      .on('mouseout', d => d3.select('#tooltip').style('visibility', 'hidden'));
+      .on('mouseout', d => {
+        d3.select('#tooltip').style('visibility', 'hidden');
+        chordPaths.style('opacity', 0.9);
+      });
+
+    g.exit()
+      .transition().duration(1000)
+      .attr('opacity', 0)
+      .remove();
 
     const arcs = g.append('svg:path')
       .style('stroke', 'black')
       .style('fill', d => fill(d.index));
       // .attr('d', arc);
+
+    g.select('path')
+      .transition().duration(1000)
+      .attr('opacity', 0.5)
+      .attrTween('d', arcTween(lastLayout))
+      .transition().duration(100)
+      .attr('opacity', 1);
 
     const txtG = g.append('svg:text')
       .each(d => {
@@ -86,7 +104,86 @@ class ChordDiagram {
           .style('top', () => `${d3.event.pageY - 100}px`)
           .style('left', () => '100px');
       })
-      .on('mouseout', d => d3.select('#tooltip').style('visibility', 'hidden'));
+      .on('mouseout', () => {
+        d3.select('#tooltip').style('visibility', 'hidden');
+      });
+
+    // handle exiting paths:
+    chordPaths.exit().transition()
+      .duration(1000)
+      .attr('opacity', 0)
+      .remove();
+
+    // update the path shape
+    chordPaths.transition().duration(1000)
+      .attr('opacity', 0.5)
+      .style('fill', d => fill(d.target.index))
+      .attrTween('d', chordTween(lastLayout))
+      .transition().duration(100)
+      .attr('opacity', 1);
+
+    function arcTween(oldLayout) {
+      const oldGroups = {};
+      if (oldLayout) {
+        oldLayout.groups().forEach(groupData => {
+          oldGroups[groupData.index] = groupData;
+        });
+      }
+
+      return (d, i) => {
+        let tween;
+        const old = oldGroups[d.index];
+        if (old) {
+          tween = d3.interpolate(old, d);
+        } else {
+          const emptyArc = {startAngle: d.startAngle, endAngle: d.startAngle};
+          tween = d3.interpolate(emptyArc, d);
+        }
+
+        return t => arc(tween(t));
+      };
+    }
+
+    function chordKey(data) {
+      return (data.source.index < data.target.index) ?
+      `${data.source.index}-${data.target.index}` :
+      `${data.target.index}-${data.source.index}`;
+    }
+
+    function chordTween(oldLayout) {
+      const oldChords = {};
+
+      if (oldLayout) {
+        oldLayout.chords().forEach(chordData => {
+          oldChords[chordKey(chordData)] = chordData;
+        });
+      }
+
+      return (d, i) => {
+        let tween;
+        let old = oldChords[chordKey(d)];
+        if (old) {
+          if (d.source.index !== old.source.index) {
+            old = {
+              source: old.target,
+              target: old.source
+            };
+          }
+
+          tween = d3.interpolate(old, d);
+        } else {
+          const emptyChord = {
+            source: {startAngle: d.source.startAngle, endAngle: d.source.startAngle},
+            target: {startAngle: d.target.startAngle, endAngle: d.target.startAngle}
+          };
+          tween = d3.interpolate(emptyChord, d);
+        }
+
+        return t => d3.ribbon().radius(r0)(tween(t));
+      };
+    }
+
+    lastLayout = chord;
 
     function chordTip(d) {
       const p = d3.format('.2%');
@@ -108,46 +205,60 @@ class ChordDiagram {
         .style('top', () => `${d3.event.pageY - 80}px`)
         .style('left', () => '130px');
 
-      chordPaths.classed('fade', p => {
-        return p.source.index !== i && p.target.index !== i;
+      dimChords(i);
+    }
+
+    function dimChords(i) {
+      chordPaths.style('opacity', p => {
+        return (p.source.index === i || p.target.index === i) ? 0.9 : 0.15;
       });
     }
 
-    scope.$watch(() => el.clientWidth * el.clientHeight,
-      () => {
-        w = el.clientWidth;
-        h = el.clientWidth * 2 / 3;
-        r1 = h / 2;
-        r0 = r1 - 100;
-        resize();
-      });
-
     function resize() {
       if (r0 > 0) {
-        svgP.attr({width: w, height: h});
+        svgP.attr('width', w)
+          .attr('height', h);
         svg.attr('transform', `translate(${w / 2},${h / 2})`);
         circle.attr('r', r0 + 20);
         arc.innerRadius(r0).outerRadius(r0 + 20);
         arcs.attr('d', arc);
         txtG.attr('transform', d => {
           return `rotate(${d.angle * 180 / Math.PI - 90})` +
-            `translate(${r0 + 26})` +
-            `${d.angle > Math.PI ? 'rotate(180)' : ''}`;
+            `translate(${r0 + 26}) ${d.angle > Math.PI ? 'rotate(180)' : ''}`;
         });
         chordPaths.attr('d', d3.ribbon().radius(r0));
       }
     }
+
+    resize();
+
+    this.resizeHandler = () => {
+      w = el.clientWidth;
+      h = el.clientWidth * 2 / 3;
+      r1 = h / 2;
+      r0 = r1 - 100;
+      resize();
+    };
+
+    this._window.addEventListener('resize', this.resizeHandler);
   }
 
-  link(scope, ele, attr) {
-    scope.$watch('data', data => {
-      if (data && data.matrix.length) {
-        this.drawChords(ele, data.matrix, data.mmap, scope);
-      }
-    });
+  $onChanges(c) {
+    if (this.data && this.data.matrix.length) {
+      this.drawChords(this._element, this.data.matrix, this.data.mmap);
+    }
+  }
+
+  $onDestroy() {
+    this._window.removeEventListener('resize', this.resizeHandler);
   }
 }
 
 angular
   .module('fd-view.diagrams')
-  .directive('chordDiagram', () => new ChordDiagram());
+  .component('chordDiagram', {
+    controller: ChordDiagram,
+    bindings: {
+      data: '<'
+    }
+  });

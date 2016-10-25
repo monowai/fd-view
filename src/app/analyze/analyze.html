@@ -39,9 +39,7 @@
             <div class="box-body">
               <fd-search search="$ctrl.search()"></fd-search>
               <!--Chord chart-->
-              <div id="chordGraph" ng-if="$ctrl.chartType=='Chord'">
-                <chord-diagram data="$ctrl.cdData"></chord-diagram>
-              </div>
+              <chord-diagram data="$ctrl.cdData" ng-if="$ctrl.chartType=='Chord'"></chord-diagram>
               <!--Matrix chart-->
               <div id="cooccurrenceGraph" ng-if="$ctrl.chartType=='Matrix'">
                 <cooccurrence-diagram data="$ctrl.coData" ordered-nodes="$ctrl.orderedNodes"></cooccurrence-diagram>

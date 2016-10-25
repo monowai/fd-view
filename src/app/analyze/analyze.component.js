@@ -6,6 +6,7 @@ class AnalyzeCtrl {
     this.chartType = MatrixRequest.chart || 'Chord';
 
     // services
+    this._scope = $scope;
     this._query = QueryService;
     this._matrix = MatrixRequest;
     this._search = SearchService;
@@ -122,14 +123,14 @@ class AnalyzeCtrl {
       });
     } else {
       this._matrix.matrixSearch()
-        .then(data => {
-          if (!data || data.length === 0) {
+        .then(res => {
+          if (!res || !res.matrix.length) {
             this._toastr.info('No data was found. Try altering your criteria');
-            return data;
+            return res;
           }
           angular.element('[data-target="#view"]').tab('show');
 
-          this.graphData = data.matrix;
+          this.graphData = res.matrix;
           this.cdData = null;
           this.coData = null;
           this.bpData = null;
