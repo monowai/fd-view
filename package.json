@@ -39,6 +39,8 @@
     "karma-phantomjs-launcher": "^1.0.0",
     "karma-phantomjs-shim": "^1.1.2",
     "phantomjs-prebuilt": "^2.1.6",
+    "gulp-protractor": "^3.0.0",
+    "protractor": "^4.0.9",
     "bower": "^1.7.9",
     "gulp-inject": "^3.0.0",
     "main-bower-files": "^2.9.0",

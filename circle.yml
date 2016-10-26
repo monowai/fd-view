@@ -3,6 +3,8 @@ machine:
     - docker
   node:
       version: 6.9.0
+  environment:
+      NODE_ENV: test
 
 dependencies:
   pre:
@@ -12,12 +14,11 @@ dependencies:
     - bower install
 
 test:
+  # override:
+  #  - gulp default:
+  #      timeout: 180 # fail if command has no output for 3 minutes
   override:
-    - gulp default:
-        timeout: 180 # fail if command has no output for 3 minutes
-  post:
-    # serve:sstop creates the dist, starts and stops with Gulp
-    - gulp serve:dist:
+    - gulp test:dist:
         timeout: 180
 
 deployment:
