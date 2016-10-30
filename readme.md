@@ -6,7 +6,7 @@ fd-view is a UI for modelling, analyzing and querying data imported into FlockDa
 
 The entire FD stack can be executed via Docker Compose by checking the project out from [fd-demo](http://github.com/monowai/fd-demo). Here we'll assume that you want to build from src
 
-![fd-view](fd-view-samples.jpg)
+![fd-view](http://wiki.flockdata.com/download/attachments/13172788/fd-view-samples.png?api=v2)
 
 ## Dependencies
 ### NodeJS
