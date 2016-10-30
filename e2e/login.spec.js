@@ -5,7 +5,7 @@ describe('Login', () => {
   beforeEach(() => {
     browser.driver.manage().window().setSize(1280, 1024);
     browser.addMockModule('fdApiMock', MockAPI);
-    browser.sleep(1000);
+    browser.sleep(2000);
   });
 
   it('should display Welcome page', () => {
