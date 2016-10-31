@@ -71,9 +71,11 @@ class DataSampleService {
 
   convertCol(key, type) {
     let convertFn;
+    // eslint-disable-next-line angular/typecheck-number
     if (type === 'number') {
       convertFn = d => Number(d);
     }
+    // eslint-disable-next-line angular/typecheck-string
     if (type === 'string') {
       convertFn = d => d.toString();
     }

@@ -1,6 +1,7 @@
 class FortStatCtrl {
   /** @ngInject */
   constructor(QueryService, ConceptModal) {
+    /* eslint camelcase: 0 */ // query for ElasticSearch
     this.payload = {
       size: 0,
       query: {
