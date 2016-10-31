@@ -49,9 +49,7 @@
                 </select>
               </div>
               <!--BiPartite chart-->
-              <div id="bipartiteGraph" ng-if="$ctrl.chartType=='BiPartite'">
-                <bipartite-diagram data="data" ng-repeat="data in $ctrl.bpData"></bipartite-diagram>
-              </div>
+              <bipartite-diagram data="data" ng-repeat="data in $ctrl.bpData" ng-if="$ctrl.chartType=='BiPartite'"></bipartite-diagram>
               <!--Tag Cloud-->
               <tag-cloud terms="$ctrl.data"  ng-if="$ctrl.chartType=='TagCloud'"></tag-cloud>
               <!--Count barchart-->

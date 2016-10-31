@@ -11,7 +11,7 @@ class MetaHeaderCtrl {
     this.seeLogsAction = false;
     this.selectedLog = [];
 
-    // ToDo: Fortress+DocType structure rather than x^2
+    // Can do Fortress+DocType structure rather than x^2
     this.fortress = SearchService.fortress ? SearchService.fortress[0] : "";
     this.types = SearchService.types ? SearchService.types.map(t => {
       return {name: t};

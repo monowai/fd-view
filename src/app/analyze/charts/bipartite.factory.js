@@ -1,3 +1,4 @@
+/* eslint-disable */
 angular.module('fd-view.diagrams').factory('BiPartiteService', biPartite);
 
 function biPartite() {

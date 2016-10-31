@@ -1,3 +1,4 @@
+/* eslint-disable */ // disabled for ElasticSearch query, re-enable on adding features
 class AnalyzeCtrl {
   /** @ngInject */
   constructor($scope, QueryService, MatrixRequest, SearchService, $window, $timeout, toastr, BiPartiteService) {
