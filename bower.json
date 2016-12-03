@@ -1,6 +1,6 @@
 {
   "name": "fd-view",
-  "version": "0.5.0",
+  "version": "0.98",
   "dependencies": {
     "bootstrap": "~3.3.7",
     "font-awesome": "~4.6.1",
