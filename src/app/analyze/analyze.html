@@ -16,11 +16,18 @@
     <div class="col-md-12">
       <div class="nav-tabs-custom">
         <div class="box-tools pull-right">
-          <div class="form-group" style="width: 180px; margin: 10px">
-            <label class="col-sm-4 control-label">Type</label>
-            <div class="col-sm-8">
-              <select ng-model="$ctrl.chartType" ng-options="c for c in $ctrl.chartTypes" ng-change="$ctrl.switchChart()">
-              </select>
+          <div class="form-group search-tools">
+            <div class="col-sm-7" uib-tooltip="Chart type">
+              <select ng-model="$ctrl.chartType" class="form-control chart-params" ng-options="c for c in $ctrl.chartTypes" ng-change="$ctrl.switchChart()"></select>
+              <span class="badge bg-gray-active">T</span>
+            </div>
+            <div class="col-sm-5" uib-tooltip="Min occurrence" ng-if="$ctrl.chartType!='Barchart'">
+              <input type="number" min="0" ng-model="$ctrl._matrix.minCount" form="search-form" class="form-control chart-params">
+              <span class="badge bg-gray-active">M</span>
+            </div>
+            <div class="col-sm-5" uib-tooltip="Sample size" ng-if="$ctrl.chartType=='Barchart'">
+              <input type="number" min="0" ng-model="$ctrl._matrix.sampleSize" form="search-form" class="form-control chart-params">
+              <span class="badge bg-gray-active">S</span>
             </div>
           </div>
         </div>

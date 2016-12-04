@@ -16,10 +16,14 @@
     <div class="col-md-12">
       <div class="nav-tabs-custom">
         <div class="box-tools pull-right">
-          <div class="form-group" style="width: 180px; margin: 10px">
-            <label class="col-sm-4 control-label">Layout</label>
-            <div class="col-sm-8">
-              <select ng-model="$ctrl.layout" ng-options="l.name for l in $ctrl.layouts"></select>
+          <div class="search-tools">
+            <div class="col-sm-7" uib-tooltip="Graph layout">
+              <select ng-model="$ctrl.layout" class="form-control chart-params" ng-options="l.name for l in $ctrl.layouts" ></select>
+              <span class="badge bg-gray-active">L</span>
+            </div>
+            <div class="col-sm-5" uib-tooltip="Min occurrence">
+              <input type="number" min="0" ng-model="$ctrl._matrix.minCount" form="search-form" class="form-control chart-params">
+              <span class="badge bg-gray-active">M</span>
             </div>
           </div>
         </div>

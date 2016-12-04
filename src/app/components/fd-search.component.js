@@ -10,7 +10,7 @@ angular
   .component('fdSearch', {
     transclude: true,
     template: `
-        <form class="panel" ng-submit="$ctrl.search()">
+        <form id="search-form" class="panel" ng-submit="$ctrl.search()">
           <div class="input-group">
             <input type="search" class="form-control" placeholder="Text to search for ..." ng-model="$ctrl.req.searchText"
                    size="100" autocomplete="on" autofocus/>
