@@ -62,6 +62,7 @@
       <ui-view></ui-view>
     </div>
 
+    <info-footer ng-if="root.authenticated()"></info-footer>
     <!-- <ng-include src=" 'views/partials/controlbar.html' " ng-if="loggedIn()"></ng-include> -->
 
   </div>

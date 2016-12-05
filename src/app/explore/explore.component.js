@@ -94,7 +94,7 @@ class ExploreCtrl {
         return data;
       }
       angular.element('[data-target="#view"]').tab('show');
-  
+
       this._timeout(() => {
         this.graphData = data;
         this.updateStyles(data);
