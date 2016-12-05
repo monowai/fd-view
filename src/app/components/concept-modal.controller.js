@@ -3,9 +3,12 @@ class ConceptModalCtrl {
     const ctrl = this;
     ctrl.title = fortress.name;
     ctrl.layouts = [{name: 'dagre'},
-      {name: 'circle'}, {name: 'cose'},
-      {name: 'grid'}, {name: 'concentric'},
-      {name: 'random'}, {name: 'breadthfirst'}];
+      {name: 'circle'},
+      {name: 'cose', randomize: true},
+      {name: 'grid'},
+      {name: 'concentric'},
+      {name: 'random'},
+      {name: 'breadthfirst'}];
     ctrl.layout = ctrl.layouts[0];
 
     ctrl.styles = [
@@ -32,6 +35,7 @@ class ConceptModalCtrl {
       {
         selector: 'edge',
         css: {
+          'curve-style': 'bezier',
           'content': 'data(relationship)',
           'width': 2,
           'color': '#fff',

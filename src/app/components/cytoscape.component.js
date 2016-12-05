@@ -231,7 +231,7 @@ angular
       nodeClick: '&',
       navigatorContainerId: '@',
       contextMenuCommands: '<',
-      onEdge: '&',
+      onEdge: '&?',
       qtip: '<'
     }
   });

@@ -43,6 +43,7 @@ class StructureTab {
         selector: 'edge',
         css: {
           'content': 'data(relationship)',
+          'curve-style': 'bezier',
           'width': 5,
           'target-arrow-color': '#ccc',
           'target-arrow-shape': 'triangle'
@@ -80,9 +81,13 @@ class StructureTab {
         }
       }
     ];
-    this.layouts = [{name: 'circle'}, {name: 'cose'},
-      {name: 'grid'}, {name: 'concentric'},
-      {name: 'random'}, {name: 'breadthfirst'}, {name: 'dagre'}];
+    this.layouts = [{name: 'circle'},
+      {name: 'cose', randomize: true},
+      {name: 'dagre'},
+      {name: 'grid'},
+      {name: 'concentric'},
+      {name: 'random'},
+      {name: 'breadthfirst'}];
     this.layout = this.layouts[0];
     this.nodes = [];
 

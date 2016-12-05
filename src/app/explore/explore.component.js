@@ -1,11 +1,14 @@
 class ExploreCtrl {
   /** @ngInject */
-  constructor(MatrixRequest, toastr) {
+  constructor(MatrixRequest, toastr, $timeout) {
     this.matrix = MatrixRequest.lastMatrix();
 
-    this.layouts = [{name: 'cose'},
-      {name: 'grid'}, {name: 'concentric'},
-      {name: 'circle'}, {name: 'breadthfirst'},
+    this.layouts = [
+      {name: 'cose', randomize: true},
+      {name: 'concentric'},
+      {name: 'grid'},
+      {name: 'circle'},
+      {name: 'breadthfirst'},
       {name: 'dagre'}];
     this.layout = this.layouts[0];
 
@@ -29,6 +32,13 @@ class ExploreCtrl {
         }
       },
       {
+        selector: 'edge',
+        css: {
+          'curve-style': 'bezier',
+          'target-arrow-shape': 'triangle'
+        }
+      },
+      {
         selector: ':selected',
         css: {
           'background-color': 'black',
@@ -48,6 +58,7 @@ class ExploreCtrl {
 
     this._matrix = MatrixRequest;
     this._toastr = toastr;
+    this._timeout = $timeout;
   }
 
   $onInit() {
@@ -77,16 +88,17 @@ class ExploreCtrl {
   }
 
   search() {
-    angular.element('[data-target="#view"]').tab('show');
-
     this._matrix.matrixSearch().then(data => {
       if (!data || data.edges.length === 0) {
         this._toastr.info('No data was found. Try altering your criteria');
         return data;
       }
-      this.graphData = data;
-
-      this.updateStyles(data);
+      angular.element('[data-target="#view"]').tab('show');
+  
+      this._timeout(() => {
+        this.graphData = data;
+        this.updateStyles(data);
+      }, 300);
     });
   }
 
