@@ -90,7 +90,7 @@ class CytoscapeController {
         style: {
           classes: 'qtip-bootstrap',
           tip: {
-            width: 16,
+            width: 20,
             height: 8
           }
         }

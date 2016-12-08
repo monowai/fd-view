@@ -1,6 +1,13 @@
 class MetaHeaderCtrl {
   /** @ngInject */
-  constructor($window, EntityService, $timeout, $anchorScroll, QueryService, MatrixRequest, configuration, SearchService) {
+  constructor($stateParams, $window, EntityService, $timeout, $anchorScroll, QueryService, MatrixRequest, configuration, SearchService) {
+    if ($stateParams.filter) {
+      SearchService.fortress = MatrixRequest.fortress;
+      SearchService.types = MatrixRequest.document;
+      SearchService.term = $stateParams.filter;
+      SearchService.term.disabled = true;
+    }
+
     this.advancedSearch = false;
     this.searchResultFound = false;
     this.logResultFound = false;

@@ -81,8 +81,17 @@ class ExploreCtrl {
 
   qtip() {
     if (this.group() === 'nodes') {
-      return `<strong>${this.data('id')}</strong>${this.data().name}
-              <br><strong>Type: </strong>${this.data().label}`;
+      const label = this.data().label;
+      const name = this.data().name;
+      let tooltipContent = `<strong>${this.data('id')}</strong>&nbsp;<a ui-sref="search({filter:{name: '${label}', value: '${name}'}})">${name}</a><br><strong>${label}</strong>`;
+      const context = angular.element('ui-view');
+      angular.element(context).injector().invoke([
+        '$compile', $compile => {
+          const scope = angular.element(context).scope();
+          tooltipContent = $compile(tooltipContent)(scope);
+        }
+      ]);
+      return tooltipContent;
     }
     return `<strong>Count: </strong>${this.data().count}`;
   }

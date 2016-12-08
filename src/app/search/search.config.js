@@ -4,6 +4,9 @@ function SearchConfig($stateProvider, USER_ROLES) {
     .state('search', {
       url: '/search',
       component: 'searchView',
+      params: {
+        filter: null
+      },
       data: {
         authorizedRoles: [USER_ROLES.user]
       }
