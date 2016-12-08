@@ -50,7 +50,8 @@
         <div class="nav-tabs-custom">
           <ul class="nav nav-tabs">
             <li class="active"><a href data-target="#tags" data-toggle="tab"><i class="fa fa-tags"></i> Tags</a></li>
-            <li><a href data-target="#details" data-toggle="tab"><i class="fa fa-clock-o"></i> Details</a></li>
+            <li ng-if="!$ctrl.src"><a href data-target="#details" data-toggle="tab"><i class="fa fa-clock-o"></i> Details</a></li>
+            <li ng-if="$ctrl.src"><a href data-target="#code" data-toggle="tab"><i class="fa fa-file-text"></i> Code</a></li>
             <li><a href data-target="#delta" data-toggle="tab"><i class="fa fa-arrow-right"></i> Delta</a></li>
           </ul>
           <div class="tab-content">
@@ -75,6 +76,9 @@
             <div class="tab-pane fade" id="details">
               <!-- SHOW DETAILS LOGS-->
               <div id="log1" fd-jsonabview ab-data="$ctrl.log"></div>
+            </div>
+            <div class="tab-pane fade" id="code">
+              <div ui-ace="$ctrl.codeOptions" ng-model="$ctrl.src" readonly ng-height="250"></div>
             </div>
             <!-- /.tab-pane -->
             <div class="tab-pane fade" id="delta">

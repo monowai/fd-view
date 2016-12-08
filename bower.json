@@ -26,20 +26,18 @@
     "cytoscape-edgehandles": "^2.6.0",
     "cytoscape-qtip": "^2.4.0",
     "cytoscape-dagre": "^1.3.0",
-    "ng-jsoneditor": "^1.0.0",
+    "ng-jsoneditor": "master",
     "angular-toastr": "^2.1.1",
     "angular-elastic": "^2.5.1",
     "ng-textcomplete": "^0.6.0",
     "angular-ui-tree": "^2.17.0",
     "ngSticky": "^1.8.13",
     "ng-infinite-scroll-npm-is-better-than-bower": "ngInfiniteScroll#^1.3.1",
-    "ag-grid": "^7.0.0"
+    "ag-grid": "^7.0.0",
+    "angular-ui-ace": "bower"
   },
   "devDependencies": {
     "angular-mocks": "^1.5.8"
-  },
-  "resolutions": {
-    "jsoneditor": "^5.5.8"
   },
   "overrides": {
     "bootstrap": {
@@ -51,12 +49,12 @@
     },
     "font-awesome": {
       "main": [
-        "css/font-awesome.min.css"
+        "css/font-awesome.css"
       ]
     },
     "qtip2": {
       "main": [
-        "jquery.qtip.min.css",
+        "jquery.qtip.css",
         "./jquery.qtip.js"
       ]
     },
@@ -67,6 +65,11 @@
       "main": [
         "public/build/jsondiffpatch.js",
         "public/build/jsondiffpatch-formatters.js"
+      ]
+    },
+    "ace-builds": {
+      "files": [
+        "src-noconflict/mode-java.js"
       ]
     }
   }

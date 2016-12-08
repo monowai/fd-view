@@ -35,6 +35,7 @@ angular
     'config',
     'http-auth-interceptor',
     'ng.jsoneditor',
+    'ui.ace',
     'infinite-scroll',
     'sticky',
     'fd-view.diagrams',

@@ -31,6 +31,10 @@ class ViewEntityCtrl {
         this._entity.getJsonContentForLog(this.entityKey, this.metaHeader.changes[0].id)
           .then(data => {
             this.log = data;
+            if (data.src) {
+              this.src = data.src.join('\n');
+              this.codeOptions = {mode: this.metaHeader.type};
+            }
           });
         this.logSelected = this.metaHeader.changes[0].id;
       }
