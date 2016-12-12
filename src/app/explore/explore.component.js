@@ -6,6 +6,7 @@ class ExploreCtrl {
     this.layouts = [
       {name: 'cose', randomize: true},
       {name: 'concentric'},
+      {name: 'cola'},
       {name: 'grid'},
       {name: 'circle'},
       {name: 'breadthfirst'},
