@@ -51,16 +51,17 @@ class SampleTab {
     };
 
     this._cm.updateModel(this.model);
-    this._cm.getDefault({rows: this.sample.data}).success(res => {
-      this._toastr.success('Data is loaded', 'Success');
-      this.model = {};
-      this.model = res;
-      this.modelGraph = this._cm.graphModel();
-      this.tags = this._cm.getTags();
-      this.dataStats = this.sample.buildStats(data, res.content);
-    }).error(res => {
-      this._toastr.error(res, 'Error');
-    });
+    this._cm.getDefault({rows: this.sample.data})
+      .then(res => {
+        this._toastr.success('Data is loaded', 'Success');
+        this.model = {};
+        this.model = res;
+        this.modelGraph = this._cm.graphModel();
+        this.tags = this._cm.getTags();
+        this.dataStats = this.sample.buildStats(data, res.content);
+      }, res => {
+        this._toastr.error(res, 'Error');
+      });
   }
 
   previouslyLoaded() {

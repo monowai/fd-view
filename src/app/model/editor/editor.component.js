@@ -50,8 +50,9 @@ class EditModelCtrl {
 
   loadModel(key) {
     this._cm.getModel(key).then(res => {
-      this.model = res.data.contentModel;
+      this.model = res;
       this.name = this.model.code || this.model.documentType.name;
+      this.graph = this._cm.graphModel();
       this.origin = angular.copy(this.model);
     });
   }
@@ -90,7 +91,7 @@ class EditModelCtrl {
     this._cm.updateModel(model);
     if (this.canSave()) {
       this._cm.saveModel()
-        .success(res => {
+        .then(res => {
           this._toastr.success(res.statusText, 'Success');
           angular.element('[data-target="#structure"]').tab('show');
           this.origin = angular.copy(model);
@@ -98,8 +99,7 @@ class EditModelCtrl {
           this._timeout(() => {
             this._scope.$broadcast('cytoscapeReset');
           }, 500);
-        })
-        .error(res => {
+        }, res => {
           this._toastr.error(res.message, 'Error');
         });
     } else {

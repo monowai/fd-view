@@ -74,13 +74,14 @@ class ContentModelService {
   getModel(modelKey) {
     if (modelKey) {
       return this._http.get(`${this._cfg.engineUrl()}/api/v1/model/${modelKey}`)
-        .success(data => {
-          this._cp = data.contentModel;
+        .then(res => {
+          this._cp = res.data.contentModel;
           if (!this._cp.tagModel) {
             this._cpFortress = this._cp.fortress.name;
             this._cpType = this._cp.documentType.name;
           }
           this._tags = [];
+          return this._cp;
         });
     }
     const deferred = this._q.defer();
@@ -100,8 +101,9 @@ class ContentModelService {
     const payload = angular.extend({contentModel: this._cp}, data);
 
     return this._http.post(`${this._cfg.engineUrl()}/api/v1/model/default`, payload)
-      .success(res => {
-        this._cp.content = res.content;
+      .then(res => {
+        this._cp = Object.assign({}, res.data);
+        return this._cp;
       });
   }
 
@@ -109,7 +111,7 @@ class ContentModelService {
     const payload = {contentModel: this._cp, rows: data};
 
     return this._http.post(`${this._cfg.engineUrl()}/api/v1/model/validate`, payload)
-      .success(res => res);
+      .then(res => res);
   }
 
   graphModel() {

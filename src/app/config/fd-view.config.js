@@ -3,7 +3,7 @@ angular
   .config(appConfig);
 
 /** @ngIject */
-function appConfig($locationProvider, $urlRouterProvider, $compileProvider, $httpProvider, toastrConfig) {
+function appConfig($locationProvider, $urlRouterProvider, $compileProvider, $httpProvider, toastrConfig, $qProvider) {
   $locationProvider.html5Mode(true);
   $urlRouterProvider.otherwise('/');
 
@@ -19,4 +19,6 @@ function appConfig($locationProvider, $urlRouterProvider, $compileProvider, $htt
     closeButton: true,
     target: 'body'
   });
+
+  $qProvider.errorOnUnhandledRejections(false);
 }

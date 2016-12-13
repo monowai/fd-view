@@ -45,7 +45,7 @@ class MetaHeaderCtrl {
   }
 
   openDetailsView(entityKey) {
-    const url = `#/view/${entityKey}`;
+    const url = `/view/${entityKey}`;
     this._window.open(url);
   }
 
