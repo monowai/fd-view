@@ -24,7 +24,7 @@ test:
 deployment:
 
   hub:
-    branch: master
+    branch: release
     commands:
       - gulp
       - docker build -t flockdata/fd-view .
