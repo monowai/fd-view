@@ -4,7 +4,7 @@ class Footer {
     this.server = configuration.engineUrl();
     $http.get(`${configuration.engineUrl()}/api/v1/admin/health`)
       .then(res => {
-        this.version = res.data['fd.version'];
+        this.fdVersion = res.data['fd.version'];
       });
     /* Page height fix */
     $.AdminLTE.layout.fix();

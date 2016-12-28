@@ -1,6 +1,7 @@
 <footer class="main-footer">
   <div class="pull-right hidden-xs">
-    <b class="text-info">Version</b>&nbsp;{{$ctrl.version}}
+    <!--ToDo: inject version https://github.com/dvinciinteractive/gulp-inject-version -->
+    <!--<b class="text-info">Version</b>&nbsp;%%GULP_INJECT_VERSION%%-->
   </div>
-  <strong><span class="text-info">fd-engine: </span>&nbsp;{{$ctrl.server}}</strong>
+  <strong><span class="text-info">api-url: </span>&nbsp;<a href="#" data-toggle="tooltip" title="{{$ctrl.fdVersion}}">{{$ctrl.server}}</a></strong>
 </footer>
