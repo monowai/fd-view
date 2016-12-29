@@ -1,5 +1,6 @@
-const conf = require('./gulp.conf');
-const listFiles = require('./karma-files.conf');
+
+const conf = require('../conf/gulp.conf.js');
+const listFiles = require('./karma-files.conf.js');
 
 module.exports = function (config) {
   const configuration = {
