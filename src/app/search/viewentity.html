@@ -1,3 +1,23 @@
+<!--
+  ~
+  ~  Copyright (c) 2012-2017 "FlockData LLC"
+  ~
+  ~  This file is part of FlockData.
+  ~
+  ~  FlockData is free software: you can redistribute it and/or modify
+  ~  it under the terms of the GNU General Public License as published by
+  ~  the Free Software Foundation, either version 3 of the License, or
+  ~  (at your option) any later version.
+  ~
+  ~  FlockData is distributed in the hope that it will be useful,
+  ~  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~  GNU General Public License for more details.
+  ~
+  ~  You should have received a copy of the GNU General Public License
+  ~  along with FlockData.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+
 <div data-ng-init="$ctrl.init()">
   <!-- Content Header (Page header) -->
   <section class="content-header">
@@ -26,17 +46,15 @@
             <i class="fa fa-file-text"></i>
             <div class="timeline-item">
               <span class="time"><i class="fa fa-clock-o"></i>
-                {{logsResult.fortressWhen | amDateFormat:'dddd, MMMM
-                  Do
-                  YYYY,hh:mm a'}}
+                {{logsResult.when | amDateFormat:'YYYY-MM-DD, hh:mm a'}}
               </span>
 
-              <h3 class="timeline-header"><em>{{logsResult.log.event.name}}</em></h3>
+              <h3 class="timeline-header"><em>{{logsResult.event.name}}</em></h3>
 
               <div class="timeline-body">
                 <p>
-                  <strong>{{logsResult.log.madeBy.name}}</strong> -
-                  {{logsResult.log.comment}}
+                  <strong>{{logsResult.madeBy}}</strong> -
+                  {{logsResult.comment}}
                 </p>
                 <br>
               </div>
@@ -87,9 +105,9 @@
                   <!--<option value="0">Select Log Item</option>-->
                   <option ng-repeat="logsResult in $ctrl.metaHeader.changes"
                           ng-if="logsResult.id != $ctrl.logSelected"
-                          value="{{logsResult.id}}">{{logsResult.log.event.name}} |
-                    {{logsResult.log.who.name}} | {{logsResult.fortressWhen |
-                    amDateFormat:'dddd, MMMM Do YYYY,hh:mm a'}}
+                          value="{{logsResult.id}}">{{logsResult.event.name}} |
+                    {{logsResult.log.who.name}} | {{logsResult.when |
+                    amDateFormat:'YYYY-MM-DD, hh:mm a'}}
                   </option>
                 </select> <i></i>
 
