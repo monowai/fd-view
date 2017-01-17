@@ -5,7 +5,7 @@
   "description": "The home of FlockData Visualization",
   "license": "(GPL-3.0)",
  "devDependencies": {
-    "angular-mocks": "^1.5.8",
+    "angular-mocks": "^1.6.0",
     "gulp-angular-templatecache": "^1.8.0",
     "del": "^2.0.2",
     "gulp": "gulpjs/gulp#4ed9a4a3275559c73a396eff7e1fde3824951ebb",
@@ -40,7 +40,6 @@
     "karma-phantomjs-shim": "^1.1.2",
     "phantomjs-prebuilt": "^2.1.6",
     "gulp-protractor": "^3.0.0",
-    "gulp-connect": "^3.2.0",
     "protractor": "^4.0.9",
     "bower": "^1.7.9",
     "gulp-inject": "^3.0.0",

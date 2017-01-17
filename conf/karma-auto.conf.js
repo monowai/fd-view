@@ -18,8 +18,8 @@
  *  along with FlockData.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-const conf = require('./../conf/gulp.conf.js');
-const listFiles = require('./karma-files.conf.js');
+const conf = require('./gulp.conf');
+const listFiles = require('./karma-files.conf');
 
 module.exports = function (config) {
   const configuration = {

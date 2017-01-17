@@ -1,13 +1,12 @@
 describe('Login', () => {
   const user = browser.params.login;
   const MockAPI = require('./mock-api');
+  browser.addMockModule('fdApiMock', MockAPI);
+  browser.get('/');
 
   beforeEach(() => {
-    browser.driver.manage().window().setSize(1280, 1024);
-    browser.addMockModule('fdApiMock', MockAPI);
-    // browser.waitForAngular();
-    browser.refresh();
-    // browser.ignoreSynchronization = true;
+    // browser.driver.manage().window().setSize(1280, 1024);
+    // browser.refresh();
     browser.sleep(3000);
   });
 
@@ -21,7 +20,6 @@ describe('Login', () => {
   // });
 
   it('should display Welcome page', () => {
-    browser.get('/');
     // browser.refresh();
     expect(element(by.tagName('h1')).getText()).toEqual('Welcome');
   });
