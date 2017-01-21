@@ -1,3 +1,23 @@
+/*
+ *
+ *  Copyright (c) 2012-2017 "FlockData LLC"
+ *
+ *  This file is part of FlockData.
+ *
+ *  FlockData is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  FlockData is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with FlockData.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 class ContentModelService {
   /** @ngInject */
   constructor($http, $q, configuration) {
@@ -74,13 +94,14 @@ class ContentModelService {
   getModel(modelKey) {
     if (modelKey) {
       return this._http.get(`${this._cfg.engineUrl()}/api/v1/model/${modelKey}`)
-        .success(data => {
-          this._cp = data.contentModel;
+        .then(res => {
+          this._cp = res.data.contentModel;
           if (!this._cp.tagModel) {
             this._cpFortress = this._cp.fortress.name;
             this._cpType = this._cp.documentType.name;
           }
           this._tags = [];
+          return this._cp;
         });
     }
     const deferred = this._q.defer();
@@ -100,8 +121,9 @@ class ContentModelService {
     const payload = angular.extend({contentModel: this._cp}, data);
 
     return this._http.post(`${this._cfg.engineUrl()}/api/v1/model/default`, payload)
-      .success(res => {
-        this._cp.content = res.content;
+      .then(res => {
+        this._cp = Object.assign({}, res.data);
+        return this._cp;
       });
   }
 
@@ -109,7 +131,7 @@ class ContentModelService {
     const payload = {contentModel: this._cp, rows: data};
 
     return this._http.post(`${this._cfg.engineUrl()}/api/v1/model/validate`, payload)
-      .success(res => res);
+      .then(res => res);
   }
 
   graphModel() {

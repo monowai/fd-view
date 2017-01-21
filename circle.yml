@@ -18,13 +18,13 @@ test:
   #  - gulp default:
   #      timeout: 180 # fail if command has no output for 3 minutes
   override:
-    - gulp test:dist:
+    - gulp test:e2e:
         timeout: 180
 
 deployment:
 
   hub:
-    branch: master
+    branch: release
     commands:
       - gulp
       - docker build -t flockdata/fd-view .

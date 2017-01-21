@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (c) 2012-2016 "FlockData LLC"
+ *  Copyright (c) 2012-2017 "FlockData LLC"
  *
  *  This file is part of FlockData.
  *
@@ -35,6 +35,7 @@ angular
     'config',
     'http-auth-interceptor',
     'ng.jsoneditor',
+    'ui.ace',
     'infinite-scroll',
     'sticky',
     'fd-view.diagrams',

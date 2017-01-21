@@ -1,3 +1,23 @@
+/*
+ *
+ *  Copyright (c) 2012-2017 "FlockData LLC"
+ *
+ *  This file is part of FlockData.
+ *
+ *  FlockData is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  FlockData is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with FlockData.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 class EditModelCtrl {
   /** @ngInject */
   constructor($scope, $stateParams, toastr, ContentModel, DataSample, $state, $timeout, modalService, $window) {
@@ -50,8 +70,9 @@ class EditModelCtrl {
 
   loadModel(key) {
     this._cm.getModel(key).then(res => {
-      this.model = res.data.contentModel;
+      this.model = res;
       this.name = this.model.code || this.model.documentType.name;
+      this.graph = this._cm.graphModel();
       this.origin = angular.copy(this.model);
     });
   }
@@ -90,7 +111,7 @@ class EditModelCtrl {
     this._cm.updateModel(model);
     if (this.canSave()) {
       this._cm.saveModel()
-        .success(res => {
+        .then(res => {
           this._toastr.success(res.statusText, 'Success');
           angular.element('[data-target="#structure"]').tab('show');
           this.origin = angular.copy(model);
@@ -98,8 +119,7 @@ class EditModelCtrl {
           this._timeout(() => {
             this._scope.$broadcast('cytoscapeReset');
           }, 500);
-        })
-        .error(res => {
+        }, res => {
           this._toastr.error(res.message, 'Error');
         });
     } else {

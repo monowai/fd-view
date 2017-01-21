@@ -1,3 +1,23 @@
+<!--
+  ~
+  ~  Copyright (c) 2012-2017 "FlockData LLC"
+  ~
+  ~  This file is part of FlockData.
+  ~
+  ~  FlockData is free software: you can redistribute it and/or modify
+  ~  it under the terms of the GNU General Public License as published by
+  ~  the Free Software Foundation, either version 3 of the License, or
+  ~  (at your option) any later version.
+  ~
+  ~  FlockData is distributed in the hope that it will be useful,
+  ~  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~  GNU General Public License for more details.
+  ~
+  ~  You should have received a copy of the GNU General Public License
+  ~  along with FlockData.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+
 <!-- Content Header (Page header) -->
 <section class="content-header">
   <h1>
@@ -16,10 +36,14 @@
     <div class="col-md-12">
       <div class="nav-tabs-custom">
         <div class="box-tools pull-right">
-          <div class="form-group" style="width: 180px; margin: 10px">
-            <label class="col-sm-4 control-label">Layout</label>
-            <div class="col-sm-8">
-              <select ng-model="$ctrl.layout" ng-options="l.name for l in $ctrl.layouts"></select>
+          <div class="search-tools">
+            <div class="col-sm-7" uib-tooltip="Graph layout">
+              <select ng-model="$ctrl.layout" class="form-control chart-params" ng-options="l.name for l in $ctrl.layouts" ></select>
+              <span class="badge bg-gray-active">L</span>
+            </div>
+            <div class="col-sm-5" uib-tooltip="Min occurrence">
+              <input type="number" min="0" ng-model="$ctrl._matrix.minCount" form="search-form" class="form-control chart-params">
+              <span class="badge bg-gray-active">M</span>
             </div>
           </div>
         </div>

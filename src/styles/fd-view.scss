@@ -303,7 +303,7 @@ th.col.tag, .ag-header-cell.tag {
 th.col.caller-ref, .ag-header-cell.caller-ref{
   font-style: italic;
 }
-th.col.alias, .ag-header-cell.alias, .btn-alias {
+th.col.alias, .ag-header-cell.alias {
   background-color: #f7bf65;
 }
 th.col>span, .ag-click-ico {
@@ -537,4 +537,20 @@ stats-chart {
   position: absolute;
   top: 0;
   left: 0;
+}
+
+.chart-params {
+  height: 25px;
+  padding: 2px 5px;
+
+  &+.badge {
+    position: absolute;
+    left: -10px;
+    top: 3px;
+  }
+}
+
+.search-tools {
+  width: 200px;
+  margin: 10px;
 }

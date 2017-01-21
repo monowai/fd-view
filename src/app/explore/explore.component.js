@@ -1,11 +1,35 @@
+/*
+ *
+ *  Copyright (c) 2012-2017 "FlockData LLC"
+ *
+ *  This file is part of FlockData.
+ *
+ *  FlockData is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  FlockData is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with FlockData.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 class ExploreCtrl {
   /** @ngInject */
-  constructor(MatrixRequest, toastr) {
+  constructor(MatrixRequest, toastr, $timeout) {
     this.matrix = MatrixRequest.lastMatrix();
 
-    this.layouts = [{name: 'cose'},
-      {name: 'grid'}, {name: 'concentric'},
-      {name: 'circle'}, {name: 'breadthfirst'},
+    this.layouts = [
+      {name: 'cose', randomize: true},
+      {name: 'concentric'},
+      {name: 'cola'},
+      {name: 'grid'},
+      {name: 'circle'},
+      {name: 'breadthfirst'},
       {name: 'dagre'}];
     this.layout = this.layouts[0];
 
@@ -29,6 +53,13 @@ class ExploreCtrl {
         }
       },
       {
+        selector: 'edge',
+        css: {
+          'curve-style': 'bezier',
+          'target-arrow-shape': 'triangle'
+        }
+      },
+      {
         selector: ':selected',
         css: {
           'background-color': 'black',
@@ -48,6 +79,7 @@ class ExploreCtrl {
 
     this._matrix = MatrixRequest;
     this._toastr = toastr;
+    this._timeout = $timeout;
   }
 
   $onInit() {
@@ -70,23 +102,33 @@ class ExploreCtrl {
 
   qtip() {
     if (this.group() === 'nodes') {
-      return `<strong>${this.data('id')}</strong>${this.data().name}
-              <br><strong>Type: </strong>${this.data().label}`;
+      const label = this.data().label;
+      const name = this.data().name;
+      let tooltipContent = `<strong>${this.data('id')}</strong>&nbsp;<a ui-sref="search({filter:{name: '${label}', value: '${name}'}})">${name}</a><br><strong>${label}</strong>`;
+      const context = angular.element('ui-view');
+      angular.element(context).injector().invoke([
+        '$compile', $compile => {
+          const scope = angular.element(context).scope();
+          tooltipContent = $compile(tooltipContent)(scope);
+        }
+      ]);
+      return tooltipContent;
     }
     return `<strong>Count: </strong>${this.data().count}`;
   }
 
   search() {
-    angular.element('[data-target="#view"]').tab('show');
-
     this._matrix.matrixSearch().then(data => {
       if (!data || data.edges.length === 0) {
         this._toastr.info('No data was found. Try altering your criteria');
         return data;
       }
-      this.graphData = data;
+      angular.element('[data-target="#view"]').tab('show');
 
-      this.updateStyles(data);
+      this._timeout(() => {
+        this.graphData = data;
+        this.updateStyles(data);
+      }, 300);
     });
   }
 

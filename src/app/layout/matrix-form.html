@@ -1,3 +1,23 @@
+<!--
+  ~
+  ~  Copyright (c) 2012-2017 "FlockData LLC"
+  ~
+  ~  This file is part of FlockData.
+  ~
+  ~  FlockData is free software: you can redistribute it and/or modify
+  ~  it under the terms of the GNU General Public License as published by
+  ~  the Free Software Foundation, either version 3 of the License, or
+  ~  (at your option) any later version.
+  ~
+  ~  FlockData is distributed in the hope that it will be useful,
+  ~  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~  GNU General Public License for more details.
+  ~
+  ~  You should have received a copy of the GNU General Public License
+  ~  along with FlockData.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+
 <div ng-transclude></div>
 <div class="col-sm-6 col-md-4 col-lg-3">
   <section class="form-group">
@@ -61,12 +81,12 @@
 
   <section>
     <div class="form-group col-md-6">
-      <label for="minCount">Min Occurence</label>
-      <input type="text" class="form-control" name="minCount" id="minCount" ng-model="$ctrl.params.minCount"/>
+      <label for="minCount">Min Occurrence</label>
+      <input type="number" min="0" class="form-control" name="minCount" id="minCount" ng-model="$ctrl.params.minCount"/>
     </div>
     <div class="form-group col-md-6">
       <label for="resultSize">Sample Size</label>
-      <input type="text" class="form-control" name="resultSize" id="resultSize" ng-model="$ctrl.params.resultSize"/>
+      <input type="number" min="0" class="form-control" name="resultSize" id="resultSize" ng-model="$ctrl.params.resultSize"/>
     </div>
   </section>
 </div>

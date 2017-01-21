@@ -13,6 +13,8 @@ exports.config = {
     defaultTimeoutInterval: 30000
   },
 
+  rootElement: 'html',
+
   // Additional parameters to use in test suites
   params: {
     login: {

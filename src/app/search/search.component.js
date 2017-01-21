@@ -1,6 +1,33 @@
+/*
+ *
+ *  Copyright (c) 2012-2017 "FlockData LLC"
+ *
+ *  This file is part of FlockData.
+ *
+ *  FlockData is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  FlockData is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with FlockData.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 class MetaHeaderCtrl {
   /** @ngInject */
-  constructor($window, EntityService, $timeout, $anchorScroll, QueryService, MatrixRequest, configuration, SearchService) {
+  constructor($stateParams, $window, EntityService, $timeout, $anchorScroll, QueryService, MatrixRequest, configuration, SearchService) {
+    if ($stateParams.filter) {
+      SearchService.fortress = MatrixRequest.fortress;
+      SearchService.types = MatrixRequest.document;
+      SearchService.term = $stateParams.filter;
+      SearchService.term.disabled = true;
+    }
+
     this.advancedSearch = false;
     this.searchResultFound = false;
     this.logResultFound = false;
@@ -38,7 +65,7 @@ class MetaHeaderCtrl {
   }
 
   openDetailsView(entityKey) {
-    const url = `#/view/${entityKey}`;
+    const url = `/view/${entityKey}`;
     this._window.open(url);
   }
 

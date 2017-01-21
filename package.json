@@ -5,7 +5,7 @@
   "description": "The home of FlockData Visualization",
   "license": "(GPL-3.0)",
  "devDependencies": {
-    "angular-mocks": "^1.5.0-beta.2",
+    "angular-mocks": "^1.6.0",
     "gulp-angular-templatecache": "^1.8.0",
     "del": "^2.0.2",
     "gulp": "gulpjs/gulp#4ed9a4a3275559c73a396eff7e1fde3824951ebb",
