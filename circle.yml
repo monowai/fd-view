@@ -28,5 +28,6 @@ deployment:
     commands:
       - gulp
       - docker build -t flockdata/fd-view .
-      - docker login -u $DOCKER_USER -p $DOCKER_PASS
+#      -e is deprecated but CCI requires it otherwise time outs occur
+      - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
       - docker push flockdata/fd-view
