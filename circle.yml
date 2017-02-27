@@ -24,9 +24,10 @@ test:
 deployment:
 
   hub:
-    branch: release
+    branch: /release.*/
     commands:
       - gulp
       - docker build -t flockdata/fd-view .
+#      -e is deprecated but CCI requires it otherwise time outs occur
       - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
       - docker push flockdata/fd-view
