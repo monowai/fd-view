@@ -7,7 +7,7 @@ describe('Login', () => {
   beforeEach(() => {
     // browser.driver.manage().window().setSize(1280, 1024);
     // browser.refresh();
-    browser.sleep(3000);
+    browser.sleep(5000);
   });
 
 

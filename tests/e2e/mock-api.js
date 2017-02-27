@@ -1,6 +1,6 @@
 const MockAPI = function() {
    angular.module('fdApiMock', ['fd-view','ngMockE2E'])
-      .run(function($httpBackend) {
+      .run(function($httpBackend, configuration) {
         const account = {
           "login": "test",
           "name": "test",
@@ -16,18 +16,20 @@ const MockAPI = function() {
           "active": true
         };
 
-        $httpBackend.whenPOST('http://127.0.0.1:8080/api/v1/ping')
+        const engineUrl = configuration.engineUrl();
+
+        $httpBackend.whenPOST(engineUrl+'/api/v1/ping')
           .respond('pong');
 
-        $httpBackend.whenPOST('http://127.0.0.1:8080/api/v1/login')
+        $httpBackend.whenPOST(engineUrl+'/api/v1/login')
           .respond(account);
 
-        $httpBackend.whenGET('http://127.0.0.1:8080/api/account')
+        $httpBackend.whenGET(engineUrl+'/api/account')
           .respond(account);
 
-        $httpBackend.whenPOST('http://127.0.0.1:8080/api/v1/query/').respond(['a','b']);
+        $httpBackend.whenPOST(engineUrl+'/api/v1/query/').respond(['a','b']);
 
-        $httpBackend.whenGET('http://127.0.0.1:8080/api/v1/fortress/')
+        $httpBackend.whenGET(engineUrl+'/api/v1/fortress/')
           .respond(null);
 
         $httpBackend.whenGET(/.*/).passThrough();
