@@ -1,4 +1,4 @@
-class RelationshipsTab {
+class RelationshipsTabCtrl {
   /** @ngInject */
   constructor(ContentModel, modalService) {
     const model = ContentModel.getCurrent();
@@ -43,12 +43,10 @@ class RelationshipsTab {
   }
 }
 
-angular
-  .module('fd-view.modeler')
-  .component('relationshipsTab', {
-    templateUrl: 'app/model/editor/edit-coldef-modal/relationships-tab/relationships-tab.html',
-    controller: RelationshipsTab,
-    bindings: {
-      tag: '<'
-    }
-  });
+export const relationshipsTab = {
+  templateUrl: 'app/model/editor/edit-coldef-modal/relationships-tab/relationships-tab.html',
+  controller: RelationshipsTabCtrl,
+  bindings: {
+    tag: '<'
+  }
+};

@@ -1,3 +1,15 @@
+import {
+  scaleOrdinal,
+  schemeCategory20,
+  scaleBand,
+  scaleLinear,
+  select as d3select,
+  max as d3max,
+  event as d3event,
+  axisBottom,
+  axisLeft
+} from 'd3';
+
 class BarChart {
   constructor($state, SearchService) {
     this.restrict = 'E';
@@ -11,15 +23,15 @@ class BarChart {
 
   draw(svg, data, width, height, agg) {
     const margin = {top: 20, right: 20, bottom: 40, left: 40};
-    const color = d3.scaleOrdinal(d3.schemeCategory20);
+    const color = scaleOrdinal(schemeCategory20);
 
     width = width - margin.left - margin.right;
     height = height - margin.top - margin.bottom;
 
-    const x = d3.scaleBand().range([0, width]).padding(0.1);
-    const y = d3.scaleLinear().range([height, 0]);
+    const x = scaleBand().range([0, width]).padding(0.1);
+    const y = scaleLinear().range([height, 0]);
 
-    d3.select('.bar-title')
+    d3select('.bar-title')
       .text(`${agg.aggType}: ${agg.metric || agg.term}`);
 
     svg.attr('width', width + margin.left + margin.right)
@@ -27,12 +39,12 @@ class BarChart {
     svg.select('.data')
       .attr('transform', `translate(${margin.left},${margin.top})`);
 
-    const div = d3.select('body').append('div')
+    const div = d3select('body').append('div')
       .attr('class', 'bar-tooltip')
       .style('opacity', 0);
 
     x.domain(data.map(d => d.key));
-    y.domain([0, d3.max(data, d => d.metric ? (d.metric.value || d.metric.values['50.0']) : d.doc_count)]);
+    y.domain([0, d3max(data, d => d.metric ? (d.metric.value || d.metric.values['50.0']) : d.doc_count)]);
 
     const bars = svg.select('.data').selectAll('rect').data(data);
 
@@ -59,8 +71,8 @@ class BarChart {
         div.html(`<strong>${d.key}</strong>
                   ${(d.metric ? `<br>${(d.metric.value || d.metric.values['50.0']).toFixed(2)}` : '')}
                   <br/><b>doc_count: </b>${d.doc_count}`)
-          .style('left', `${d3.event.pageX}px`)
-          .style('top', `${d3.event.pageY - 28}px`);
+          .style('left', `${d3event.pageX}px`)
+          .style('top', `${d3event.pageY - 28}px`);
       })
       .on('mouseout', () => {
         div
@@ -85,7 +97,7 @@ class BarChart {
 
     svg.select('.x.axis')
       .attr('transform', `translate(0,${height})`)
-      .call(d3.axisBottom(x))
+      .call(axisBottom(x))
       .selectAll('text')
         .style('text-anchor', 'end')
         .attr('dx', '-.8em')
@@ -93,11 +105,11 @@ class BarChart {
         .attr('transform', 'rotate(-55)');
 
     svg.select('.y.axis')
-      .call(d3.axisLeft(y));
+      .call(axisLeft(y));
   }
 
   link(scope, elem, attrs) {
-    const svg = d3.select(elem[0]).append('svg');
+    const svg = d3select(elem[0]).append('svg');
     const data = svg.append('g').attr('class', 'data');
     const width = 960;
     const height = 500;
@@ -125,6 +137,4 @@ class BarChart {
 
 BarChart.factory.$inject = ['$state', 'SearchService'];
 
-angular
-  .module('fd-view.diagrams')
-  .directive('barChart', BarChart.factory);
+export default BarChart.factory;

@@ -1,4 +1,4 @@
-class RootCtrl {
+export default class RootCtrl {
   /** @ngInject */
   constructor($state, User) {
     this._state = $state;
@@ -13,7 +13,3 @@ class RootCtrl {
     return this._user.authenticated;
   }
 }
-
-angular
-  .module('fd-view')
-  .controller('RootCtrl', RootCtrl);

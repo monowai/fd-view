@@ -18,7 +18,7 @@
  *  along with FlockData.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-class ConceptModalCtrl {
+export default class ConceptModalCtrl {
   constructor($uibModalInstance, $http, configuration, fortress) {
     const ctrl = this;
     ctrl.title = fortress.name;
@@ -114,7 +114,3 @@ class ConceptModalCtrl {
     this._uibmi.dismiss();
   }
 }
-
-angular
-  .module('fd-view')
-  .controller('ConceptModalCtrl', ConceptModalCtrl);

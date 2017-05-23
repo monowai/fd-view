@@ -1,9 +1,9 @@
-angular
-  .module('fd-view.modeler')
-  .directive('draggable', draggable)
-  .directive('droppable', droppable);
+// angular
+//   .module('fd-view.modeler')
+//   .directive('draggable', draggable)
+//   .directive('droppable', droppable);
 
-function draggable() {
+export function draggable() {
   return (scope, element) => {
     // this gives us the native JS object
     const el = element[0];
@@ -26,7 +26,7 @@ function draggable() {
   };
 }
 
-function droppable() {
+export function droppable() {
   return {
     scope: {
       droppable: '='

@@ -1,20 +1,12 @@
-angular
-  .module('fd-view.modeler')
-  .directive('fileBox', fileBox);
-
+import template from './file-box.html';
+import './file-box.scss';
 /** @ngInject */
-function fileBox($parse) {
+export default function fileBox($parse) {
   return {
     restrict: 'AE',
     scope: false,
     transclude: true,
-    template: `<div class="file-box-input">\
-                  <input type="file" id="file" class="box-file">\
-                  <label for="file" align="center"><strong>\
-                  <i class="fa fa-cloud-download"></i> Click</strong>\
-                  <span> to select a delimited file, or drop it here</span>.</label></div>\
-                  <div ng-transclude></div>\
-                  <div class="file-box-success"><strong>Done!</strong>&nbsp;{{fileName}} is loaded</div>`,
+    template,
     link: (scope, element, attrs) => {
       const fn = $parse(attrs.fileBox);
 

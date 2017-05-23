@@ -18,6 +18,10 @@
  *  along with FlockData.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import template from './explore.html';
+
+import {scaleOrdinal, schemeCategory20, max as d3max} from 'd3';
+
 class ExploreCtrl {
   /** @ngInject */
   constructor(MatrixRequest, toastr, $timeout) {
@@ -33,7 +37,7 @@ class ExploreCtrl {
       {name: 'dagre'}];
     this.layout = this.layouts[0];
 
-    const nodeColor = d3.scaleOrdinal(d3.schemeCategory20);
+    const nodeColor = scaleOrdinal(schemeCategory20);
 
     this.styles = [
       {
@@ -83,7 +87,7 @@ class ExploreCtrl {
   }
 
   $onInit() {
-    if (_.isEmpty(this.matrix)) {
+    if (Object.entries(this.matrix).length === 0) {
       angular.element('[data-target="#search"]').tab('show');
       this.graphData = [];
       this._matrix.sharedRlxChecked = false;
@@ -133,7 +137,7 @@ class ExploreCtrl {
   }
 
   updateStyles(data) {
-    const maxCount = d3.max(data.edges, d => d.data.count);
+    const maxCount = d3max(data.edges, d => d.data.count);
     const minCount = this._matrix.minCount;
     // const edgeWidth = d3.scaleLinear()
     //   .domain([this._matrix.minCount, maxCount])
@@ -151,9 +155,7 @@ class ExploreCtrl {
   }
 }
 
-angular
-  .module('fd-view')
-  .component('exploreView', {
-    templateUrl: 'app/explore/explore.html',
-    controller: ExploreCtrl
-  });
+export const exploreView = {
+  template,
+  controller: ExploreCtrl
+};

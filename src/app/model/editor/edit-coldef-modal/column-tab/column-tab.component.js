@@ -1,4 +1,6 @@
-class ColumnTab {
+import template from './column-tab.html';
+
+class ColumnTabCtrl {
   /** @ngInject */
   constructor(ContentModel) {
     this.dataTypes = ['string', 'number', 'date'];
@@ -47,12 +49,10 @@ class ColumnTab {
   }
 }
 
-angular
-  .module('fd-view.modeler')
-  .component('columnTab', {
-    templateUrl: 'app/model/editor/edit-coldef-modal/column-tab/column-tab.html',
-    controller: ColumnTab,
-    bindings: {
-      column: '<'
-    }
-  });
+export const columnTab = {
+  template,
+  controller: ColumnTabCtrl,
+  bindings: {
+    column: '<'
+  }
+};

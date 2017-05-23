@@ -1,0 +1,27 @@
+.stats {
+  &-panel {
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
+
+  &-label {
+    position: absolute;
+    top: -17px;
+    left: 10px;
+    font-size: 9px;
+    padding: 4px 4px;
+    line-height: .9;
+
+    &.col-name {
+      left: 35px;
+    }
+  }
+}
+
+.truncate {
+  display: inline-block;
+  height: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

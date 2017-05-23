@@ -1,5 +1,4 @@
 const conf = require('./gulp.conf');
-const listFiles = require('./karma-files.conf');
 
 module.exports = function (config) {
   const configuration = {
@@ -14,24 +13,32 @@ module.exports = function (config) {
       'PhantomJS'
     ],
     frameworks: [
-      'phantomjs-shim',
-      'jasmine',
-      'angular-filesort'
+      'jasmine'
     ],
-    files: listFiles(),
+    files: [
+      'node_modules/es6-shim/es6-shim.js',
+      conf.path.src('index.spec.js'),
+      conf.path.src('**/*.html')
+    ],
     preprocessors: {
+      [conf.path.src('index.spec.js')]: [
+        'webpack'
+      ],
       [conf.path.src('**/*.html')]: [
         'ng-html2js'
       ]
     },
     ngHtml2JsPreprocessor: {
-      stripPrefix: `${conf.paths.src}/`,
-      moduleName: 'fd-view'
+      stripPrefix: `${conf.paths.src}/`
     },
-    angularFilesort: {
-      whitelist: [
-        conf.path.tmp('**/!(*.html|*.spec|*.mock).js')
-      ]
+    reporters: ['progress', 'coverage'],
+    coverageReporter: {
+      type: 'html',
+      dir: 'coverage/'
+    },
+    webpack: require('./webpack-test.conf'),
+    webpackMiddleware: {
+      noInfo: true
     },
     plugins: [
       require('karma-jasmine'),
@@ -40,7 +47,7 @@ module.exports = function (config) {
       require('karma-phantomjs-launcher'),
       require('karma-phantomjs-shim'),
       require('karma-ng-html2js-preprocessor'),
-      require('karma-angular-filesort')
+      require('karma-webpack')
     ]
   };
 

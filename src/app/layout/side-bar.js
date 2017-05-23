@@ -1,3 +1,5 @@
+import template from './side-bar.html';
+
 class SideBar {
   /** @ngInject */
   constructor(User) {
@@ -5,9 +7,7 @@ class SideBar {
   }
 }
 
-angular
-  .module('fd-view')
-  .component('sideBar', {
-    templateUrl: 'app/layout/side-bar.html',
-    controller: SideBar
-  });
+export const sideBar = {
+  template,
+  controller: SideBar
+};

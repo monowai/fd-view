@@ -1,12 +1,7 @@
-class GeodataTab {
-}
-
-angular
-  .module('fd-view.modeler')
-  .component('geodataTab', {
-    templateUrl: 'app/model/editor/edit-coldef-modal/geodata-tab/geodata-tab.html',
-    controller: GeodataTab,
-    bindings: {
-      tag: '<'
-    }
-  });
+export const geodataTab = {
+  template: require('./geodata-tab.html'),
+  controller: class GeodataTabCtrl {},
+  bindings: {
+    tag: '<'
+  }
+};

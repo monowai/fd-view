@@ -1,9 +1,10 @@
-angular
-  .module('fd-view.modeler')
-  .directive('textcomplete', textcomplete);
+// the ng-textcomplete plugin required by this directive is not supported and has got no package json
+// therefore requires fixing
+// used ng-textcomplete directives in templates to replace when fixed
 
+import angular from 'angular';
 /** @ngInject */
-function textcomplete(Textcomplete) {
+export default function textcomplete(Textcomplete) {
   return {
     restrict: 'EA',
     scope: {

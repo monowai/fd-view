@@ -1,3 +1,12 @@
+import angular from 'angular';
+import {
+  scaleOrdinal,
+  schemeCategory20,
+  select as d3select
+} from 'd3';
+import cloud from 'd3-cloud';
+import _ from 'lodash';
+
 class TagCloud {
   constructor() {
     this.restrict = 'E';
@@ -9,8 +18,8 @@ class TagCloud {
 
   draw(words) {
     angular.element('#tagCloudPrinted').empty();
-    const fill = d3.scaleOrdinal(d3.schemeCategory20);
-    d3.select('#tagCloudPrinted').append('svg')
+    const fill = scaleOrdinal(schemeCategory20);
+    d3select('#tagCloudPrinted').append('svg')
       .attr('width', 900)
       .attr('height', 600)
       .append('g')
@@ -33,7 +42,7 @@ class TagCloud {
           return {occur: val, term: key};
         });
 
-        d3.layout.cloud().size([600, 600])
+        cloud().size([600, 600])
           .words(terms.map(d => ({text: d.term, size: d.occur})))
           .padding(2)
           .rotate(() => 0) // return (~~(Math.random() * 6) - 3) * 30;
@@ -50,6 +59,4 @@ class TagCloud {
   }
 }
 
-angular
-  .module('fd-view.diagrams')
-  .directive('tagCloud', TagCloud.factory);
+export default TagCloud.factory;

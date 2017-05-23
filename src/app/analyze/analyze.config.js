@@ -10,6 +10,4 @@ function AnalyzeConfig($stateProvider, USER_ROLES) {
     });
 }
 
-angular
-  .module('fd-view')
-  .config(AnalyzeConfig);
+export default AnalyzeConfig;

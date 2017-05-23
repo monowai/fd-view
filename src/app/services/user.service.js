@@ -1,6 +1,3 @@
-class User {
+export default class User {
 }
 
-angular
-  .module('fd-view')
-  .service('User', User);

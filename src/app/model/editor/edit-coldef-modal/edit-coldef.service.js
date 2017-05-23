@@ -1,4 +1,8 @@
-class EditColdefModal {
+import _ from 'lodash';
+import template from './edit-coldef.html';
+import EditColdefCtrl from './edit-coldef.controller';
+
+export default class EditColdefModal {
   /** @ngInject */
   constructor(ContentModel, DataSample, modalService) {
     this._cm = ContentModel;
@@ -22,8 +26,9 @@ class EditColdefModal {
     return this._modal.show({
       size: 'lg',
       backdrop: 'static',
-      templateUrl: 'app/model/editor/edit-coldef-modal/edit-coldef.html',
-      controller: 'EditColdefCtrl as $ctrl',
+      controller: EditColdefCtrl,
+      controllerAs: '$ctrl',
+      template,
       resolve: {
         coldef: () => col
       }
@@ -64,7 +69,3 @@ class EditColdefModal {
     });
   }
 }
-
-angular
-  .module('fd-view')
-  .service('EditColdefModal', EditColdefModal);

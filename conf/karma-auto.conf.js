@@ -1,25 +1,4 @@
-/*
- *
- *  Copyright (c) 2012-2016 "FlockData LLC"
- *
- *  This file is part of FlockData.
- *
- *  FlockData is free software: you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation, either version 3 of the License, or
- *  (at your option) any later version.
- *
- *  FlockData is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with FlockData.  If not, see <http://www.gnu.org/licenses/>.
- */
-
 const conf = require('./gulp.conf');
-const listFiles = require('./karma-files.conf');
 
 module.exports = function (config) {
   const configuration = {
@@ -34,24 +13,32 @@ module.exports = function (config) {
       'PhantomJS'
     ],
     frameworks: [
-      'phantomjs-shim',
-      'jasmine',
-      'angular-filesort'
+      'jasmine'
     ],
-    files: listFiles(),
+    files: [
+      'node_modules/es6-shim/es6-shim.js',
+      conf.path.src('index.spec.js'),
+      conf.path.src('**/*.html')
+    ],
     preprocessors: {
+      [conf.path.src('index.spec.js')]: [
+        'webpack'
+      ],
       [conf.path.src('**/*.html')]: [
         'ng-html2js'
       ]
     },
     ngHtml2JsPreprocessor: {
-      stripPrefix: `${conf.paths.src}/`,
-      moduleName: 'fd-view'
+      stripPrefix: `${conf.paths.src}/`
     },
-    angularFilesort: {
-      whitelist: [
-        conf.path.tmp('**/!(*.html|*.spec|*.mock).js')
-      ]
+    reporters: ['progress', 'coverage'],
+    coverageReporter: {
+      type: 'html',
+      dir: 'coverage/'
+    },
+    webpack: require('./webpack-test.conf'),
+    webpackMiddleware: {
+      noInfo: true
     },
     plugins: [
       require('karma-jasmine'),
@@ -60,7 +47,7 @@ module.exports = function (config) {
       require('karma-phantomjs-launcher'),
       require('karma-phantomjs-shim'),
       require('karma-ng-html2js-preprocessor'),
-      require('karma-angular-filesort')
+      require('karma-webpack')
     ]
   };
 

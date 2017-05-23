@@ -1,3 +1,13 @@
+import {
+  select,
+  scaleOrdinal,
+  schemeCategory20,
+  pie as d3pie,
+  entries,
+  interpolate,
+  arc as d3arc
+} from 'd3';
+
 class StatsChart {
   constructor($filter) {
     this._filter = $filter;
@@ -13,12 +23,12 @@ class StatsChart {
     const height = 300;
     const getData = dataSet => {
       const data = {};
-      _.map(dataSet, e => {
+      dataSet.forEach(e => {
         data[e.key] = e.doc_count;
       });
       return data;
     };
-    const statChart = this._chart(d3.select(element[0]), width, height, getData(scope.data)).render();
+    const statChart = this._chart(select(element[0]), width, height, getData(scope.data)).render();
 
     scope.$watch('data', (newVal, oldVal, scope) => {
       if (scope.data) {
@@ -33,10 +43,10 @@ class StatsChart {
 
   _chart(element, width, height, data) {
     let radius = Math.min(width, height) / 2;
-    const color = d3.scaleOrdinal(d3.schemeCategory20);
-    const total = () => _.reduce(data, (a, b) => a + b);
+    const color = scaleOrdinal(schemeCategory20);
+    const total = () => Object.values(data).reduce((a, b) => a + b);
 
-    const pie = d3.pie()
+    const pie = d3pie()
       .sort(null)
       .value(d => d.value);
 
@@ -48,12 +58,12 @@ class StatsChart {
 
     object.render = () => {
       if (svg) {
-        g.data(pie(d3.entries(data))).exit().remove();
+        g.data(pie(entries(data))).exit().remove();
 
         g.select('path')
           .transition().duration(200)
           .attrTween('d', a => {
-            const i = d3.interpolate(this._current, a);
+            const i = interpolate(this._current, a);
             this._current = i(0);
             return t => arc(i(t));
           });
@@ -63,7 +73,7 @@ class StatsChart {
 
         svg.select('text.text-tooltip').datum(data);
       } else {
-        arc = d3.arc()
+        arc = d3arc()
           .outerRadius(radius)
           .innerRadius(radius - radius / 2);
         svg = element.append('svg')
@@ -76,7 +86,7 @@ class StatsChart {
           .attr('transform', `translate(${width / 2},${height / 2})`);
 
         g = svg.selectAll('.arc')
-          .data(pie(d3.entries(data)))
+          .data(pie(entries(data)))
           .enter().append('g')
           .attr('class', 'arc');
 
@@ -160,6 +170,4 @@ class StatsChart {
 
 StatsChart.factory.$inject = ['$filter'];
 
-angular
-  .module('fd-view')
-  .directive('statsChart', StatsChart.factory);
+export default StatsChart.factory;

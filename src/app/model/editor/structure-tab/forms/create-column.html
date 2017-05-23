@@ -28,7 +28,7 @@
     </div>
   </div>
   <div class="modal-footer">
-    <button type="submit" class="btn btn-primary"  ng-click="ok(obj)" ng-disabled="column.$invalid || !unique(obj.name)"><i class="fa fa-bolt"></i>&nbsp; Ok</button>
+    <button type="submit" class="btn btn-primary"  ng-click="ok(obj)" ng-disabled="column.$invalid || !modalOptions.unique(obj.name)"><i class="fa fa-bolt"></i>&nbsp; Ok</button>
     <button type="button" class="btn btn-default pull-left" ng-click="close()">Cancel</button>
   </div>
 </form>

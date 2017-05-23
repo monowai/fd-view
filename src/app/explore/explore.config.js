@@ -10,6 +10,4 @@ function ExploreConfig($stateProvider, USER_ROLES) {
     });
 }
 
-angular
-  .module('fd-view')
-  .config(ExploreConfig);
+export default ExploreConfig;

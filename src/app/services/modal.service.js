@@ -1,4 +1,6 @@
-class ModalService {
+import template from './confirm-modal.html';
+
+export default class ModalService {
   /** @ngInject */
   constructor($uibModal) {
     this._uibModal = $uibModal;
@@ -6,7 +8,7 @@ class ModalService {
       backdrop: true,
       keyboard: true,
       modalFade: true,
-      templateUrl: 'app/components/confirm-modal.html'
+      template
     };
   }
 
@@ -28,6 +30,3 @@ class ModalService {
   }
 }
 
-angular
-  .module('fd-view')
-  .service('modalService', ModalService);

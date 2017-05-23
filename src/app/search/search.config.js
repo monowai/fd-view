@@ -30,16 +30,7 @@ function SearchConfig($stateProvider, USER_ROLES) {
       data: {
         authorizedRoles: [USER_ROLES.user]
       }
-    })
-    .state('view', {
-      url: '/view/:entityKey',
-      component: 'viewEntity',
-      data: {
-        authorizedRoles: [USER_ROLES.user]
-      }
     });
 }
 
-angular
-  .module('fd-view')
-  .config(SearchConfig);
+export default SearchConfig;

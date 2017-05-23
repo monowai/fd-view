@@ -1,3 +1,5 @@
+import template from './nav-bar.html';
+
 class NavBar {
   /** @ngInject */
   constructor(User, AuthenticationSharedService) {
@@ -10,9 +12,7 @@ class NavBar {
   }
 }
 
-angular
-  .module('fd-view')
-  .component('navBar', {
-    templateUrl: 'app/layout/nav-bar.html',
-    controller: NavBar
-  });
+export const navBar = {
+  template,
+  controller: NavBar
+};

@@ -1,4 +1,4 @@
-class MatrixRequest {
+export default class MatrixRequest {
   /** @ngInject */
   constructor($http, $q, configuration) {
     this._http = $http;
@@ -74,7 +74,3 @@ class MatrixRequest {
     return this._lastMatrixResult;
   }
 }
-
-angular
-  .module('fd-view')
-  .service('MatrixRequest', MatrixRequest);

@@ -1,7 +1,3 @@
-angular
-  .module('fd-view')
-  .directive('ngHeight', ngHeight);
-
 /** @ngInject */
 function ngHeight($window) {
   return {
@@ -13,3 +9,5 @@ function ngHeight($window) {
     }
   };
 }
+
+export default ngHeight;

@@ -1,7 +1,3 @@
-angular
-  .module('fd-view')
-  .run(appRun);
-
 /** @ngInject */
 function appRun($transitions, $rootScope, $state, AuthenticationSharedService, User, Session, toastr, USER_ROLES) {
   $transitions.onStart({}, trans => {
@@ -17,6 +13,7 @@ function appRun($transitions, $rootScope, $state, AuthenticationSharedService, U
       $state.go('admin.user');
     } else if ($state.is('login')) {
       $state.go('welcome');
+      setTimeout(() => {$.AdminLTE.layout.fix();}, 500); // eslint-disable-line
     }
   });
 
@@ -70,3 +67,5 @@ function appRun($transitions, $rootScope, $state, AuthenticationSharedService, U
     $state.go('login');
   });
 }
+
+export default appRun;

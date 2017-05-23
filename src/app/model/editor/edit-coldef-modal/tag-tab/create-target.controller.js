@@ -1,4 +1,4 @@
-class CreateTargetCtrl {
+export default class CreateTargetCtrl {
   /** @ngInject */
   constructor($uibModalInstance, active, tags) {
     this.active = active.label || active.name || active;
@@ -24,7 +24,3 @@ class CreateTargetCtrl {
     }
   }
 }
-
-angular
-  .module('fd-view.modeler')
-  .controller('CreateTargetCtrl', CreateTargetCtrl);

@@ -1,4 +1,4 @@
-class AuthenticationSharedService {
+export default class AuthenticationSharedService {
   /** @ngInject */
   constructor($rootScope, $http, authService, Session, User, configuration) {
     this._rootScope = $rootScope;
@@ -47,7 +47,7 @@ class AuthenticationSharedService {
     }
 
     let isAuthorized = false;
-    _.forEach(authorizedRoles, authorizedRole => {
+    authorizedRoles.forEach(authorizedRole => {
       const authorized = (this.authenticated && this.account.userRoles.includes(authorizedRole)); // originally Session.login, this assigned to UserService
 
       if (authorized || authorizedRole === '*') {
@@ -78,6 +78,3 @@ class AuthenticationSharedService {
   }
 }
 
-angular
-  .module('fd-view')
-  .service('AuthenticationSharedService', AuthenticationSharedService);

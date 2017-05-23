@@ -1,3 +1,5 @@
+import template from './agg-form.html';
+
 class AggFormCtrl {
   /** @ngInject */
   constructor(MatrixRequest, QueryService) {
@@ -41,9 +43,7 @@ class AggFormCtrl {
   }
 }
 
-angular
-  .module('fd-view')
-  .component('fdAggForm', {
-    templateUrl: 'app/analyze/agg-form.html',
-    controller: AggFormCtrl
-  });
+export const fdAggForm = {
+  template,
+  controller: AggFormCtrl
+};

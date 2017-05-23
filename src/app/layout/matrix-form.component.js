@@ -1,3 +1,5 @@
+import template from './matrix-form.html';
+
 class MatrixFormCtrl {
   /** @ngInject */
   constructor(MatrixRequest, QueryService) {
@@ -59,10 +61,8 @@ class MatrixFormCtrl {
   }
 }
 
-angular
-  .module('fd-view')
-  .component('fdMatrixForm', {
-    templateUrl: 'app/layout/matrix-form.html',
-    transclude: true,
-    controller: MatrixFormCtrl
-  });
+export const fdMatrixForm = {
+  template,
+  transclude: true,
+  controller: MatrixFormCtrl
+};

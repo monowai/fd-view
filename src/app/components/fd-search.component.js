@@ -25,11 +25,9 @@ class FdSearchCtrl {
   }
 }
 
-angular
-  .module('fd-view')
-  .component('fdSearch', {
-    transclude: true,
-    template: `
+export const fdSearch = {
+  transclude: true,
+  template: `
         <form id="search-form" class="panel" ng-submit="$ctrl.search()">
           <div class="input-group">
             <input type="search" class="form-control" placeholder="Text to search for ..." ng-model="$ctrl.req.searchText"
@@ -42,8 +40,8 @@ angular
           </div>
           <div class="row" ng-transclude></div>
         </form>`,
-    controller: FdSearchCtrl,
-    bindings: {
-      search: '&'
-    }
-  });
+  controller: FdSearchCtrl,
+  bindings: {
+    search: '&'
+  }
+};

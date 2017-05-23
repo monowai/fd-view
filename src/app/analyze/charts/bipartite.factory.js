@@ -1,7 +1,14 @@
 /* eslint-disable */
-angular.module('fd-view.diagrams').factory('BiPartiteService', biPartite);
+import {
+  scaleOrdinal, schemeCategory20, range, interpolate,
+  set as d3set,
+  sum as d3sum,
+  max as d3max,
+  select as d3select,
+  event as d3event
+} from 'd3';
 
-function biPartite() {
+export default function biPartite() {
   'use strict';
   const bP = {};
   const b = 30;
@@ -14,14 +21,14 @@ function biPartite() {
   const c1 = [-130, 40];
   const c2 = [-50 + offset, 120 + offset];
   const c3 = [-10 + offset, 160 + offset]; // Column positions of labels.
-  const colors = d3.scaleOrdinal(d3.schemeCategory20).domain(d3.range(20));
+  const colors = scaleOrdinal(schemeCategory20).domain(range(20));
 
   bP.partData = data => {
     const sData = {};
 
     sData.keys = [
-      d3.set(data.map(d => d.source)).values().sort((a, b) => (a < b ? -1 : a > b ? 1 : 0)),
-      d3.set(data.map(d => d.target)).values().sort((a, b) => (a < b ? -1 : a > b ? 1 : 0))
+      d3set(data.map(d => d.source)).values().sort((a, b) => (a < b ? -1 : a > b ? 1 : 0)),
+      d3set(data.map(d => d.target)).values().sort((a, b) => (a < b ? -1 : a > b ? 1 : 0))
     ];
 
     sData.data = [
@@ -41,7 +48,7 @@ function biPartite() {
     const vis = {};
 
     function calculatePosition(a, s, e, b, m) {
-      const total = d3.sum(a);
+      const total = d3sum(a);
       let neededHeight = 0;
       let leftoverHeight = e - s - 2 * b * a.length;
       const ret = a.map(d => {
@@ -70,8 +77,8 @@ function biPartite() {
     }
 
     vis.mainBars = [
-      calculatePosition(data.data[0].map(d => d3.sum(d)), 0, height, buffMargin, minHeight),
-      calculatePosition(data.data[1].map(d => d3.sum(d)), 0, height, buffMargin, minHeight)
+      calculatePosition(data.data[0].map(d => d3sum(d)), 0, height, buffMargin, minHeight),
+      calculatePosition(data.data[1].map(d => d3sum(d)), 0, height, buffMargin, minHeight)
     ];
 
     vis.subBars = [[], []];
@@ -106,18 +113,18 @@ function biPartite() {
   }
 
   function arcTween(a) {
-    const i = d3.interpolate(this._current, a);
+    const i = interpolate(this._current, a);
     this._current = i(0);
     return t => edgePolygon(i(t));
   }
 
   function drawPart(data, id, p) {
-    d3.select(`#${id}`).append('g').attr('class', `part${p}`)
+    d3select(`#${id}`).append('g').attr('class', `part${p}`)
       .attr('transform', `translate(${p * (bb + b + offset)},0)`);
-    d3.select(`#${id}`).select(`.part${p}`).append('g').attr('class', 'subbars');
-    d3.select(`#${id}`).select(`.part${p}`).append('g').attr('class', 'mainbars');
+    d3select(`#${id}`).select(`.part${p}`).append('g').attr('class', 'subbars');
+    d3select(`#${id}`).select(`.part${p}`).append('g').attr('class', 'mainbars');
 
-    const mainbar = d3.select(`#${id}`).select(`.part${p}`).select('.mainbars')
+    const mainbar = d3select(`#${id}`).select(`.part${p}`).select('.mainbars')
       .selectAll('.mainbar').data(data.mainBars[p])
       .enter().append('g').attr('class', 'mainbar');
 
@@ -152,7 +159,7 @@ function biPartite() {
       .text((d, i) => `(${Math.round(100 * d.percent)}%)`)
       .attr('text-anchor', 'end').style('fill', 'grey');
 
-    d3.select(`#${id}`).select(`.part${p}`).select('.subbars')
+    d3select(`#${id}`).select(`.part${p}`).select('.subbars')
       .selectAll('.subbar')
       .data(data.subBars[p]).enter()
       .append('rect').attr('class', 'subbar')
@@ -164,8 +171,8 @@ function biPartite() {
   }
 
   function drawEdges(data, id) {
-    d3.select(`#${id}`).append('g').attr('class', 'edges').attr('transform', `translate(${b + offset},0)`);
-    d3.select(`#${id}`).select('.edges').selectAll('.edge')
+    d3select(`#${id}`).append('g').attr('class', 'edges').attr('transform', `translate(${b + offset},0)`);
+    d3select(`#${id}`).select('.edges').selectAll('.edge')
       .data(data.edges).enter()
       .append('polygon').attr('class', 'edge')
       .attr('points', edgePolygon)
@@ -177,7 +184,7 @@ function biPartite() {
   }
 
   function drawHeader(header, id) {
-    d3.select(`#${id}`).append('g').attr('class', 'header')
+    d3select(`#${id}`).append('g').attr('class', 'header')
       .append('text').text(header[2])
       .style('font-size', '20')
       .attr('x', 258)
@@ -186,7 +193,7 @@ function biPartite() {
       .style('font-weight', 'bold');
 
     [0, 1].forEach(d => {
-      const h = d3.select(`#${id}`).select(`.part${d}`).append('g').attr('class', 'header');
+      const h = d3select(`#${id}`).select(`.part${d}`).append('g').attr('class', 'header');
 
       h.append('text').text(header[d])
         .attr('x', (c1[d] - 5))
@@ -209,7 +216,7 @@ function biPartite() {
   }
 
   function transitionPart(data, id, p) {
-    const mainbar = d3.select(`#${id}`).select(`.part${p}`).select('.mainbars')
+    const mainbar = d3select(`#${id}`).select(`.part${p}`).select('.mainbars')
       .selectAll('.mainbar').data(data.mainBars[p]);
 
     mainbar.select('.mainrect').transition().duration(500)
@@ -227,29 +234,29 @@ function biPartite() {
       .attr('y', d => d.middle + 5)
       .text((d, i) => `(${Math.round(100 * d.percent)}%)`);
 
-    const transitSubBars = d3.select(`#${id}`).select(`.part${p}`).select('.subbars')
+    const transitSubBars = d3select(`#${id}`).select(`.part${p}`).select('.subbars')
       .selectAll('.subbar').data(data.subBars[p])
       .transition().duration(500)
       .each(subBarTrans);
 
     function subBarTrans() {
-      d3.select(this).transition()
+      d3select(this).transition()
       .attr('y', d => d.y)
       .attr('height', d => d.h);
     }
   }
 
   function transitionEdges(data, id) {
-    d3.select(`#${id}`).append('g').attr('class', 'edges')
+    d3select(`#${id}`).append('g').attr('class', 'edges')
       .attr('transform', `translate(${b},0)`);
 
-    const transitEdges = d3.select(`#${id}`).select('.edges')
+    const transitEdges = d3select(`#${id}`).select('.edges')
       .selectAll('.edge').data(data.edges)
       .transition().duration(500)
       .each(edgeTween);
 
     function edgeTween(d, i) {
-      d3.select(this).transition().attrTween('points', arcTween)
+      d3select(this).transition().attrTween('points', arcTween)
         .style('opacity', d => d.h1 === 0 || d.h2 === 0 ? 0 : 0.5);
       /** if(i> 0 && i % 1000 == 0 || i == data.edges.length-1){
                 console.log('Processing '+ (i+1) +' out of '+data.edges.length+ '...' );
@@ -266,7 +273,7 @@ function biPartite() {
   let skip;
   bP.draw = (data, svg) => {
     skip = false;
-    height = d3.max([data[0].dataLength * 10 + 40, 600]);
+    height = d3max([data[0].dataLength * 10 + 40, 600]);
     data.forEach((biP, s) => {
       svg.append('g')
         .attr('id', biP.id)
@@ -281,7 +288,7 @@ function biPartite() {
         skip = true;
       }
       [0, 1].forEach(p => {
-        d3.select(`#${biP.id}`)
+        d3select(`#${biP.id}`)
           .select(`.part${p}`)
           .select('.mainbars')
           .selectAll('.mainbar')
@@ -302,17 +309,17 @@ function biPartite() {
       newdata.data[1 - m] = k.data.data[1 - m]
         .map(v => v.map((d, i) => s === i ? d : 0));
       if (newdata.keys[m][s].length > txtLength) {
-        d3.select('#tooltip')
+        d3select('#tooltip')
           .style('visibility', 'visible')
           .html(newdata.keys[m][s])
           .attr('class', 'longlabel')
-          .style('top', () => `${d3.event.pageY - 120}px`)
+          .style('top', () => `${d3event.pageY - 120}px`)
           .style('left', () => m === 0 ? '50px' : '550px');
       }
       if (!skip) {
         transition(visualize(newdata), k.id);
 
-        const selectedBar = d3.select(`#${k.id}`).select(`.part${m}`).select('.mainbars')
+        const selectedBar = d3select(`#${k.id}`).select(`.part${m}`).select('.mainbars')
           .selectAll('.mainbar').filter((d, i) => i === s);
 
         selectedBar.select('.mainrect').style('stroke-opacity', 1);
@@ -325,11 +332,11 @@ function biPartite() {
 
   bP.deSelectSegment = (data, m, s) => {
     data.forEach(k => {
-      d3.select('#tooltip').style('visibility', 'hidden');
+      d3select('#tooltip').style('visibility', 'hidden');
       if (!skip) {
         transition(visualize(k.data), k.id);
 
-        const selectedBar = d3.select(`#${k.id}`).select(`.part${m}`).select('.mainbars')
+        const selectedBar = d3select(`#${k.id}`).select(`.part${m}`).select('.mainbars')
           .selectAll('.mainbar').filter((d, i) => i === s);
 
         selectedBar.select('.mainrect').style('stroke-opacity', 0);

@@ -1,3 +1,6 @@
+import template from './model.html';
+import './model.scss';
+
 class ModelCtrl {
   /** @ngInject */
   constructor($filter, $rootScope, modalService, QueryService, ContentModel, $state, $window, $document, User) {
@@ -111,9 +114,7 @@ class ModelCtrl {
   }
 }
 
-angular
-  .module('fd-view.modeler')
-  .component('modelView', {
-    templateUrl: 'app/model/model.html',
-    controller: ModelCtrl
-  });
+export const modelView = {
+  template,
+  controller: ModelCtrl
+};

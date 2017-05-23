@@ -10,6 +10,4 @@ function ModelEditorConfig($stateProvider, USER_ROLES) {
     });
 }
 
-angular
-  .module('fd-view.modeler')
-  .config(ModelEditorConfig);
+export default ModelEditorConfig;

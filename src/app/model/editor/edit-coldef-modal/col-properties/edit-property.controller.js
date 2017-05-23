@@ -1,4 +1,4 @@
-class EditPropertyModal {
+export default class EditPropertyModalCtrl {
   /** @ngInject */
   constructor($uibModalInstance, ContentModel, property, col) {
     this.dataTypes = ['string', 'number', 'date'];
@@ -29,7 +29,3 @@ class EditPropertyModal {
     this._uibmi.close(p);
   }
 }
-
-angular
-  .module('fd-view.modeler')
-  .controller('EditPropertyModalCtrl', EditPropertyModal);

@@ -2,16 +2,16 @@ machine:
   services:
     - docker
   node:
-      version: 6.9.0
+      version: 6.10.0
   environment:
       NODE_ENV: test
+      PATH: "${PATH}:${HOME}/${CIRCLE_PROJECT_REPONAME}/node_modules/.bin"
 
 dependencies:
+  override:
+    - yarn
   pre:
-    - npm install -g bower
     - npm install -g gulp-cli
-  post:
-    - bower install
 
 test:
   # override:

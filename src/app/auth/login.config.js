@@ -17,6 +17,4 @@ function LoginConfig($stateProvider, USER_ROLES) {
     });
 }
 
-angular
-  .module('fd-view')
-  .config(LoginConfig);
+export default LoginConfig;

@@ -1,0 +1,41 @@
+textarea.code {
+  font-family: DejaVu Sans Mono,Bitstream Vera Sans Mono,Courier New, monospace;
+}
+
+.fader {
+  transition: .3s linear all;
+  -webkit-transition: .3s linear all;
+
+  &.ng-enter {
+    opacity: 0;
+
+    .ng-enter-active {
+      opacity: 1;
+    }
+  }
+
+  &.ng-leave {
+    opacity: 1;
+
+    &.ng-leave-active {
+      opacity: 0;
+    }
+  }
+
+  &.ng-hide {
+    opacity: 0;
+
+    &-remove,
+    &-add {
+      display: block !important;
+    }
+
+    &-remove {
+      transition: all linear 500ms;
+    }
+  }
+
+  /*.fader.ng-hide-add {*/
+  /*transition: all linear 500ms;*/
+  /*}*/
+}

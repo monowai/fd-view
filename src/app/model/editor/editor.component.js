@@ -17,6 +17,8 @@
  *  You should have received a copy of the GNU General Public License
  *  along with FlockData.  If not, see <http://www.gnu.org/licenses/>.
  */
+import angular from 'angular';
+import template from './editor.html';
 
 class EditModelCtrl {
   /** @ngInject */
@@ -172,10 +174,8 @@ class EditModelCtrl {
   }
 }
 
-angular
-  .module('fd-view.modeler')
-  .component('modelEditor', {
-    templateUrl: 'app/model/editor/editor.html',
-    controller: EditModelCtrl,
-    controllerAs: 'editor'
-  });
+export const modelEditor = {
+  template,
+  controller: EditModelCtrl,
+  controllerAs: 'editor'
+};

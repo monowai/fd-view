@@ -1,3 +1,9 @@
+import angular from 'angular';
+import {range, descending, ascending} from 'd3';
+
+import {constructChordData} from './charts/chord.helpers';
+import template from './analyze.html';
+
 /* eslint-disable */ // disabled for ElasticSearch query, re-enable on adding features
 class AnalyzeCtrl {
   /** @ngInject */
@@ -185,7 +191,7 @@ class AnalyzeCtrl {
       node.count = 0;
       node.name = name;
       self[i] = node;
-      matrix[i] = d3.range(n).map(j => ({x: j, y: i, z: 0}));
+      matrix[i] = range(n).map(j => ({x: j, y: i, z: 0}));
     });
     toNodes.forEach((name, i, self) => {
       const node = {};
@@ -205,9 +211,9 @@ class AnalyzeCtrl {
     });
     // Pre-compute the orders.
     const orders = {
-      fromName: d3.range(m).sort((a, b) => d3.descending(fromNodes[a].name, fromNodes[b].name)),
-      toName: d3.range(n).sort((a, b) => d3.ascending(toNodes[a].name, toNodes[b].name)),
-      count: d3.range(n).sort((a, b) => nodes[b].count - nodes[a].count)
+      fromName: range(m).sort((a, b) => descending(fromNodes[a].name, fromNodes[b].name)),
+      toName: range(n).sort((a, b) => ascending(toNodes[a].name, toNodes[b].name)),
+      count: range(n).sort((a, b) => nodes[b].count - nodes[a].count)
     };
 
     return {
@@ -237,9 +243,7 @@ class AnalyzeCtrl {
   }
 }
 
-angular
-  .module('fd-view')
-  .component('analyzeView', {
-    templateUrl: 'app/analyze/analyze.html',
-    controller: AnalyzeCtrl
-  });
+export const analyzeView = {
+  template,
+  controller: AnalyzeCtrl
+};

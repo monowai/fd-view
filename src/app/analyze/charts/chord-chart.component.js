@@ -1,4 +1,20 @@
-class ChordDiagram {
+import {
+  scaleOrdinal,
+  schemeCategory20,
+  descending, ascending,
+  rgb,
+  interpolate,
+  chord as d3chord,
+  arc as d3arc,
+  ribbon as d3ribbon,
+  select as d3select,
+  event as d3event,
+  format
+} from 'd3';
+
+import {chordRdr} from './chord.helpers';
+
+class ChordDiagramCtrl {
   /** ngInject */
   constructor($window, $element) {
     this._window = $window;
@@ -14,25 +30,25 @@ class ChordDiagram {
 
     let lastLayout = null;
 
-    const fill = d3.scaleOrdinal(d3.schemeCategory20);
+    const fill = scaleOrdinal(schemeCategory20);
 
-    const chord = d3.chord()
+    const chord = d3chord()
       .padAngle(0.03)
-      .sortSubgroups(d3.descending)
-      .sortChords(d3.ascending);
+      .sortSubgroups(descending)
+      .sortChords(ascending);
 
-    const arc = d3.arc()
+    const arc = d3arc()
       .innerRadius(r0)
       .outerRadius(r0 + 20);
 
-    d3.select(el).select('svg').remove();
+    d3select(el).select('svg').remove();
 
-    const svgP = d3.select(el).append('svg:svg')
+    const svgP = d3select(el).append('svg:svg')
       .attr('width', w)
       .attr('height', h)
       .attr('preserveAspectRatio', 'xMinYMin')
       .attr('viewBox', `0 0 ${w} ${h}`);
-    const tooltip = d3.select(el).append('div')
+    const tooltip = d3select(el).append('div')
       .attr('id', 'tooltip');
     const svg = svgP.append('svg:g')
       .attr('id', 'circle')
@@ -49,7 +65,7 @@ class ChordDiagram {
       .attr('class', 'group')
       .on('mouseover', mouseover)
       .on('mouseout', d => {
-        d3.select('#tooltip').style('visibility', 'hidden');
+        d3select('#tooltip').style('visibility', 'hidden');
         chordPaths.style('opacity', 0.9);
       });
 
@@ -94,18 +110,18 @@ class ChordDiagram {
       .data(chords)
       .enter().append('svg:path')
       .attr('class', 'chord')
-      .style('stroke', d => d3.rgb(fill(d.target.index)).darker())
+      .style('stroke', d => rgb(fill(d.target.index)).darker())
       .style('fill', d => fill(d.target.index))
       // .attr('d', d3.svg.chord().radius(r0))
       .on('mouseover', d => {
-        d3.select('#tooltip')
+        d3select('#tooltip')
           .style('visibility', 'visible')
           .html(chordTip(rdr(d)))
-          .style('top', () => `${d3.event.pageY - 100}px`)
+          .style('top', () => `${d3event.pageY - 100}px`)
           .style('left', () => '100px');
       })
       .on('mouseout', () => {
-        d3.select('#tooltip').style('visibility', 'hidden');
+        d3select('#tooltip').style('visibility', 'hidden');
       });
 
     // handle exiting paths:
@@ -134,10 +150,10 @@ class ChordDiagram {
         let tween;
         const old = oldGroups[d.index];
         if (old) {
-          tween = d3.interpolate(old, d);
+          tween = interpolate(old, d);
         } else {
           const emptyArc = {startAngle: d.startAngle, endAngle: d.startAngle};
-          tween = d3.interpolate(emptyArc, d);
+          tween = interpolate(emptyArc, d);
         }
 
         return t => arc(tween(t));
@@ -170,39 +186,39 @@ class ChordDiagram {
             };
           }
 
-          tween = d3.interpolate(old, d);
+          tween = interpolate(old, d);
         } else {
           const emptyChord = {
             source: {startAngle: d.source.startAngle, endAngle: d.source.startAngle},
             target: {startAngle: d.target.startAngle, endAngle: d.target.startAngle}
           };
-          tween = d3.interpolate(emptyChord, d);
+          tween = interpolate(emptyChord, d);
         }
 
-        return t => d3.ribbon().radius(r0)(tween(t));
+        return t => d3ribbon().radius(r0)(tween(t));
       };
     }
 
     lastLayout = chord;
 
     function chordTip(d) {
-      const p = d3.format('.2%');
-      // const q = d3.format(',.3r');
+      const p = format('.2%');
+      // const q = format(',.3r');
       return `${p(d.stotal === 0 ? 0 : d.svalue / d.stotal)} of ${d.sname}<br>-to-<br>${p(d.ttotal === 0 ? 0 : d.tvalue / d.ttotal)} of ${d.tname}`;
       // + ' <br> values - ' +  q(d.stotal) + ' / ' + q(d.tvalue);
     }
 
     function groupTip(d) {
-      const p = d3.format('.1%');
-      const q = d3.format(',.3r');
+      const p = format('.1%');
+      const q = format(',.3r');
       return `${d.gname}<br>${p(d.gvalue / d.mtotal)}: ${q(d.gvalue)} of ${q(d.mtotal)}`;
     }
 
     function mouseover(d, i) {
-      d3.select('#tooltip')
+      d3select('#tooltip')
         .style('visibility', 'visible')
         .html(groupTip(rdr(d)))
-        .style('top', () => `${d3.event.pageY - 80}px`)
+        .style('top', () => `${d3event.pageY - 80}px`)
         .style('left', () => '130px');
 
       dimChords(i);
@@ -226,7 +242,7 @@ class ChordDiagram {
           return `rotate(${d.angle * 180 / Math.PI - 90})` +
             `translate(${r0 + 26}) ${d.angle > Math.PI ? 'rotate(180)' : ''}`;
         });
-        chordPaths.attr('d', d3.ribbon().radius(r0));
+        chordPaths.attr('d', d3ribbon().radius(r0));
       }
     }
 
@@ -254,11 +270,9 @@ class ChordDiagram {
   }
 }
 
-angular
-  .module('fd-view.diagrams')
-  .component('chordDiagram', {
-    controller: ChordDiagram,
-    bindings: {
-      data: '<'
-    }
-  });
+export const chordDiagram = {
+  controller: ChordDiagramCtrl,
+  bindings: {
+    data: '<'
+  }
+};

@@ -17,7 +17,7 @@
       <label for="nameCol" class="control-label col-xs-2">Name</label>
       <div class="col-xs-10">
         <!--<textarea id="nameCol" name="nameCol" rows="1" class="form-control" ng-model="$ctrl.tag.name" placeholder="Optional columnName, #data['expression'], or 'literal value'"></textarea>-->
-        <textcomplete id="nameCol" name="nameCol" message="$ctrl.tag.name" columns="$ctrl.columnNames" placeholder="Optional columnName, #data['expression'], or 'literal valueNames"></textcomplete>
+        <textarea ng-textcomplete id="nameCol" name="nameCol" message="$ctrl.tag.name" columns="$ctrl.columnNames" placeholder="Optional columnName, #data['expression'], or 'literal valueNames"></textarea>
       </div>
     </div>
     <div class="form-group">
@@ -53,7 +53,7 @@
       <label for="relationship" class="control-label col-xs-3">Relationship name</label>
       <div class="col-xs-9 col-sm-7">
         <!--<input id="relationship" name="relationship" type="text" class="form-control" ng-model="$ctrl.tag.relationship"/>-->
-        <textcomplete id="relationship" name="relationship" message="$ctrl.tag.relationship" columns="$ctrl.columnNames"></textcomplete>
+        <textarea ng-textcomplete id="relationship" name="relationship" message="$ctrl.tag.relationship" columns="$ctrl.columnNames"></textarea>
       </div>
       <div class="col-sm-2 checkbox">
         <label>

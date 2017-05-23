@@ -1,4 +1,7 @@
-class ConceptModal {
+import ConceptModalCtrl from './concept-modal.controller';
+import template from './concept-modal.html';
+
+export default class ConceptModal {
   /** @ngInject */
   constructor(modalService) {
     this._modalService = modalService;
@@ -7,8 +10,8 @@ class ConceptModal {
   display(fortress) {
     this._modalService.show({
       size: 'lg',
-      templateUrl: 'app/components/concept-modal.html',
-      controller: 'ConceptModalCtrl',
+      template,
+      controller: ConceptModalCtrl,
       controllerAs: 'ctrl',
       resolve: {
         fortress: () => fortress
@@ -16,7 +19,3 @@ class ConceptModal {
     });
   }
 }
-
-angular
-  .module('fd-view')
-  .service('ConceptModal', ConceptModal);

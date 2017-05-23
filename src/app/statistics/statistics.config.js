@@ -10,6 +10,4 @@ function StatsConfig($stateProvider, USER_ROLES) {
     });
 }
 
-angular
-  .module('fd-view')
-  .config(StatsConfig);
+export default StatsConfig;

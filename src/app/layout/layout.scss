@@ -1,0 +1,43 @@
+[ui-view].ng-enter, [ui-view].ng-leave {
+  position: absolute;
+  left: 0;
+  right: 0;
+  -webkit-transition:all .5s ease-in-out;
+  transition:all .5s ease-in-out;
+}
+[ui-view].ng-enter {
+  opacity: 0;
+}
+[ui-view].ng-enter-active {
+  opacity: 1;
+}
+[ui-view].ng-leave {
+  opacity: 1;
+}
+[ui-view].ng-leave-active {
+  opacity: 0;
+}
+
+.sidebar-mini.sidebar-collapse .main-header .logo > .logo-mini b {
+  color: #287DB5;
+}
+
+.logo-lg img {
+  max-width: 100%;
+}
+
+.skin-blue .main-header .logo {
+  background-color: #272c2f;
+}
+
+.skin-blue .main-header .logo:hover {
+  background-color: #26282b;
+}
+
+li.dropdown:hover>.dropdown-menu {
+  display: block;
+}
+
+select:invalid {
+  color: gray;
+}

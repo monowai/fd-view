@@ -18,10 +18,12 @@
  *  along with FlockData.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import _ from 'lodash';
+
 // *******************************************************************
 //  CHORD MAPPER
 // *******************************************************************
-class ChordMpr {
+export class ChordMpr {
   constructor(data) {
     this.data = data;
     this.mmap = {};
@@ -81,7 +83,7 @@ class ChordMpr {
 // *******************************************************************
 //  CHORD Reader
 // *******************************************************************
-function chordRdr(matrix, mmap) {
+export function chordRdr(matrix, mmap) {
   return d => {
     const m = {};
     if (d.source) {
@@ -113,7 +115,7 @@ function chordRdr(matrix, mmap) {
 // *******************************************************************
 //  CHORD Constructor
 // *******************************************************************
-function constructChordData(data) {
+export function constructChordData(data) {
   if (data) {
     const mpr = new ChordMpr(data);
 

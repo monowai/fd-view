@@ -1,4 +1,10 @@
-class TagTab {
+import angular from 'angular';
+import CreateTargetCtrl from './create-target.controller';
+
+import template from './tag-tab.html';
+import './tag-tab.scss';
+
+class TagTabCtrl {
   /** @ngInject */
   constructor(modalService, ContentModel) {
     this.columnNames = Object.keys(ContentModel.getCurrent().content);
@@ -11,8 +17,9 @@ class TagTab {
     const tag = scope.$modelValue || scope;
 
     this._modal.show({
-      templateUrl: 'app/model/editor/edit-coldef-modal/tag-tab/create-target.html',
-      controller: 'CreateTargetCtrl as $ctrl',
+      template: require('./create-target.html'),
+      controller: CreateTargetCtrl,
+      controllerAs: '$ctrl',
       resolve: {
         active: () => tag,
         tags: () => this._cm.getTags()
@@ -27,12 +34,10 @@ class TagTab {
   }
 }
 
-angular
-  .module('fd-view.modeler')
-  .component('tagTab', {
-    templateUrl: 'app/model/editor/edit-coldef-modal/tag-tab/tag-tab.html',
-    controller: TagTab,
-    bindings: {
-      tag: '<'
-    }
-  });
+export const tagTab = {
+  template,
+  controller: TagTabCtrl,
+  bindings: {
+    tag: '<'
+  }
+};

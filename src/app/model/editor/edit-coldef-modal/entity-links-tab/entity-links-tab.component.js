@@ -1,4 +1,7 @@
-class EntityLinksTab {
+import template from './entity-links-tab.html';
+import './entity-links.scss';
+
+class EntityLinksTabCtrl {
   addLink() {
     this.column.entityLinks = this.column.entityLinks || [];
     this.column.entityLinks.push({missingAction: 'IGNORE'});
@@ -13,12 +16,10 @@ class EntityLinksTab {
   }
 }
 
-angular
-  .module('fd-view.modeler')
-  .component('entityLinksTab', {
-    templateUrl: 'app/model/editor/edit-coldef-modal/entity-links-tab/entity-links-tab.html',
-    controller: EntityLinksTab,
-    bindings: {
-      column: '<'
-    }
-  });
+export const entityLinksTab = {
+  template,
+  controller: EntityLinksTabCtrl,
+  bindings: {
+    column: '<'
+  }
+};

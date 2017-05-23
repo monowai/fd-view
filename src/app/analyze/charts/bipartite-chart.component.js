@@ -1,4 +1,9 @@
-class BipartiteDiagram {
+import {
+  select as d3select,
+  max
+} from 'd3';
+
+class BipartiteDiagramCtrl {
   /** @ngInject */
   constructor($element, $timeout, BiPartiteService, modalService, toastr) {
     this._element = $element;
@@ -10,13 +15,13 @@ class BipartiteDiagram {
 
   drawBipartite(ele, data) {
     const width = 1400;
-    const height = d3.max([data[0].dataLength * 10 + 40, 600]);
+    const height = max([data[0].dataLength * 10 + 40, 600]);
     const margin = {b: 0, t: 40, l: 170, r: 50};
     const el = ele[0];
 
-    d3.select(el).select('svg').remove();
+    d3select(el).select('svg').remove();
 
-    const svg = d3.select(el).append('svg')
+    const svg = d3select(el).append('svg')
       .attr('width', width)
       .attr('height', (height + margin.b + margin.t))
       .append('g').attr('transform', `translate(${margin.l}, ${margin.t})`);
@@ -58,11 +63,9 @@ class BipartiteDiagram {
   }
 }
 
-angular
-  .module('fd-view.diagrams')
-  .component('bipartiteDiagram', {
-    controller: BipartiteDiagram,
-    bindings: {
-      data: '<'
-    }
-  });
+export const bipartiteDiagram = {
+  controller: BipartiteDiagramCtrl,
+  bindings: {
+    data: '<'
+  }
+};

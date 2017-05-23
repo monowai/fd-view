@@ -1,3 +1,5 @@
+import template from './admin.html';
+
 class AdminCtrl {
   /** @ngInject */
   constructor($http, configuration) {
@@ -10,9 +12,7 @@ class AdminCtrl {
   }
 }
 
-angular
-  .module('fd-view')
-  .component('adminView', {
-    templateUrl: 'app/admin/admin.html',
-    controller: AdminCtrl
-  });
+export const adminView = {
+  template,
+  controller: AdminCtrl
+};

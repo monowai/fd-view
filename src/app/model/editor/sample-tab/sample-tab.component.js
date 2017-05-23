@@ -17,8 +17,13 @@
  *  You should have received a copy of the GNU General Public License
  *  along with FlockData.  If not, see <http://www.gnu.org/licenses/>.
  */
+import angular from 'angular';
+import _ from 'lodash';
+import {dsvFormat} from 'd3';
 
-class SampleTab {
+import template from './sample-tab.html';
+
+class SampleTabCtrl {
   /** @ngInject */
   constructor($window, ContentModel, DataSample, EditColdefModal, toastr, $document) {
     this.hasHeader = true;
@@ -84,12 +89,13 @@ class SampleTab {
       });
   }
 
-  previouslyLoaded() {
-    return this.model && Object.keys(this.model.content).length &&
-      this._window.localStorage.hasOwnProperty('import-data') &&
-      angular.equals(this.lastProvider, this.model.tagModel ?
-      {provider: 'Tag', code: this.model.code} :
-      {provider: this.model.fortress.name, type: this.model.documentType.name});
+  previouslyLoaded() { // to fix
+    return false;
+    // this.model && Object.keys(this.model.content).length &&
+    //   this._window.localStorage.hasOwnProperty('import-data') &&
+    //   angular.equals(this.lastProvider, this.model.tagModel ?
+    //   {provider: 'Tag', code: this.model.code} :
+    //   {provider: this.model.fortress.name, type: this.model.documentType.name});
   }
 
   loadPrevious() {
@@ -121,7 +127,7 @@ class SampleTab {
       }
       const clean = lines.join('\n').trim();
 
-      const data = d3.dsvFormat(delim === '\\t' ? '\t' : delim).parse(clean, d => {
+      const data = dsvFormat(delim === '\\t' ? '\t' : delim).parse(clean, d => {
         return _.forIn(d, (v, k) => {
           if (/^\s*$/.test(v)) {
             d[k] = null;
@@ -160,12 +166,10 @@ class SampleTab {
   }
 }
 
-angular
-  .module('fd-view.modeler')
-  .component('sampleTab', {
-    bindings: {
-      model: '='
-    },
-    controller: SampleTab,
-    templateUrl: 'app/model/editor/sample-tab/sample-tab.html'
-  });
+export const sampleTab = {
+  bindings: {
+    model: '='
+  },
+  controller: SampleTabCtrl,
+  template
+};

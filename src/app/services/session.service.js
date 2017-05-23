@@ -1,4 +1,4 @@
-class Session {
+export default class Session {
   create(data) {
     this.login = data.login;
     this.name = data.name;
@@ -19,7 +19,3 @@ class Session {
     this.apiKey = null;
   }
 }
-
-angular
-  .module('fd-view')
-  .service('Session', Session);

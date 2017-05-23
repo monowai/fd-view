@@ -1,0 +1,24 @@
+
+#cy {
+  width: 100%;
+  height: 100%;
+  display: block;
+  border: 1px solid #ccc ;
+  background: #3E3E3E;
+
+  &.modeler {
+    background: #f0f0f0;
+  }
+}
+
+.concept-explorer #cy {
+  background: rgba(0,0,0,0.4);
+  position: relative;
+}
+
+.layout-select {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  z-index: 999;
+}

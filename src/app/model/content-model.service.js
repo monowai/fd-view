@@ -18,7 +18,7 @@
  *  along with FlockData.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-class ContentModelService {
+export default class ContentModelService {
   /** @ngInject */
   constructor($http, $q, configuration) {
     this._cp = {};            // actual content model
@@ -295,7 +295,3 @@ class ContentModelService {
     delete this._tags;
   }
 }
-
-angular
-  .module('fd-view')
-  .service('ContentModel', ContentModelService);

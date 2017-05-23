@@ -1,3 +1,5 @@
+import template from './fort-stat.html';
+
 class FortStatCtrl {
   /** @ngInject */
   constructor(QueryService, ConceptModal) {
@@ -43,13 +45,11 @@ class FortStatCtrl {
   }
 }
 
-angular
-  .module('fd-view')
-  .component('fortStat', {
-    templateUrl: 'app/statistics/fort-stat.html',
-    controller: FortStatCtrl,
-    bindings: {
-      fortress: '<',
-      search: '<'
-    }
-  });
+export const fortStat = {
+  template,
+  controller: FortStatCtrl,
+  bindings: {
+    fortress: '<',
+    search: '<'
+  }
+};

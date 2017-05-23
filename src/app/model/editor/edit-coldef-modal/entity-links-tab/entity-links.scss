@@ -1,0 +1,24 @@
+.links-header {
+  border-bottom: 2px solid #f4f4f4;
+  margin: 3px;
+}
+
+.links-row {
+  margin: 3px;
+
+  input {
+    border: 1px solid #fff;
+
+    &:hover {
+      border-color: #3c8dbc;
+    }
+    &:focus {
+      border-color: #3c8dbc;
+      box-shadow: none;
+      outline: 0;
+    }
+    &.ng-invalid-required {
+      border-color: #dd4b39;
+    }
+  }
+}

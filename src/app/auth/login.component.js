@@ -1,3 +1,5 @@
+import template from './login.html';
+
 class LoginCtrl {
   /** @ngInject */
   constructor($http, $interval, AuthenticationSharedService, configuration) {
@@ -42,9 +44,8 @@ class LoginCtrl {
   }
 }
 
-angular
-  .module('fd-view')
-  .component('loginView', {
-    templateUrl: 'app/auth/login.html',
-    controller: LoginCtrl
-  });
+export const loginView = {
+  template,
+  controller: LoginCtrl
+};
+

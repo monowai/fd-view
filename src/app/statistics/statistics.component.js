@@ -1,3 +1,5 @@
+import template from './statistics.html';
+
 class StatsCtrl {
   /** @ngInject */
   constructor(QueryService, MatrixRequest) {
@@ -17,9 +19,7 @@ class StatsCtrl {
   }
 }
 
-angular
-  .module('fd-view')
-  .component('statsView', {
-    templateUrl: 'app/statistics/statistics.html',
-    controller: StatsCtrl
-  });
+export const statsView = {
+  template,
+  controller: StatsCtrl
+};

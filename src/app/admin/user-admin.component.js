@@ -1,3 +1,5 @@
+import template from './edit-user.modal.html';
+
 class AdminUserCtrl {
   /** @ngInject */
   constructor(User, $http, $rootScope, modalService, configuration) {
@@ -18,31 +20,23 @@ class AdminUserCtrl {
   }
 
   editProfile(profile) {
-    this._modal.show({
-      templateUrl: 'app/admin/edit-user.modal.html'
-    }, {obj: profile, disable: true}).then(res => {
-      this._http.post(`${this._cfg.engineUrl()}/api/v1/profiles/`,
-        {
-          login: res.login,
-          name: res.name,
-          companyName: res.companyName,
-          email: res.email
-        })
-        .then(response => {
-          this._root.$broadcast('event:status-ok', response.statusText);
-          Object.assign(profile, response.data);
-        });
-    });
+    this._modal.show({template}, {obj: profile, disable: true})
+      .then(res => {
+        const {login, name, companyName, email} = res;
+        return this._http.post(`${this._cfg.engineUrl()}/api/v1/profiles/`, {login, name, companyName, email});
+      })
+      .then(res => {
+        this._root.$broadcast('event:status-ok', res.statusText);
+        Object.assign(profile, res.data);
+      });
   }
 }
 
-angular
-  .module('fd-view')
-  .component('adminUser', {
-    controller: AdminUserCtrl,
-    template: `
-        <fd-info-box info="$ctrl.userInfo">
-          <button class="btn btn-warning pull-right" ng-click="$ctrl.editProfile($ctrl.user)" ng-show="$ctrl.allowEdit($ctrl.user)">
-          Edit</button>
-        </fd-info-box>`
-  });
+export const adminUser = {
+  controller: AdminUserCtrl,
+  template: `
+    <fd-info-box info="$ctrl.userInfo">
+      <button class="btn btn-warning pull-right" ng-click="$ctrl.editProfile($ctrl.user)" ng-show="$ctrl.allowEdit($ctrl.user)">
+      Edit</button>
+    </fd-info-box>`
+};

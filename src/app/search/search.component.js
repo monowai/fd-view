@@ -17,6 +17,7 @@
  *  You should have received a copy of the GNU General Public License
  *  along with FlockData.  If not, see <http://www.gnu.org/licenses/>.
  */
+import template from './search.html';
 
 class MetaHeaderCtrl {
   /** @ngInject */
@@ -163,7 +164,7 @@ class MetaHeaderCtrl {
 
     modalService.show({
       size: 'lg',
-      templateUrl: 'app/search/delta-modal.html',
+      template: require('./delta-modal.html'),
       controller: ModalInstanceCtrl,
       controllerAs: '$ctrl',
       resolve: {
@@ -186,9 +187,7 @@ class MetaHeaderCtrl {
   }
 }
 
-angular
-  .module('fd-view')
-  .component('searchView', {
-    templateUrl: 'app/search/search.html',
-    controller: MetaHeaderCtrl
-  });
+export const searchView = {
+  template,
+  controller: MetaHeaderCtrl
+};

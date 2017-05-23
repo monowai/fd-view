@@ -1,4 +1,6 @@
-class DataSampleService {
+import _ from 'lodash';
+
+export default class DataSampleService {
   /** ngInject */
   constructor(ContentModel, $http, configuration, $document, toastr) {
     this._cm = ContentModel;
@@ -178,7 +180,3 @@ class DataSampleService {
     }
   }
 }
-
-angular
-  .module('fd-view.modeler')
-  .service('DataSample', DataSampleService);

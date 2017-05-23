@@ -1,4 +1,7 @@
-class StatsTab {
+import template from './stats-tab.html';
+import './stats-tab.scss';
+
+class StatsTabCtrl {
   /** @ngInject */
   constructor(DataSample, EditColdefModal) {
     this.totalImport = DataSample.totalImport;
@@ -10,13 +13,11 @@ class StatsTab {
   }
 }
 
-angular
-  .module('fd-view.modeler')
-  .component('statsTab', {
-    bindings: {
-      stats: '<',
-      model: '<'
-    },
-    controller: StatsTab,
-    templateUrl: 'app/model/editor/stats-tab/stats-tab.html'
-  });
+export const statsTab = {
+  bindings: {
+    stats: '<',
+    model: '<'
+  },
+  controller: StatsTabCtrl,
+  template
+};

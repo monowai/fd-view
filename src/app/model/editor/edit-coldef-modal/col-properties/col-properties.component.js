@@ -1,4 +1,9 @@
-class ColProperties {
+import angular from 'angular';
+import EditPropertyModalCtrl from './edit-property.controller';
+import editPropertyTemplate from './edit-property.html';
+import template from './col-properties.html';
+
+class ColPropertiesCtrl {
   /** @ngInject */
   constructor(ContentModel, modalService) {
     const model = ContentModel.getCurrent();
@@ -9,8 +14,9 @@ class ColProperties {
 
   editProperty(properties, property) {
     this._modal.show({
-      templateUrl: 'app/model/editor/edit-coldef-modal/col-properties/edit-property.html',
-      controller: 'EditPropertyModalCtrl as $ctrl',
+      template: editPropertyTemplate,
+      controller: EditPropertyModalCtrl,
+      controllerAs: '$ctrl',
       resolve: {
         property: () => property,
         col: () => this.column.name
@@ -30,12 +36,10 @@ class ColProperties {
   }
 }
 
-angular
-  .module('fd-view.modeler')
-  .component('colProperties', {
-    templateUrl: 'app/model/editor/edit-coldef-modal/col-properties/col-properties.html',
-    controller: ColProperties,
-    bindings: {
-      column: '<'
-    }
-  });
+export const colProperties = {
+  template,
+  controller: ColPropertiesCtrl,
+  bindings: {
+    column: '<'
+  }
+};

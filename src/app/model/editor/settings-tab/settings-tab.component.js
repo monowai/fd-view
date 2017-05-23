@@ -1,4 +1,8 @@
-class SettingsTab {
+import angular from 'angular';
+import _ from 'lodash';
+import template from './settings-tab.html';
+
+class SettingsTabCtrl {
   /** @ngInject */
   constructor(ContentModel) {
     this.allModels = [];
@@ -68,15 +72,13 @@ class SettingsTab {
   }
 }
 
-angular
-  .module('fd-view.modeler')
-  .component('settingsTab', {
-    bindings: {
-      model: '='
-    },
-    controller: SettingsTab,
-    templateUrl: 'app/model/editor/settings-tab/settings-tab.html',
-    require: {
-      editor: '^modelEditor'
-    }
-  });
+export const settingsTab = {
+  bindings: {
+    model: '='
+  },
+  controller: SettingsTabCtrl,
+  template,
+  require: {
+    editor: '^modelEditor'
+  }
+};

@@ -1,4 +1,4 @@
-class QueryService {
+export default class QueryService {
   /** @ngInject */
   constructor($http, configuration) {
     this._http = $http;
@@ -37,7 +37,3 @@ class QueryService {
     return this._http.get(`${this._cfg.engineUrl()}/api/v1/model/${fortress}/${doctype}/fields`).then(res => res.data);
   }
 }
-
-angular
-  .module('fd-view')
-  .service('QueryService', QueryService);

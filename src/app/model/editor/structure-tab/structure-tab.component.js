@@ -17,8 +17,13 @@
  *  You should have received a copy of the GNU General Public License
  *  along with FlockData.  If not, see <http://www.gnu.org/licenses/>.
  */
+import angular from 'angular';
+import _ from 'lodash';
 
-class StructureTab {
+import template from './structure-tab.html';
+import './structure-tab.scss';
+
+class StructureTabCtrl {
   /** @ngInject */
   constructor(ContentModel, modalService, $timeout, EditColdefModal) {
     this.list = 'Columns';
@@ -146,7 +151,7 @@ class StructureTab {
       canConnect[0];
 
     this._modal.show({
-      templateUrl: 'app/model/editor/structure-tab/forms/create-tag.html'
+      template: require('./forms/create-tag.html')
     }, {obj: {selected}, canConnect}).then(res => {
       if (res.selected.id === 0) {
         res.tag = true;
@@ -168,7 +173,7 @@ class StructureTab {
     const unique = name => !_.find(Object.keys(this.model.content), k => k === name);
 
     this._modal.show({
-      templateUrl: 'app/model/editor/structure-tab/forms/create-column.html'
+      template: require('./forms/create-column.html')
     }, {unique})
       .then(res => {
         this._cm.addCol(res);
@@ -177,7 +182,7 @@ class StructureTab {
 
   createEntitylink() {
     this._modal.show({
-      templateUrl: 'app/model/editor/structure-tab/forms/create-entitylink.html'
+      template: require('./forms/create-entitylink.html')
     }, {colDefs: Object.keys(this.model.content)})
       .then(res => {
         this._cm.addEntitylink(res.col, _.omit(res, 'col'));
@@ -194,7 +199,7 @@ class StructureTab {
       }
     };
 
-    this._modal.show({templateUrl: 'app/model/editor/structure-tab/forms/create-alias.html'}, modalOptions)
+    this._modal.show({template: require('./forms/create-alias.html')}, modalOptions)
       .then(res => {
         this._cm.addAlias(res.tag, _.omit(res, 'tag'));
         this.modelGraph = this._cm.graphModel();
@@ -226,7 +231,7 @@ class StructureTab {
 
     if (source.type === 'tag' && target.type === 'tag') {
       this._modal.show({
-        templateUrl: 'app/model/editor/structure-tab/forms/link-tags.html'
+        template: require('./link-tags.html')
       }, {disable: true, source, target})
         .then(res => {
           const sourceTag = this._cm.findTag(source.id);
@@ -246,19 +251,16 @@ class StructureTab {
 
   showColDef(key, options) {
     this._edit.display(key, options).then(() => {
-      this.contentModel = this._cm.getCurrent();
       this.modelGraph = this._cm.graphModel();
       this.tags = this._cm.getTags();
     });
   }
 }
 
-angular
-  .module('fd-view.modeler')
-  .component('structureTab', {
-    bindings: {
-      model: '<'
-    },
-    controller: StructureTab,
-    templateUrl: 'app/model/editor/structure-tab/structure-tab.html'
-  });
+export const structureTab = {
+  bindings: {
+    model: '<'
+  },
+  controller: StructureTabCtrl,
+  template
+};

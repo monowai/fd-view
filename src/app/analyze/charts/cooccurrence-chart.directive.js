@@ -1,3 +1,13 @@
+import {
+  scaleOrdinal,
+  schemeCategory10,
+  scaleBand,
+  scaleLinear,
+  range,
+  select as d3select,
+  selectAll as d3selectAll
+} from 'd3';
+
 class CooccurrenceDiagram {
   constructor() {
     this.restrict = 'E';
@@ -20,15 +30,15 @@ class CooccurrenceDiagram {
     const width = 580;
     const height = 580;
 
-    const x = d3.scaleBand().range([0, width]);
-    const y = d3.scaleBand().range([height, 0]);
-    const z = d3.scaleLinear().domain([0, 4]).clamp(true);
-    const c = d3.scaleOrdinal(d3.schemeCategory10).domain(d3.range(10));
+    const x = scaleBand().range([0, width]);
+    const y = scaleBand().range([height, 0]);
+    const z = scaleLinear().domain([0, 4]).clamp(true);
+    const c = scaleOrdinal(schemeCategory10).domain(range(10));
     const graphID = ele.parent()[0].id;
 
-    d3.select(`#${graphID} svg`).remove();
+    d3select(`#${graphID} svg`).remove();
 
-    const svg = d3.select(el).append('svg')
+    const svg = d3select(el).append('svg')
       .attr('width', width + margin.left + margin.right)
       .attr('height', height + margin.top + margin.bottom)
       .style('float', 'left')
@@ -78,7 +88,7 @@ class CooccurrenceDiagram {
       .text((d, i) => toNodes[i].name);
 
     function drawRow(row) {
-      const cell = d3.select(this).selectAll('.cell')
+      const cell = d3select(this).selectAll('.cell')
         .data(row.filter(d => d.z))
         .enter().append('rect')
         .attr('class', 'cell')
@@ -93,14 +103,14 @@ class CooccurrenceDiagram {
     }
 
     function mouseover(p) {
-      d3.selectAll('.row text')
+      d3selectAll('.row text')
         .classed('active', (d, i) => i === p.y);
-      d3.selectAll('.column text')
+      d3selectAll('.column text')
         .classed('active', (d, i) => d.index === p.x);
     }
 
     function mouseout() {
-      d3.selectAll('text').classed('active', false);
+      d3selectAll('text').classed('active', false);
     }
 
     // d3.select('#order').on('change', () => {
@@ -175,6 +185,4 @@ class CooccurrenceDiagram {
   }
 }
 
-angular
-  .module('fd-view.diagrams')
-  .directive('cooccurrenceDiagram', CooccurrenceDiagram.factory);
+export default CooccurrenceDiagram.factory;

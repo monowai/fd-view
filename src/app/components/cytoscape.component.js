@@ -17,6 +17,7 @@
  *  You should have received a copy of the GNU General Public License
  *  along with FlockData.  If not, see <http://www.gnu.org/licenses/>.
  */
+import cytoscape from 'cytoscape';
 
 class CytoscapeController {
   /** @ngInject */
@@ -29,7 +30,7 @@ class CytoscapeController {
   $onChanges(change) {
     const ctrl = this;
     let safe = true;
-    _.each(change, el => {
+    Object.entries(change).forEach(el => {
       if (!el) {
         safe = false;
       }
@@ -50,7 +51,6 @@ class CytoscapeController {
         ready: onReady
       });
     }
-
     function onReady() {
       const cy = this;
       // Run layout after add new elements
@@ -58,13 +58,14 @@ class CytoscapeController {
         if (addedElements) {
           layout.maxSimulationTime = 10;
           layout.fit = false;
-          const addLayout = addedElements.makeLayout(layout);
-          addLayout.pon('layoutstop')
+          addedElements // eslint-disable-line angular/module-getter
+            .makeLayout(layout)
+            .pon('layoutstop')
             .then(event => {
               layout.maxSimulationTime = 2000;
-              cy.elements().makeLayout(layout).run();
-            }).run();
-          // addLayout;
+              cy.elements().makeLayout(layout).run(); // eslint-disable-line angular/module-getter
+            })
+            .run();
         }
       };
 
@@ -101,20 +102,20 @@ class CytoscapeController {
       cy.edgehandles(defaults);
 
       // QTip
-      cy.elements().qtip({
-        content: ctrl.qtip, // function(){ return this[0]._private.data.code },
-        position: {
-          my: 'top center',
-          at: 'bottom center'
-        },
-        style: {
-          classes: 'qtip-bootstrap',
-          tip: {
-            width: 20,
-            height: 8
-          }
-        }
-      });
+      // cy.elements().qtip({
+      //   content: ctrl.qtip, // function(){ return this[0]._private.data.code },
+      //   position: {
+      //     my: 'top center',
+      //     at: 'bottom center'
+      //   },
+      //   style: {
+      //     classes: 'qtip-bootstrap',
+      //     tip: {
+      //       width: 20,
+      //       height: 8
+      //     }
+      //   }
+      // });
 
       // Tap
       cy.on('tap', event => {
@@ -235,23 +236,21 @@ class CytoscapeController {
   }
 }
 
-angular
-  .module('fd-view')
-  .component('cytoscape', {
-    template: '<div id="cy" ng-height="180"></div>',
-    controller: CytoscapeController,
-    bindings: {
-      elements: '<',
-      styles: '<',
-      layout: '<',
-      selectedNodes: '=?',
-      highlightByName: '=',
-      onComplete: '&',
-      onChange: '&',
-      nodeClick: '&',
-      navigatorContainerId: '@',
-      contextMenuCommands: '<',
-      onEdge: '&?',
-      qtip: '<'
-    }
-  });
+export const cytoscapeComponent = {
+  template: '<div id="cy" ng-height="180"></div>',
+  controller: CytoscapeController,
+  bindings: {
+    elements: '<',
+    styles: '<',
+    layout: '<',
+    selectedNodes: '=?',
+    highlightByName: '=',
+    onComplete: '&',
+    onChange: '&',
+    nodeClick: '&',
+    navigatorContainerId: '@',
+    contextMenuCommands: '<',
+    onEdge: '&?',
+    qtip: '<'
+  }
+};

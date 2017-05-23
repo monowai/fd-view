@@ -52,6 +52,4 @@ function SearchService(EntityService) {
   return Search;
 }
 
-angular
-  .module('fd-view')
-  .factory('SearchService', SearchService);
+export default SearchService;

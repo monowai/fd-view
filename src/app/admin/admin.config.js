@@ -22,6 +22,4 @@ function AdminConfig($stateProvider, USER_ROLES) {
     });
 }
 
-angular
-  .module('fd-view')
-  .config(AdminConfig);
+export default AdminConfig;

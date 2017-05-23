@@ -1,7 +1,3 @@
-angular
-  .module('fd-view')
-  .provider('configuration', Configuration);
-
 /** @ngInject */
 function Configuration(engineUrl) {
   const config = {
@@ -40,3 +36,4 @@ function Configuration(engineUrl) {
   };
 }
 
+export default Configuration;

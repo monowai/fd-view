@@ -1,6 +1,7 @@
 describe('Login', () => {
   const user = browser.params.login;
   const MockAPI = require('./mock-api');
+  browser.addMockModule("ngMockE2E", require('./load-angular-mocks').mock);
   browser.addMockModule('fdApiMock', MockAPI);
   browser.get('/');
 

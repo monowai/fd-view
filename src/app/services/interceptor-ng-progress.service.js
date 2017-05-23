@@ -1,4 +1,4 @@
-class InterceptorNgProgress {
+export default class InterceptorNgProgress {
   /** @ngInject */
   constructor(ngProgressFactory) {
     this._ngProgressFactory = ngProgressFactory;
@@ -8,7 +8,7 @@ class InterceptorNgProgress {
   }
 
   _getNgProgress() {
-    this._ngProgress = this._ngProgress || ngProgressFactory.createInstance();
+    this._ngProgress = this._ngProgress || this._ngProgressFactory.createInstance();
     // ngProgress.setColor('red');
     return this._ngProgress;
   }
@@ -49,7 +49,3 @@ class InterceptorNgProgress {
   //   return response;
   // }
 }
-
-angular
-  .module('fd-view')
-  .service('interceptorNgProgress', InterceptorNgProgress);

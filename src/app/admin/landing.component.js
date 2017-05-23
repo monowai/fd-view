@@ -1,5 +1,6 @@
-angular
-  .module('fd-view')
-  .component('adminLanding', {
-    templateUrl: 'app/admin/landing.html'
-  });
+import template from './landing.html';
+import './landing.scss';
+
+export const adminLanding = {
+  template
+};

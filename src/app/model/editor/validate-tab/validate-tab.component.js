@@ -1,4 +1,4 @@
-class ValidateTab {
+class ValidateTabCtrl {
   /** @ngInject */
   constructor(modalService, EditColdefModal) {
     this._modal = modalService;
@@ -7,7 +7,7 @@ class ValidateTab {
 
   showResult(rowIndex) {
     this._modal.show({
-      templateUrl: 'app/model/editor/validate-tab/valid-res-modal.html'
+      template: require('./valid-res-modal.html')
     }, {
       entry: this.result.rows[rowIndex]._entry
     });
@@ -15,7 +15,7 @@ class ValidateTab {
 
   showValidMsg(rowIndex) {
     this._modal.show({
-      templateUrl: 'app/model/editor/validate-tab/valid-msg-modal.html'
+      template: require('./valid-msg-modal.html')
     }, {
       msgs: this.result.rows[rowIndex]._messages
     });
@@ -26,15 +26,13 @@ class ValidateTab {
   }
 }
 
-angular
-  .module('fd-view.modeler')
-  .component('validateTab', {
-    bindings: {
-      result: '<'
-    },
-    controller: ValidateTab,
-    template: `
+export const validateTab = {
+  bindings: {
+    result: '<'
+  },
+  controller: ValidateTabCtrl,
+  template: `
       <div class="hscroll-table fader" ng-if="$ctrl.result">
         <div ag-grid="$ctrl.result.valGridOptions" class="ag-blue" ng-height="200"></div>
       </div>`
-  });
+};

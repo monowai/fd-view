@@ -82,8 +82,8 @@
     <div class="form-group">
       <label for="value" class="col-sm-1 control-label">Value: </label>
       <div class="col-sm-11">
-        <!--<textarea id="value" name="value" class="form-control code" ng-model="$ctrl.column.value" rows="1" ng-disabled="$ctrl.column.tag" ng-trim="false" msd-elastic smart-area="codeConf" placeholder="Default is value in the column. You can use a SPeL expression, e.g. #data['colA']+'-'+#data['colB']"></textarea>-->
-        <textcomplete id="value" name="value" message="$ctrl.column.value" columns="$ctrl.columnNames" disabled="$ctrl.column.tag" placeholder="Default is value in the column. You can use a SPeL expression, e.g. #data['colA']+'-'+#data['colB']"></textcomplete>
+        <textarea id="value" name="value" class="form-control code" ng-model="$ctrl.column.value" rows="1" ng-disabled="$ctrl.column.tag" ng-trim="false" msd-elastic smart-area="codeConf" placeholder="Default is value in the column. You can use a SPeL expression, e.g. #data['colA']+'-'+#data['colB']"></textarea>
+        <!--<textarea ng-textcomplete id="value" name="value" message="$ctrl.column.value" columns="$ctrl.columnNames" disabled="$ctrl.column.tag" placeholder="Default is value in the column. You can use a SPeL expression, e.g. #data['colA']+'-'+#data['colB']"></textarea>-->
       </div>
     </div>
   </div>

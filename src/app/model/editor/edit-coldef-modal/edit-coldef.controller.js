@@ -1,4 +1,6 @@
-class EditColdefCtrl {
+import angular from 'angular';
+
+export default class EditColdefCtrl {
   /** @ngInject */
   constructor(coldef, ContentModel, modalService, $uibModalInstance) {
     const name = Object.keys(coldef)[0];
@@ -51,7 +53,3 @@ class EditColdefCtrl {
     this._uibmi.close(data);
   }
 }
-
-angular
-  .module('fd-view.modeler')
-  .controller('EditColdefCtrl', EditColdefCtrl);

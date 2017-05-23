@@ -1,9 +1,9 @@
+import template from './welcome.html';
+
 class WelcomeCtrl {
 }
 
-angular
-  .module('fd-view')
-  .component('welcomeView', {
-    templateUrl: 'app/auth/welcome.html',
-    controller: WelcomeCtrl
-  });
+export const welcomeView = {
+  template,
+  controller: WelcomeCtrl
+};
