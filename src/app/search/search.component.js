@@ -21,7 +21,7 @@ import template from './search.html';
 
 class MetaHeaderCtrl {
   /** @ngInject */
-  constructor($stateParams, $window, EntityService, $timeout, $anchorScroll, QueryService, MatrixRequest, configuration, SearchService) {
+  constructor($stateParams, $window, EntityService, $timeout, $anchorScroll, QueryService, MatrixRequest, configuration, SearchService, $ngRedux) {
     if ($stateParams.filter) {
       SearchService.fortress = MatrixRequest.fortress;
       SearchService.types = MatrixRequest.document;
@@ -56,6 +56,7 @@ class MetaHeaderCtrl {
     this._matrix = MatrixRequest;
     this._config = configuration;
     this._search = SearchService;
+    this.ngRedux = $ngRedux;
   }
 
   openGraphExplorer(entityKey) {
@@ -90,13 +91,12 @@ class MetaHeaderCtrl {
     }
   }
 
-  search() {
+  async search() {
     const typesToBeSend = this.types.map(t => t.name);
 
     this.sr = new this._search(this._matrix.searchText || '*', this.fortress, typesToBeSend, (!this.tf || this.tf.disabled) ? null : this.tf);
-    this.sr.nextPage(() => {
-      this._timeout(() => this._anchor('results'), 100);
-    });
+    await this.sr.nextPage();
+    this._timeout(() => this._anchor('results'), 100);
 
     this.searchResultFound = true;
     this.logResultFound = false;

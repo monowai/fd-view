@@ -16,6 +16,9 @@ import {cytoscapeComponent} from './cytoscape.component';
 import {fortressInput} from './fortress-input.component';
 import {doctypeInput} from './doctype-input.component';
 
+import {react2angular} from '../services/angular-react-helper';
+import FdSearchForm from '../search/fd-search-form.react';
+
 import './components.scss';
 
 export default angular
@@ -29,6 +32,7 @@ export default angular
   .component('cytoscape', cytoscapeComponent)
   .component('fortressInput', fortressInput)
   .component('doctypeInput', doctypeInput)
+  .component('fdSearchForm', react2angular(FdSearchForm))
   .service('ConceptModal', ConceptModal)
   .run(() => {
     cyedgehandles(cytoscape);

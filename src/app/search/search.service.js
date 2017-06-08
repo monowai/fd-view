@@ -19,34 +19,28 @@ function SearchService(EntityService) {
     }
   }
 
-  Search.prototype.nextPage = function (callback) {
+  Search.prototype.nextPage = async function() {
     if (this.busy || this.index === this.total) {
       return;
     }
     this.busy = true;
-
-    EntityService.search(this.searchText, this.fortress, this.typesToBeSend, this.index, this.termFilter)
-      .then(data => {
-        _.forEach(data.results, d => {
-          d.resources = [];
-          let uniqueList = [];
-          _.find(d.fragments, (ele, k) => {
-            const uniqueEle = _.difference(_.uniq(ele), uniqueList);
-            if (uniqueEle.length > 0) {
-              d.resources.push({key: k, value: uniqueEle});
-              uniqueList = _.union(uniqueEle, uniqueList);
-            }
-          });
-        });
-
-        this.entities = this.entities.concat(data.results);
-        this.index += data.results.length;
-        this.total = data.total;
-        this.busy = false;
-        if (callback) {
-          callback();
+    const data = await EntityService.search(this.searchText, this.fortress, this.typesToBeSend, this.index, this.termFilter);
+    _.forEach(data.results, d => {
+      d.resources = [];
+      let uniqueList = [];
+      _.find(d.fragments, (ele, k) => {
+        const uniqueEle = _.difference(_.uniq(ele), uniqueList);
+        if (uniqueEle.length > 0) {
+          d.resources.push({key: k, value: uniqueEle});
+          uniqueList = _.union(uniqueEle, uniqueList);
         }
       });
+    });
+
+    this.entities = this.entities.concat(data.results);
+    this.index += data.results.length;
+    this.total = data.total;
+    this.busy = false;
   };
 
   return Search;

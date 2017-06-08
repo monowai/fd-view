@@ -14,6 +14,7 @@ import ngSanitize from 'angular-sanitize';
 import uiRouter from 'angular-ui-router';
 import toastr from 'angular-toastr';
 import ngAnimate from 'angular-animate';
+import ngRedux from 'ng-redux';
 
 import layout from './app/layout';
 import config from './app/config';
@@ -38,6 +39,7 @@ angular
     ngSanitize,
     ngAnimate,
     uiRouter,
+    ngRedux,
     toastr,
     config,
     services,
