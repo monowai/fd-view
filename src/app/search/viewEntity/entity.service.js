@@ -5,8 +5,8 @@ export default class Entity {
     this._cfg = configuration;
   }
 
-  search(searchText, fortress, typesToBeSend, index, filter) {
-    const dataParam = {searchText, fortress, types: typesToBeSend, from: index, filter};
+  search(searchText, fortress, types, from, filter) {
+    const dataParam = {searchText, fortress, types, from, filter};
     const url = `${this._cfg.engineUrl()}/api/v1/query/`;
     return this._http.post(url, dataParam).then(res => {
       return {results: res.data.results, total: res.data.totalHits};

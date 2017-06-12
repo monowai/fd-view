@@ -1,18 +1,24 @@
 import React from 'react';
 
+import {InputGroup, FormControl, Button} from 'react-bootstrap';
+
 const SearchInput = () => {
   return (
-    <div className="input-group">
-      <input type="search" name="term" className="form-control"
-             placeholder="Text to search for ..."
-             size="100" autoComplete="on"
-             autoFocus />
-      <div className="input-group-btn">
-        <button type="submit" className="btn btn-primary">
-          <i className="fa fa-search" /> View
-        </button>
-      </div>
-    </div>
+    <InputGroup>
+      <FormControl
+        type="search"
+        name="term"
+        placeholder="Text to search for ..."
+        size="100"
+        autoComplete="on"
+        autoFocus />
+      <InputGroup.Button>
+        <Button type="submit" bsStyle="primary">
+          <i className="fa fa-search" />
+          View
+        </Button>
+      </InputGroup.Button>
+    </InputGroup>
   );
 };
 

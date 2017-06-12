@@ -75,7 +75,7 @@ export const fetchTypes = fortress => {
     dispatch(requestTypes());
     const QueryService = getAngularService(document, 'QueryService');
 
-    return QueryService.doc(fortress.code).then(types => {
+    return QueryService.doc(fortress.code || fortress).then(types => {
       dispatch(receiveTypes(types));
     }).catch(error => {
       dispatch(requestTypesFail(error));

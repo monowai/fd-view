@@ -14,3 +14,27 @@ export const setTerm = term => ({
 export const searchTerm = term => ({
   type: SEARCH_TERM
 });
+
+export const searchTermSuccess = results => ({
+  type: SEARCH_TERM_SUCCESS,
+  data: {...results} // {results, total} returned from service
+});
+
+export const searchTermFail = error => ({
+  type: SEARCH_TERM_FAIL,
+  error
+});
+
+export const runTermSearch = searchConfig => {
+  const {searchText, fortress, types, from, filter} = searchConfig;
+  return dispatch => {
+    dispatch(searchTerm());
+    const EntityService = getAngularService(document, 'EntityService');
+
+    return EntityService.search(searchText, fortress, types, from, filter).then(response => {
+      dispatch(searchTermSuccess(response));
+    }).catch(error => {
+      dispatch(searchTermFail(error));
+    });
+  };
+};

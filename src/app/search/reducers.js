@@ -1,13 +1,53 @@
-import {SET_TERM, SEARCH_TERM} from './actions';
+import _ from 'lodash';
+
+import {SET_TERM, SEARCH_TERM, SEARCH_TERM_SUCCESS, SEARCH_TERM_FAIL} from './actions';
 
 const initialState = {
-  term: ''
+  term: '',
+  index: 0,
+  isLoading: false,
+  total: 0,
+  results: [],
+  entities: [],
+  filter: {}
 };
 
 export default function searchReducer(state = initialState, action) {
-  switch (action.type) {
+  const {type, data} = action;
+  switch (type) {
     case SET_TERM:
-      return {...state, term: action.data};
+      return {...initialState, term: data};
+
+    case SEARCH_TERM:
+      return {...state, isLoading: true};
+
+    case SEARCH_TERM_SUCCESS: {
+      const {results, total} = data;
+      _.forEach(results, d => {
+        d.resources = [];
+        let uniqueList = [];
+        _.find(d.fragments, (ele, k) => {
+          const uniqueEle = _.difference(_.uniq(ele), uniqueList);
+          if (uniqueEle.length > 0) {
+            d.resources.push({key: k, value: uniqueEle});
+            uniqueList = _.union(uniqueEle, uniqueList);
+          }
+        });
+      });
+
+      return {
+        ...state,
+        isLoading: false,
+        index: state.index + results.length,
+        total,
+        results,
+        entities: state.entities.concat(results)
+      };
+    }
+
+    case SEARCH_TERM_FAIL:
+      return {...state, error: action.error, isLoading: false};
+
     default:
       return state;
   }

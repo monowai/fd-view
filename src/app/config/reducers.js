@@ -23,8 +23,13 @@ function providerReducer(state = initialState, action) {
       }
       return {...state, isLoading: true};
 
-    case SELECT_PPOVIDER:
-      return {...state, fortress: action.data};
+    case SELECT_PPOVIDER: {
+      let fortress = action.data;
+      if (typeof fortress === 'string') { // eslint-disable-line angular/typecheck-string
+        fortress = [state.fortresses.find(f => f.name === fortress)];
+      }
+      return {...state, fortress};
+    }
     case LOAD_TYPES:
       if (action.status === 'success') {
         return {...state,
