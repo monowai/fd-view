@@ -7,6 +7,8 @@ import 'angular-toastr/dist/angular-toastr.css';
 import 'bootstrap';
 import 'admin-lte';
 
+import 'babel-polyfill';
+
 import angular from 'angular';
 import ngCookies from 'angular-cookies';
 // import ngResource from 'angular-resource';
