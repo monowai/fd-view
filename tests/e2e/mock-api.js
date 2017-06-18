@@ -2,18 +2,18 @@ const MockAPI = function() {
   angular.module('fdApiMock', ['fd-view', 'ngMockE2E'])
     .run(function($httpBackend, configuration) {
       const account = {
-        "login": "test",
-        "name": "test",
-        "companyName": "flockdata",
-        "apiKey": "SeCreT_ApI_kEy",
-        "email": null,
-        "status": "ENABLED",
-        "userRoles": [
+        login: "test",
+        name: "test",
+        companyName: "flockdata",
+        apiKey: "SeCreT_ApI_kEy",
+        email: null,
+        status: "ENABLED",
+        userRoles: [
           "ROLE_FD_ADMIN",
           "ROLE_FD_USER",
           "ROLE_USER"
         ],
-        "active": true
+        active: true
       };
 
       const engineUrl = configuration.engineUrl();

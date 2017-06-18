@@ -11,7 +11,6 @@ describe('Login', () => {
     browser.sleep(5000);
   });
 
-
   // it('should be able to login', () => {
   //   element(by.model('$ctrl.username')).sendKeys(user.user);
   //   element(by.model('$ctrl.password')).sendKeys(user.password, protractor.Key.ENTER);
@@ -31,9 +30,9 @@ describe('Login', () => {
     // browser.sleep(1000);
   });
 
-  it('should display Search page', () => {
+  it('should display input fields on Search page', () => {
     browser.get('/search');
-    expect(element(by.tagName('fd-search')).isPresent()).toBe(true);
+    expect(element.all(by.tagName('input')).count()).toBe(4);
   });
 
 });

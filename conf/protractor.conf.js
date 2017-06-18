@@ -1,7 +1,10 @@
 exports.config = {
   capabilities: {
-    'browserName': 'phantomjs',
-    'phantomjs.binary.path': require('phantomjs-prebuilt').path
+    browserName: 'chrome',
+
+    chromeOptions: {
+      args: ["--headless", "--disable-gpu", "--window-size=800x600"]
+    }
   },
 
   baseUrl: 'http://localhost:9000',
