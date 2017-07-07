@@ -2,12 +2,13 @@ import React from 'react';
 
 import {InputGroup, FormControl, Button} from 'react-bootstrap';
 
-const SearchInput = () => {
+const SearchInput = ({term}) => {
   return (
     <InputGroup>
       <FormControl
         type="search"
         name="term"
+        value={term}
         placeholder="Text to search for ..."
         size="100"
         autoComplete="on"

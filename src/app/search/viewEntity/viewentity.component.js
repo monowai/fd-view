@@ -23,70 +23,35 @@
  */
 
 import template from './viewentity.html';
+import {fetchEntity} from './actions';
 
 class ViewEntityCtrl {
   /** @ngInject */
-  constructor($stateParams, EntityService, configuration, $window) {
+  constructor($stateParams, EntityService, configuration, $window, $ngRedux) {
     this.entityKey = $stateParams.entityKey;
     this.metaHeader = {};
-    this.log = {};
-    this.tags = [];
-
-    this.log1 = {};
-    this.log2 = {};
-
-    this.selectedLog = [];
-
-    this.showUnchangedFlag = false;
 
     this._entity = EntityService;
     this._conf = configuration;
     this._window = $window;
+    this.ngRedux = $ngRedux;
+
+    this.disconnect = $ngRedux.connect(
+      state => ({onLoading: state.onLoading}),
+      dispatch => ({
+        loadEntity(key) {
+          dispatch(fetchEntity(key));
+        }
+      })
+    )(this);
   }
 
-  init() {
-    this._entity.getLogsForEntity(this.entityKey).then(data => {
-      this.metaHeader = data;
-      // console.log(data);
-
-      if (this.metaHeader.changes[0] !== null) {
-        this._entity.getJsonContentForLog(this.entityKey, this.metaHeader.changes[0].id)
-          .then(data => {
-            this.log = data;
-            if (data.src) {
-              this.src = data.src.join('\n');
-              this.codeOptions = {mode: this.metaHeader.type};
-            }
-          });
-        this.logSelected = this.metaHeader.changes[0].id;
-      }
-
-      this._entity.getTagsForEntity(this.entityKey)
-        .then(data => {
-          this.tags = data;
-        });
-    });
+  $onInit() {
+    this.loadEntity(this.entityKey);
   }
 
-  showUnchanged() {
-    // console.log('showUnchanged : ', this.showUnchangedFlag);
-    if (this.showUnchangedFlag) {
-      jsondiffpatch.formatters.html.showUnchanged();
-    } else {
-      jsondiffpatch.formatters.html.hideUnchanged();
-    }
-  }
-
-  selectAction() {
-    // var logId1 = this.logSelected;
-    const logId2 = this.myOption;
-
-    // Getting Log2
-    this._entity.getJsonContentForLog(this.entityKey, logId2).then(data => {
-      this.log2 = data;
-      // Log One is already loaded
-      this.log1 = this.log;
-    });
+  $onDestroy() {
+    this.disconnect();
   }
 
   openExplore() {
@@ -126,14 +91,6 @@ class ViewEntityCtrl {
       .then(data => {
         this.log2 = data;
       });
-  }
-
-  selectLog(logId) {
-    if (this.selectedLog.includes(logId)) {
-      this.selectedLog.splice(this.selectedLog.indexOf(logId), 1);
-    } else {
-      this.selectedLog.push(logId);
-    }
   }
 }
 

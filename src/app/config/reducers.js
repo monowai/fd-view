@@ -1,5 +1,6 @@
 import {combineReducers} from 'redux';
 import searchReducer from '../search/reducers';
+import entityReducer from '../search/viewEntity/reducer';
 
 import {LOAD_PROVIDERS, SELECT_PPOVIDER, LOAD_TYPES, SELECT_TYPES} from './actions';
 
@@ -48,5 +49,6 @@ function providerReducer(state = initialState, action) {
 
 export default combineReducers({
   provider: providerReducer,
-  search: searchReducer
+  search: searchReducer,
+  entity: entityReducer
 });

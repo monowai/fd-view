@@ -11,7 +11,7 @@ export const setTerm = term => ({
   data: term
 });
 
-export const searchTerm = term => ({
+export const searchTerm = () => ({
   type: SEARCH_TERM
 });
 

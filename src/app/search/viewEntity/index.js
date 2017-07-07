@@ -1,20 +1,18 @@
 import angular from 'angular';
 import uiRouter from 'angular-ui-router';
-import 'angular-ui-ace';
-import angularMoment from 'angular-moment';
 
 import config from '../../config';
 import {viewEntityView} from './viewentity.component';
 import EntityService from './entity.service';
-import {fdJsondiff2} from './jsondiff.directive';
-import fdJsonabview from './jsonabview.directive';
 import ViewEntityConfig from './viewentity.config';
 
+import {react2angular} from '../../services/angular-react-helper';
+import EntityView from './entity-view.react';
+
 export default angular
-  .module('viewEntity', [uiRouter, 'ui.ace', angularMoment, config])
+  .module('viewEntity', [uiRouter, config])
   .component('viewEntity', viewEntityView)
+  .component('entityView', react2angular(EntityView))
   .service('EntityService', EntityService)
-  .directive('fdJsondiff2', fdJsondiff2)
-  .directive('fdJsonabview', fdJsonabview)
   .config(ViewEntityConfig)
   .name;

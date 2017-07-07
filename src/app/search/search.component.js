@@ -66,11 +66,6 @@ class MetaHeaderCtrl {
     });
   }
 
-  openDetailsView(entityKey) {
-    const url = `/view/${entityKey}`;
-    this._window.open(url);
-  }
-
   showAdvancedSearch() {
     this.advancedSearch = !this.advancedSearch;
   }
@@ -89,17 +84,6 @@ class MetaHeaderCtrl {
     if (type && !this.types.filter(name => type).length) {
       this.types.push({name: type});
     }
-  }
-
-  async search() {
-    const typesToBeSend = this.types.map(t => t.name);
-
-    this.sr = new this._search(this._matrix.searchText || '*', this.fortress, typesToBeSend, (!this.tf || this.tf.disabled) ? null : this.tf);
-    await this.sr.nextPage();
-    this._timeout(() => this._anchor('results'), 100);
-
-    this.searchResultFound = true;
-    this.logResultFound = false;
   }
 
   findLogs(entityKey, index) {
@@ -176,14 +160,6 @@ class MetaHeaderCtrl {
     }, () => {
       // $log.info('Modal dismissed at: ' + new Date());
     });
-  }
-
-  selectLog(logId) {
-    if (this.selectedLog.includes(logId)) {
-      this.selectedLog.splice(this.selectedLog.indexOf(logId), 1);
-    } else {
-      this.selectedLog.push(logId);
-    }
   }
 }
 

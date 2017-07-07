@@ -23,15 +23,13 @@ The -g flag indicates that the package should be installed globally (for all use
 ### Build tools
 ```
 npm install -g gulp-cli
-npm install -g bower
 ``` 
 
 ## Building
 You'll need to run these commands when you pull the latest source to ensure your libraries are up-to-date as defined in ```package.json``` and ```bower.json``` 
 
 ```
-npm install 
-bower install 
+yarn 
 ```
 
 ## Testing

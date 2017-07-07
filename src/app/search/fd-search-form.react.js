@@ -20,7 +20,7 @@ const FdSearchForm = props => {
 
   return (
     <form id="search-form" className="panel" onSubmit={handleSubmit}>
-      <SearchInput />
+      <SearchInput term={props.term} />
       <Row>
         <Col md={6}>
           <FortressInput store={store} />

@@ -18,116 +18,21 @@
   ~  along with FlockData.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<div data-ng-init="$ctrl.init()">
-  <!-- Content Header (Page header) -->
-  <section class="content-header">
-    <h1>
-      View
-      <small>entity</small>
-    </h1>
-    <ol class="breadcrumb">
-      <li><a ui-sref="welcome"><i class="fa fa-home"></i> Home</a></li>
-      <li>View</li>
-      <li>{{$ctrl.metaHeader.index}}</li>
-      <li class="active">{{$ctrl.entityKey}}</li>
-    </ol>
-  </section>
+<!-- Content Header (Page header) -->
+<section class="content-header">
+  <h1>
+    View
+    <small>entity</small>
+  </h1>
+  <ol class="breadcrumb">
+    <li><a ui-sref="welcome"><i class="fa fa-home"></i> Home</a></li>
+    <li>View</li>
+    <li>{{$ctrl.metaHeader.index}}</li>
+    <li class="active">{{$ctrl.entityKey}}</li>
+  </ol>
+</section>
 
-  <!-- Main content -->
-  <section class="content">
-    <div class="row">
-      <div class="col-xs-12 col-sm-12 col-md-4 col-lg-3">
-        <!-- FIRST PART List of LOGS-->
-        <!-- Timeline Content -->
-        <ul class="timeline">
-          <li ng-repeat="logsResult in $ctrl.metaHeader.changes"
-              ng-click="$ctrl.openPopup(logsResult.id)"
-              ng-class="{'fd-logs-selected': logsResult.id == logSelected}">
-            <i class="fa fa-file-text"></i>
-            <div class="timeline-item">
-              <span class="time"><i class="fa fa-clock-o"></i>
-                {{logsResult.when | amDateFormat:'YYYY-MM-DD, hh:mm a'}}
-              </span>
-
-              <h3 class="timeline-header"><em>{{logsResult.event.name}}</em></h3>
-
-              <div class="timeline-body">
-                <p>
-                  <strong>{{logsResult.madeBy}}</strong> -
-                  {{logsResult.comment}}
-                </p>
-                <br>
-              </div>
-            </div>
-          </li>
-        </ul>
-        <!-- END Timeline Content : List of LOGS-->
-      </div>
-      <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
-        <div class="nav-tabs-custom">
-          <ul class="nav nav-tabs">
-            <li ng-if="!$ctrl.src" class="active"><a href data-target="#details" data-toggle="tab"><i class="fa fa-clock-o"></i> Details</a></li>
-            <li ng-if="$ctrl.src" class="active"><a href data-target="#code" data-toggle="tab"><i class="fa fa-file-text"></i> Details</a></li>
-            <li><a href data-target="#tags" data-toggle="tab"><i class="fa fa-tags"></i> Tags</a></li>
-            <li><a href data-target="#delta" data-toggle="tab"><i class="fa fa-arrow-right"></i> Delta</a></li>
-          </ul>
-          <div class="tab-content">
-            <!-- /.tab-pane -->
-            <div ng-if="!$ctrl.src" class="tab-pane fade active in" id="details">
-              <!-- SHOW DETAILS LOGS-->
-              <div id="log1" fd-jsonabview ab-data="$ctrl.log"></div>
-            </div>
-            <div ng-if="$ctrl.src" class="tab-pane fade active in" id="code">
-              <div ui-ace="$ctrl.codeOptions" ng-model="$ctrl.src" readonly ng-height="250"></div>
-            </div>
-            <div class="tab-pane fade " id="tags">
-              <div class="row">
-                <!-- <div class="col-xs-12 "> -->
-                <!-- SHOW DETAILS LOGS-->
-                <table class="table table-bordered">
-                  <tbody>
-                  <tr ng-repeat="tag in $ctrl.tags">
-                    <td>
-                              <span class="label label-primary">
-                                {{tag.relationship}} / {{tag.tag.name!=null ? tag.tag.name : tag.tag.code}}
-                              </span>
-                    </td>
-                  </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
-            <!-- /.tab-pane -->
-            <div class="tab-pane fade" id="delta">
-              <form role="form">
-                <label>Compare with : </label>
-                <select class="input-sm" ng-change="$ctrl.selectAction()" ng-model="$ctrl.myOption">
-                  <!--<option value="0">Select Log Item</option>-->
-                  <option ng-repeat="logsResult in $ctrl.metaHeader.changes"
-                          ng-if="logsResult.id != $ctrl.logSelected"
-                          value="{{logsResult.id}}">{{logsResult.event.name}} |
-                    {{logsResult.log.who.name}} | {{logsResult.when |
-                    amDateFormat:'YYYY-MM-DD, hh:mm a'}}
-                  </option>
-                </select> <i></i>
-
-                <div class="widget-body smart-form">
-                  <input type="checkbox" ng-model="$ctrl.showUnchangedFlag"
-                         ng-click="$ctrl.showUnchanged()"> Show unchanged values
-                  <div id="visual"></div>
-                  <div fd-jsondiff2 ab-left='$ctrl.log1' ab-right='$ctrl.log2'>
-                    <div id="annotated"></div>
-                  </div>
-                </div>
-              </form>
-
-            </div>
-            <!-- /.tab-pane -->
-          </div>
-          <!-- /.tab-content -->
-        </div>
-        <!-- nav-tabs-custom -->
-      </div>
-    </div>
-  </section>
-</div>
+<!-- Main content -->
+<section class="content">
+  <entity-view store="$ctrl.ngRedux"></entity-view>
+</section>
