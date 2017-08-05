@@ -11,6 +11,9 @@ import {adminUser} from './user-admin.component';
 import {fdInfoBox} from './fd-info-box.component';
 import AdminConfig from './admin.config';
 
+import JsonView from 'react-json-view';
+import {react2angular} from 'react2angular';
+
 export default angular
   .module('fd-view.admin', [uiBootstrap, configuration, services])
   .component('adminView', adminView)
@@ -18,5 +21,6 @@ export default angular
   .component('adminFortress', adminFortress)
   .component('adminUser', adminUser)
   .component('fdInfoBox', fdInfoBox)
+  .component('jsonView', react2angular(JsonView, ['src', 'name', 'displayObjectSize', 'displayDataTypes']))
   .config(AdminConfig)
   .name;

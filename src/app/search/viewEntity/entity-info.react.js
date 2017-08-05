@@ -7,6 +7,7 @@ import AceEditor from 'react-ace';
 import 'brace/theme/github';
 
 import JsonEditor from '../../components/jsoneditor.react';
+import JsonView from 'react-json-view';
 import JsonDiff from './jsondiff.react';
 
 import EntityTags from './entity-tags.react';
@@ -35,11 +36,7 @@ const EntityInfo = props => {
             />
           </Tab> :
           <Tab eventKey="details" title={<span><i className="fa fa-clock-o"/> Details</span>}>
-             <JsonEditor
-               json={details}
-               mode="tree"
-               onEditable={() => false}
-             />
+            <JsonView src={details}/>
           </Tab>
         }
         <Tab eventKey="tags" title={<span><i className="fa fa-tags"/> Tags</span>}>

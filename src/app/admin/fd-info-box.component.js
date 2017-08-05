@@ -11,12 +11,7 @@ export const fdInfoBox = {
         <ng-transclude></ng-transclude>
       </div>
       <div class="box-body">
-        <dl class="dl-horizontal">
-          <div ng-repeat="(k,v) in $ctrl.info.state">
-            <dt>{{k}}:</dt>
-            <dd>{{v}}</dd>
-          </div>
-        </dl>
+        <json-view src="$ctrl.info.state" name="false" displayObjectSize="false" displayDataTypes="false"></json-view>
       </div>
     </div>
   `
