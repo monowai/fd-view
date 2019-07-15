@@ -1,7 +1,5 @@
-import React from 'react';
-import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
-import {fetchProviders, selectProvider, fetchTypes} from '../config/actions';
+import {fetchProviders, fetchTypes, selectProvider} from '../config/actions';
 
 import {Typeahead} from 'react-bootstrap-typeahead';
 
@@ -46,4 +44,7 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
   }
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(FortressInput);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(FortressInput);

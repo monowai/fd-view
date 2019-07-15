@@ -1,7 +1,4 @@
-import {
-  select as d3select,
-  max
-} from 'd3';
+import {max, select as d3select} from 'd3';
 
 class BipartiteDiagramCtrl {
   /** @ngInject */
@@ -19,43 +16,53 @@ class BipartiteDiagramCtrl {
     const margin = {b: 0, t: 40, l: 170, r: 50};
     const el = ele[0];
 
-    d3select(el).select('svg').remove();
+    d3select(el)
+      .select('svg')
+      .remove();
 
-    const svg = d3select(el).append('svg')
+    const svg = d3select(el)
+      .append('svg')
       .attr('width', width)
-      .attr('height', (height + margin.b + margin.t))
-      .append('g').attr('transform', `translate(${margin.l}, ${margin.t})`);
+      .attr('height', height + margin.b + margin.t)
+      .append('g')
+      .attr('transform', `translate(${margin.l}, ${margin.t})`);
     /* var bpData = [
      {data:bP.partData(mappedData,2), id:'Relationships', header:['From','To', 'Relationships']}
      ];  */
-    return this._timeout(() => {
-      this._bp.draw(data, svg);
-    }, 500, false);
+    return this._timeout(
+      () => {
+        this._bp.draw(data, svg);
+      },
+      500,
+      false
+    );
   }
 
   warnMsg(dataLength) {
     return this._modal.show(
       {
         size: 'sm',
-        backdrop: 'static'},
+        backdrop: 'static'
+      },
       {
         title: 'Data set is taking a while to process',
         text: `There are a total of ${dataLength} results. Proceeding can disrupt your browser work. Would you like to continue?`
-      });
+      }
+    );
   }
 
-  $onChanges(c) {
+  $onChanges() {
     if (this.data && this.data[0].dataLength) {
       if (this.data[0].dataLength > 200) {
-        this.warnMsg(this.data[0].dataLength)
-          .then(
-            () => {
-              this._toastr.warning('Please wait...');
-              this.drawBipartite(this._element, this.data);
-            },
-            () => {
-              this._toastr.warning('Cancelled processing...');
-            });
+        this.warnMsg(this.data[0].dataLength).then(
+          () => {
+            this._toastr.warning('Please wait...');
+            this.drawBipartite(this._element, this.data);
+          },
+          () => {
+            this._toastr.warning('Cancelled processing...');
+          }
+        );
       } else {
         this.drawBipartite(this._element, this.data);
       }

@@ -1,6 +1,3 @@
-import React from 'react';
-import moment from 'moment';
-
 import {Button, OverlayTrigger, Tooltip} from 'react-bootstrap';
 
 // can be refactored and imported from './clean-code.filter'
@@ -27,10 +24,27 @@ const SearchResult = ({entity, setFilter}) => {
     <li>
       <i className="fa fa-file-text" />
       <article className="timeline-item">
-        <span className="time"><i className="fa fa-clock-o" />{entity.lastUser} - {moment(entity.lastUpdate).format('ddd, MMM Do YYYY, hh:mm')} </span>
+    < span
+  className = "time" >
+    < i
+  className = "fa fa-clock-o" / >
+    {entity.lastUser} - {moment(entity.lastUpdate
+).
+  format('ddd, MMM Do YYYY, hh:mm')
+}
+  {
+    ' '
+  }
+<
+  /span>
 
         <h3 className="timeline-header">
-          <a href="#" title="Open details" onClick={openDetailsView}>{entity.name}</a>
+    < a
+  href = "#"
+  title = "Open details"
+  onClick = {openDetailsView} >
+    {entity.name}
+    < /a>
         </h3>
 
         <div className="timeline-body">
@@ -42,8 +56,20 @@ const SearchResult = ({entity, setFilter}) => {
                 <span key={ri} title={resource.key}>
                   {resource.value.map((value, vi) => (
                     <span key={vi}>
-                      <em><strong>{cleanCode(resource.key)}:</strong></em>
-                      <span className="search-resources" dangerouslySetInnerHTML={{__html: value}} />
+                    < em >
+                    < strong > {cleanCode(resource.key
+)
+}:<
+  /strong>
+  < /em>
+  < span
+  className = "search-resources"
+  dangerouslySetInnerHTML = {
+  {
+    __html: value
+  }
+}
+  />
                       <span>;&nbsp;</span>
                     </span>
                   ))}
@@ -53,16 +79,25 @@ const SearchResult = ({entity, setFilter}) => {
           </div>
 
           {entity.whenCreated && (
-            <p>{/* <!-- ToDo - format the date to the users Locale, not hard coded-->*/}
+          < p >
+          {/* <!-- ToDo - format the date to the users Locale, not hard coded-->*/}
               <small>
                 <b>Created on </b>
-                <em>{moment(entity.whenCreated).format('dddd, MMMM Do YYYY, h:mm:ss a')}</em> by <em>{entity.lastUser}</em>
+          < em >
+          {moment(entity.whenCreated
+          ).
+            format('dddd, MMMM Do YYYY, h:mm:ss a')
+          }
+          <
+            /em> by <em>{entity.lastUser}</
+            em >
               </small>
             </p>
           )}
         </div>
 
-        { // Carried over from older version of fd-view
+  {
+    // Carried over from older version of fd-view
           /*
           <a ng-click="findLogs(entity.key, $index)"
              ng-if="!entity.seeLogsAction" class="btn btn-xs btn-primary"><i class="fa fa-angle-double-down"></i> Changes</a>
@@ -93,34 +128,65 @@ const SearchResult = ({entity, setFilter}) => {
           ng-click="openDeltaPopup()"><i class="fa fa-indent"></i> Compare Logs</a>
           <!-- end content -->
           </div>
-          */}
+          */
+  }
 
         <div className="timeline-footer">
           {/* <!--<button class="btn btn-xs btn-default">{{entity.event}}</button>-->*/}
-          <OverlayTrigger placement="top" overlay={<Tooltip id="code">{entity.code || entity.name}</Tooltip>}>
-            <Button
-              bsSize="xsmall" bsStyle="primary"
-              onClick={openDetailsView}>
+    < OverlayTrigger
+  placement = "top"
+  overlay = { < Tooltip
+  id = "code" > {entity.code || entity.name} < /Tooltip>}
+    >
+    < Button
+  bsSize = "xsmall"
+  bsStyle = "primary"
+  onClick = {openDetailsView} >
               View
             </Button>
           </OverlayTrigger>
-          <OverlayTrigger placement="top" overlay={<Tooltip id="fortress">Filter Fortress</Tooltip>}>
-            <Button
-              bsSize="xsmall"
-              onClick={() => setFilter(entity.fortress)}>
+    < OverlayTrigger
+  placement = "top"
+  overlay = { < Tooltip
+  id = "fortress" > Filter
+  Fortress < /Tooltip>}
+  >
+  < Button
+  bsSize = "xsmall"
+  onClick = {()
+=>
+  setFilter(entity.fortress)
+}>
               {entity.fortress}
-              </Button>
+<
+  /Button>
           </OverlayTrigger>
-          <OverlayTrigger placement="top" overlay={<Tooltip id="doc-type">Filter Document Type</Tooltip>}>
-            <Button
-              bsSize="xsmall"
-              onClick={() => setFilter(entity.fortress, entity.documentType)}>
+  < OverlayTrigger
+  placement = "top"
+  overlay = { < Tooltip
+  id = "doc-type" > Filter
+  Document
+  Type < /Tooltip>}
+  >
+  < Button
+  bsSize = "xsmall"
+  onClick = {()
+=>
+  setFilter(entity.fortress, entity.documentType)
+}>
               {entity.documentType}
-              </Button>
+<
+  /Button>
           </OverlayTrigger>
-          {
-            entity.name && <Button bsSize="xsmall" onClick={openDetailsView}>{entity.name}</Button>
-          }
+  {
+    entity.name && (
+    < Button
+    bsSize = "xsmall"
+    onClick = {openDetailsView} >
+      {entity.name}
+      < /Button>
+  )
+  }
         </div>
       </article>
     </li>

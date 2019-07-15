@@ -31,10 +31,12 @@ export const runTermSearch = searchConfig => {
     dispatch(searchTerm());
     const EntityService = getAngularService(document, 'EntityService');
 
-    return EntityService.search(searchText, fortress, types, from, filter).then(response => {
-      dispatch(searchTermSuccess(response));
-    }).catch(error => {
-      dispatch(searchTermFail(error));
-    });
+    return EntityService.search(searchText, fortress, types, from, filter)
+      .then(response => {
+        dispatch(searchTermSuccess(response));
+      })
+      .catch(error => {
+        dispatch(searchTermFail(error));
+      });
   };
 };

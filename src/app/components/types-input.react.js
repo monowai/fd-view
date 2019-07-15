@@ -1,5 +1,3 @@
-import React from 'react';
-import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import {selectTypes} from '../config/actions';
 
@@ -34,4 +32,7 @@ const mapDispatchToProps = dispatch => ({
   }
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(TypesInput);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(TypesInput);

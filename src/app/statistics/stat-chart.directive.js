@@ -1,12 +1,4 @@
-import {
-  select,
-  scaleOrdinal,
-  schemeCategory20,
-  pie as d3pie,
-  entries,
-  interpolate,
-  arc as d3arc
-} from 'd3';
+import {arc as d3arc, entries, interpolate, pie as d3pie, scaleOrdinal, schemeCategory20, select} from 'd3';
 
 class StatsChart {
   constructor($filter) {
@@ -30,11 +22,15 @@ class StatsChart {
     };
     const statChart = this._chart(select(element[0]), width, height, getData(scope.data)).render();
 
-    scope.$watch('data', (newVal, oldVal, scope) => {
-      if (scope.data) {
-        statChart.data(getData(newVal)).render();
-      }
-    }, true);
+    scope.$watch(
+      'data',
+      (newVal, oldVal, scope) => {
+        if (scope.data) {
+          statChart.data(getData(newVal)).render();
+        }
+      },
+      true
+    );
   }
 
   static factory() {
@@ -58,36 +54,41 @@ class StatsChart {
 
     object.render = () => {
       if (svg) {
-        g.data(pie(entries(data))).exit().remove();
+        g.data(pie(entries(data)))
+          .exit()
+          .remove();
 
         g.select('path')
-          .transition().duration(200)
+          .transition()
+          .duration(200)
           .attrTween('d', a => {
             const i = interpolate(this._current, a);
             this._current = i(0);
             return t => arc(i(t));
           });
 
-        g.select('text')
-          .attr('transform', d => `translate(${arc.centroid(d)})`);
+        g.select('text').attr('transform', d => `translate(${arc.centroid(d)})`);
 
         svg.select('text.text-tooltip').datum(data);
       } else {
         arc = d3arc()
           .outerRadius(radius)
           .innerRadius(radius - radius / 2);
-        svg = element.append('svg')
-        // .attr('width', width)
-        // .attr('height', height)
+        svg = element
+          .append('svg')
+          // .attr('width', width)
+          // .attr('height', height)
           .attr('preserveAspectRatio', 'xMinYMid')
           .attr('viewBox', `0 0 ${width} ${height}`)
-          .classed("chart-content", true)
+          .classed('chart-content', true)
           .append('g')
           .attr('transform', `translate(${width / 2},${height / 2})`);
 
-        g = svg.selectAll('.arc')
+        g = svg
+          .selectAll('.arc')
           .data(pie(entries(data)))
-          .enter().append('g')
+          .enter()
+          .append('g')
           .attr('class', 'arc');
 
         g.append('path')
@@ -102,7 +103,8 @@ class StatsChart {
           .style('text-anchor', 'middle');
         g.select('text').text(d => d.data.key);
 
-        svg.append('text')
+        svg
+          .append('text')
           .datum(data)
           .attr('x', 0)
           .attr('y', radius / 10)
@@ -111,18 +113,21 @@ class StatsChart {
           .attr('font-weight', 'bold')
           .style('font-size', `${radius / 3}px`);
 
-        svg.select('text.text-tooltip')
+        svg
+          .select('text.text-tooltip')
           .attr('fill', '#3c8dbc')
           .text(this._filter('megaNum')(total()));
 
         g.on('mouseover', obj => {
-          svg.select('text.text-tooltip')
+          svg
+            .select('text.text-tooltip')
             .attr('fill', d => color(obj.data.key))
             .text(d => this._filter('megaNum')(d[obj.data.key]));
         });
 
         g.on('mouseout', obj => {
-          svg.select('text.text-tooltip')
+          svg
+            .select('text.text-tooltip')
             .attr('fill', '#3c8dbc')
             .text(this._filter('megaNum')(total()));
         });

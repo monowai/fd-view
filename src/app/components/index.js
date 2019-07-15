@@ -7,7 +7,7 @@ import cyqtip from 'cytoscape-qtip';
 import cydagre from 'cytoscape-dagre';
 import services from '../services';
 
-import {contains, notEmpty, megaNum} from './filters';
+import {contains, megaNum, notEmpty} from './filters';
 import autofocus from './autofocus.directive';
 import ngHeight from './ng-height.directive';
 import {fdSearch} from './fd-search.component';
@@ -18,6 +18,7 @@ import {doctypeInput} from './doctype-input.component';
 
 import './components.scss';
 
+/** @ngInject */
 export default angular
   .module('fd-view.shared', [uiBootstrap, services])
   .filter('contains', contains)
@@ -34,5 +35,4 @@ export default angular
     cyedgehandles(cytoscape);
     cyqtip(cytoscape);
     cydagre(cytoscape);
-  })
-  .name;
+  }).name;

@@ -23,49 +23,51 @@ export default class EditColdefModal {
       col = _.pick(model, key);
     }
 
-    return this._modal.show({
-      size: 'lg',
-      backdrop: 'static',
-      controller: EditColdefCtrl,
-      controllerAs: '$ctrl',
-      template,
-      resolve: {
-        coldef: () => col
-      }
-    }).then(res => {
-      if (res.$id) {
-        _.each(model, cd => {
-          function checkAndUpdate(tag) {
-            if (tag.$id === res.$id) {
-              return _.extend(tag, res);
-            }
-            if (tag.targets) {
-              _.each(tag.targets, t => {
-                checkAndUpdate(t);
-              });
-            }
-          }
-
-          if (cd.tag) {
-            checkAndUpdate(cd);
-          }
-        });
-      } else {
-        model[key] = res;
-      }
-
-      if (dataType !== res.dataType) {
-        this._sample.convertCol(key, res.dataType);
-      }
-
-      if (res.$alias) {
-        const atag = this._cm.findTag(res.$alias.tag);
-        const alias = _.omit(res.$alias, 'tag');
-        atag.aliases = atag.aliases || [];
-        if (!_.findWhere(atag.aliases, alias)) {
-          atag.aliases.push(alias);
+    return this._modal
+      .show({
+        size: 'lg',
+        backdrop: 'static',
+        controller: EditColdefCtrl,
+        controllerAs: '$ctrl',
+        template,
+        resolve: {
+          coldef: () => col
         }
-      }
-    });
+      })
+      .then(res => {
+        if (res.$id) {
+          _.each(model, cd => {
+            function checkAndUpdate(tag) {
+              if (tag.$id === res.$id) {
+                return _.extend(tag, res);
+              }
+              if (tag.targets) {
+                _.each(tag.targets, t => {
+                  checkAndUpdate(t);
+                });
+              }
+            }
+
+            if (cd.tag) {
+              checkAndUpdate(cd);
+            }
+          });
+        } else {
+          model[key] = res;
+        }
+
+        if (dataType !== res.dataType) {
+          this._sample.convertCol(key, res.dataType);
+        }
+
+        if (res.$alias) {
+          const atag = this._cm.findTag(res.$alias.tag);
+          const alias = _.omit(res.$alias, 'tag');
+          atag.aliases = atag.aliases || [];
+          if (!_.findWhere(atag.aliases, alias)) {
+            atag.aliases.push(alias);
+          }
+        }
+      });
   }
 }

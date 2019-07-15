@@ -3,6 +3,7 @@
 // used ng-textcomplete directives in templates to replace when fixed
 
 import angular from 'angular';
+
 /** @ngInject */
 export default function textcomplete(Textcomplete) {
   return {
@@ -15,7 +16,8 @@ export default function textcomplete(Textcomplete) {
       placeholder: '@',
       disabled: '='
     },
-    template: '<textarea id="{{id}}" name="{{name}}" ng-model="message" type="text"  class="form-control" msd-elastic ng-disabled="disabled" placeholder="{{placeholder}}"></textarea>',
+    template:
+      '<textarea id="{{id}}" name="{{name}}" ng-model="message" type="text"  class="form-control" msd-elastic ng-disabled="disabled" placeholder="{{placeholder}}"></textarea>',
     link: (scope, iElement, iAttrs) => {
       const cols = scope.columns;
       const codes = ['data'];
@@ -24,7 +26,11 @@ export default function textcomplete(Textcomplete) {
         {
           match: /(^|\s)([\w\-]*)$/,
           search: (term, callback) => {
-            callback(cols.map(colName => colName.toLowerCase().includes(term.toLowerCase()) ? colName : null));
+            callback(
+              cols.map(colName =>
+                colName.toLowerCase().includes(term.toLowerCase()) ? colName : null
+              )
+            );
           },
           index: 2,
           replace: colName => `$1['${colName}']`
@@ -32,7 +38,9 @@ export default function textcomplete(Textcomplete) {
         {
           match: /(^|\s)#([\w\-]*)$/,
           search: (term, callback) => {
-            callback(codes.map(code => code.toLowerCase().includes(term.toLowerCase()) ? code : null));
+            callback(
+              codes.map(code => (code.toLowerCase().includes(term.toLowerCase()) ? code : null))
+            );
           },
           index: 2,
           replace: code => `$1#${code}[`

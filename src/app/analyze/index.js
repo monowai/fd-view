@@ -12,9 +12,9 @@ import {analyzeView} from './analyze.component';
 import AnalyzeConfig from './analyze.config';
 import {fdAggForm} from './agg-form.component';
 
+/** @ngInject */
 export default angular
   .module('fd-view.analyze', [uiRouter, toastr, services, config, layout, components, charts])
   .component('analyzeView', analyzeView)
   .component('fdAggForm', fdAggForm)
-  .config(AnalyzeConfig)
-  .name;
+  .config(AnalyzeConfig).name;

@@ -21,7 +21,18 @@ import template from './search.html';
 
 class MetaHeaderCtrl {
   /** @ngInject */
-  constructor($stateParams, $window, EntityService, $timeout, $anchorScroll, QueryService, MatrixRequest, configuration, SearchService, $ngRedux) {
+  constructor(
+    $stateParams,
+    $window,
+    EntityService,
+    $timeout,
+    $anchorScroll,
+    QueryService,
+    MatrixRequest,
+    configuration,
+    SearchService,
+    $ngRedux
+  ) {
     if ($stateParams.filter) {
       SearchService.fortress = MatrixRequest.fortress;
       SearchService.types = MatrixRequest.document;
@@ -40,10 +51,12 @@ class MetaHeaderCtrl {
     this.selectedLog = [];
 
     // Can do Fortress+DocType structure rather than x^2
-    this.fortress = SearchService.fortress ? SearchService.fortress[0] : "";
-    this.types = SearchService.types ? SearchService.types.map(t => {
-      return {name: t};
-    }) : [];
+    this.fortress = SearchService.fortress ? SearchService.fortress[0] : '';
+    this.types = SearchService.types
+      ? SearchService.types.map(t => {
+        return {name: t};
+      })
+      : [];
 
     this.tf = SearchService.term;
 
@@ -89,34 +102,37 @@ class MetaHeaderCtrl {
   findLogs(entityKey, index) {
     if (this.searchResults[index].logs === null && !this.searchResults[index].seeLogsAction) {
       this.metaheaderSelected = entityKey;
-      this._entity.getLogsForEntity(entityKey)
-        .then(data => {
-          this.searchResults[index].logs = data.changes;
-          this.searchResults[index].seeLogsAction = true;
-          // console.log('searchResults : ', this.searchResults);
-          this.logsResults = data.changes;
-          this.fragments = data.fragments;
-          this.logResultFound = true;
-        });
+      this._entity.getLogsForEntity(entityKey).then(data => {
+        this.searchResults[index].logs = data.changes;
+        this.searchResults[index].seeLogsAction = true;
+        // console.log('searchResults : ', this.searchResults);
+        this.logsResults = data.changes;
+        this.fragments = data.fragments;
+        this.logResultFound = true;
+      });
     } else {
       this.searchResults[index].seeLogsAction = !this.searchResults[index].seeLogsAction;
     }
   }
 
   openPopup(logId) {
-    this.log1 = this._entity.getJsonContentForLog(this.metaheaderSelected, logId)
-      ;// .then(data => this.log1 = data);
+    this.log1 = this._entity.getJsonContentForLog(this.metaheaderSelected, logId); // .then(data => this.log1 = data);
     const modalOptions = {
       log1: this.log1
     };
 
     modalService
-      .show({
-        templateUrl: 'app/search/single-log-modal.html'
-      }, modalOptions)
-      .then(selectedItem => {
-        this.selected = selectedItem;
-      } /* , () => $log.info('Modal dismissed at: ' + new Date())  */);
+      .show(
+        {
+          templateUrl: 'app/search/single-log-modal.html'
+        },
+        modalOptions
+      )
+      .then(
+        selectedItem => {
+          this.selected = selectedItem;
+        } /* , () => $log.info('Modal dismissed at: ' + new Date())  */
+      );
   }
 
   openDeltaPopup() {
@@ -129,37 +145,47 @@ class MetaHeaderCtrl {
     // Getting Log2
     this.log2 = this._entity.getJsonContentForLog(this.metaheaderSelected, logId2);
 
-    const ModalInstanceCtrl = ['$uibModalInstance', 'log1', 'log2', function ($uibModalInstance, log1, log2) {
-      this.log1 = log1;
-      this.log2 = log2;
-      this.showUnchangedFlag = false;
-      this.showUnchanged = () => {
-        if (this.showUnchangedFlag) {
-          jsondiffpatch.formatters.html.hideUnchanged();
-        } else {
-          jsondiffpatch.formatters.html.showUnchanged();
-        }
-        this.showUnchangedFlag = !this.showUnchangedFlag;
-      };
-      this.ok = () => {
-        $uibModalInstance.dismiss('cancel');
-      };
-    }];
-
-    modalService.show({
-      size: 'lg',
-      template: require('./delta-modal.html'),
-      controller: ModalInstanceCtrl,
-      controllerAs: '$ctrl',
-      resolve: {
-        log1: () => this.log1,
-        log2: () => this.log2
+    const ModalInstanceCtrl = [
+      '$uibModalInstance',
+      'log1',
+      'log2',
+      function ($uibModalInstance, log1, log2) {
+        this.log1 = log1;
+        this.log2 = log2;
+        this.showUnchangedFlag = false;
+        this.showUnchanged = () => {
+          if (this.showUnchangedFlag) {
+            jsondiffpatch.formatters.html.hideUnchanged();
+          } else {
+            jsondiffpatch.formatters.html.showUnchanged();
+          }
+          this.showUnchangedFlag = !this.showUnchangedFlag;
+        };
+        this.ok = () => {
+          $uibModalInstance.dismiss('cancel');
+        };
       }
-    }).then(selectedItem => {
-      this.selected = selectedItem;
-    }, () => {
-      // $log.info('Modal dismissed at: ' + new Date());
-    });
+    ];
+
+    modalService
+      .show({
+        size: 'lg',
+        template: require('./delta-modal.html'),
+        controller: ModalInstanceCtrl,
+        controllerAs: '$ctrl',
+        resolve: {
+          log1: () => this.log1,
+          log2: () => this.log2
+        }
+      })
+      .then(
+        selectedItem => {
+          this.selected = selectedItem;
+        },
+        () => {
+          // $log.info('Modal dismissed at: ' + new Date());
+        }
+      );
   }
 }
 

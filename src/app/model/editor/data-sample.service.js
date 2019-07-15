@@ -19,8 +19,7 @@ export default class DataSampleService {
             .map(c)
             .filter(d => d === '')
             .pairs()
-            .value()
-            .length
+            .value().length
         };
         const o = {};
         if (model[c].callerRef) {
@@ -40,7 +39,8 @@ export default class DataSampleService {
               least: _.last(count),
               most: _.first(count),
               values: count
-            }});
+            }
+          });
         }
         if (col.type === 'number' || col.type === 'date') {
           if (!model[c].callerRef) {
@@ -49,7 +49,8 @@ export default class DataSampleService {
                 min: d3.min(sample, d => d[c]),
                 max: d3.max(sample, d => d[c]),
                 mean: d3.mean(sample, d => d[c])
-              }});
+              }
+            });
           }
         }
         return o;
@@ -98,8 +99,8 @@ export default class DataSampleService {
       this.rows = _.map(res.data.results, (r, i) => {
         const row = entry[i] ? _.clone(entry[i].content.data) : {code: i};
         row._entry = entry[i];
-        return Object.assign(row,
-          {_messages: _(r)
+        return Object.assign(row, {
+          _messages: _(r)
             .filter(res => res.messages.length)
             .map(m => {
               const msg = {};
@@ -108,39 +109,53 @@ export default class DataSampleService {
                 messages: m.messages
               };
               return msg;
-            }).transform(_.ary(_.extend, 2), {})
+            })
+            .transform(_.ary(_.extend, 2), {})
             .value()
-          });
+        });
       });
       this.valGridOptions = {
-        columnDefs: _(model.content).map((v, k) => {
-          return {field: k, headerName: k, editable: false,
-            headerClass: () => {
-              if (v.tag) {
-                return 'tag';
-              }
-              if (v.$alias) {
-                return 'alias';
-              }
-              if (v.callerRef) {
-                return 'bg-green';
-              }
-              if (!v.persistent) {
-                return 'dim';
-              }
-            },
-            cellClass: params => params.data._messages[k] ? 'bg-danger' : null,
-            cellRenderer: params => params.data._messages[k] ?
-              `<a href ng-click="$ctrl.showValidMsg(${params.rowIndex})" uib-tooltip="Click to see messages" tooltip-append-to-body="true"><i class="fa fa-warning"></i></a>` : params.value || ''
-          };
-        })
-          .unshift({field: 'code', headerName: 'Code', suppressSorting: true, suppressMenu: true, pinned: true,
+        columnDefs: _(model.content)
+          .map((v, k) => {
+            return {
+              field: k,
+              headerName: k,
+              editable: false,
+              headerClass: () => {
+                if (v.tag) {
+                  return 'tag';
+                }
+                if (v.$alias) {
+                  return 'alias';
+                }
+                if (v.callerRef) {
+                  return 'bg-green';
+                }
+                if (!v.persistent) {
+                  return 'dim';
+                }
+              },
+              cellClass: params => (params.data._messages[k] ? 'bg-danger' : null),
+              cellRenderer: params =>
+                params.data._messages[k]
+                  ? `<a href ng-click="$ctrl.showValidMsg(${params.rowIndex})" uib-tooltip="Click to see messages" tooltip-append-to-body="true"><i class="fa fa-warning"></i></a>`
+                  : params.value || ''
+            };
+          })
+          .unshift({
+            field: 'code',
+            headerName: 'Code',
+            suppressSorting: true,
+            suppressMenu: true,
+            pinned: true,
             cellRenderer: params => {
-              const msgsTpl = _.isEmpty(params.data._messages) ? '' :
-                `<a href ng-click="$ctrl.showValidMsg(${params.rowIndex})" tooltip-placement="auto top-right" tooltip-append-to-body="true" uib-tooltip="Click to see messages"><i class="fa fa-warning"></i></a>`;
-              const entityTpl = params.data._entry ?
-                `<a href ng-click="$ctrl.showResult(${params.rowIndex})" tooltip-placement="auto top-right" tooltip-append-to-body="true" uib-tooltip="Click to see result entity">
-                   <i class="fa fa-info"></i></a>` : '';
+              const msgsTpl = _.isEmpty(params.data._messages)
+                ? ''
+                : `<a href ng-click="$ctrl.showValidMsg(${params.rowIndex})" tooltip-placement="auto top-right" tooltip-append-to-body="true" uib-tooltip="Click to see messages"><i class="fa fa-warning"></i></a>`;
+              const entityTpl = params.data._entry
+                ? `<a href ng-click="$ctrl.showResult(${params.rowIndex})" tooltip-placement="auto top-right" tooltip-append-to-body="true" uib-tooltip="Click to see result entity">
+                   <i class="fa fa-info"></i></a>`
+                : '';
               return `${msgsTpl + entityTpl}&nbsp;<span>${params.value}</span>`;
             }
           })
@@ -172,10 +187,12 @@ export default class DataSampleService {
 
   track() {
     if (this.validationResult) {
-      let payload = this._cm.getCurrent().tagModel ?
-        this.validationResult.tags[0] : this.validationResult.entity;
+      let payload = this._cm.getCurrent().tagModel
+        ? this.validationResult.tags[0]
+        : this.validationResult.entity;
       payload = _.map(payload, e => e);
-      this._http.put(`${this._cfg.engineUrl()}/api/v1/track/`, payload)
+      this._http
+        .put(`${this._cfg.engineUrl()}/api/v1/track/`, payload)
         .then(res => this._toastr.success(res.statusText, 'Success'));
     }
   }

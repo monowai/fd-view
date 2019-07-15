@@ -27,8 +27,8 @@ export const fetchEntity = entityKey => {
     try {
       const EntityService = getAngularService(document, 'EntityService');
       const log = await EntityService.getLogsForEntity(entityKey);
-      const details = log.changes[0] &&
-        await EntityService.getJsonContentForLog(entityKey, log.changes[0].id);
+      const details =
+        log.changes[0] && (await EntityService.getJsonContentForLog(entityKey, log.changes[0].id));
       // const tags = await EntityService.getTagsForEntity(entityKey);
       dispatch(loadEntitySuccess({...log, details, entityKey}));
     } catch (e) {

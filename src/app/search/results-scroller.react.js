@@ -1,10 +1,9 @@
-import React from 'react';
 import {connect} from 'react-redux';
 import InfiniteScroll from 'redux-infinite-scroll';
 
 import {Button} from 'react-bootstrap';
 import SearchResult from './search-result.react';
-import {selectProvider, selectTypes, fetchTypes} from '../config/actions';
+import {fetchTypes, selectProvider, selectTypes} from '../config/actions';
 import {runTermSearch} from './actions';
 
 const ResultsScroller = ({entities, total, index, onSearch, setFilter, ...params}) => {
@@ -14,13 +13,26 @@ const ResultsScroller = ({entities, total, index, onSearch, setFilter, ...params
 
   return (
     <InfiniteScroll
-      loadMore={loadMore} hasMore={index < total} elementIsScrollable={false} className="timeline"
+  loadMore = {loadMore}
+  hasMore = {index < total
+}
+  elementIsScrollable = {false}
+  className = "timeline"
     >
       <li className="time-label">
         <span className="bg-green">{total} Search Results</span>
       </li>
-      {entities.map((searchResult, i) => (<SearchResult key={i} entity={searchResult} setFilter={setFilter} />))}
-      {(index < total &&
+  {
+    entities.map((searchResult, i) => (
+      < SearchResult
+    key = {i}
+    entity = {searchResult}
+    setFilter = {setFilter}
+    />
+  ))
+  }
+  {
+    index < total && (
         <li className="text-center">
           <Button bsStyle="default" bsSize="small" onClick={loadMore}>
             <i className="fa fa-arrow-down text-muted" />
@@ -54,14 +66,19 @@ const mapDispatchToProps = dispatch => ({
   },
   onSearch(params) {
     const {term, fortress, types, index, filter} = params;
-    dispatch(runTermSearch({
-      searchText: term || '*',
-      fortress: fortress.length ? fortress[0].name : null,
-      types: types.map(t => t.name),
-      from: index,
-      filter: Object.keys(filter).length ? filter : null
-    }));
+    dispatch(
+      runTermSearch({
+        searchText: term || '*',
+        fortress: fortress.length ? fortress[0].name : null,
+        types: types.map(t => t.name),
+        from: index,
+        filter: Object.keys(filter).length ? filter : null
+      })
+    );
   }
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(ResultsScroller);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(ResultsScroller);

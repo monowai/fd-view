@@ -2,15 +2,15 @@
 
 import angular from 'angular';
 import ReactDOM from 'react-dom';
-import React from 'react';
 import {Provider} from 'react-redux';
 import {mapValues} from 'lodash';
 
 function render(element, Component, props) {
-  ReactDOM.render(
-    <Component { ...props } />,
-    element,
-  );
+  ReactDOM.render( < Component
+  {...
+    props
+  }
+  />, element);
 }
 
 function toBindings(propTypes) {
@@ -40,5 +40,12 @@ export function react2angular(Component) {
 }
 
 export const wrapProvider = WrappedComponent => ({store, ...props}) => (
-  <Provider store={store}><WrappedComponent {...props} /></Provider>
+  < Provider
+store = {store} >
+  < WrappedComponent
+{...
+  props
+}
+/>
+< /Provider>
 );

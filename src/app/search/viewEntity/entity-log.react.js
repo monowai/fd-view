@@ -1,4 +1,3 @@
-import React from 'react';
 import moment from 'moment';
 
 import {Col} from 'react-bootstrap';
@@ -12,20 +11,36 @@ const ChangeLog = ({logSelected, changes, onClick}) => (
           onClick={() => logSelected !== logsResult.id && onClick(logsResult.id)}
           className={logsResult.id === logSelected && 'fd-log-selected'}
         >
-          <i className="fa fa-file-text"/>
-          <div className="timeline-item" >
-              <span className="time">
-                <i className="fa fa-clock-o" style={{marginRight: 5}}/>
-                {moment(logsResult.when).format('YYYY-MM-DD, hh:mm a')}
-              </span>
+            < i
+className = "fa fa-file-text" / >
+  < div
+className = "timeline-item" >
+  < span
+className = "time" >
+  < i
+className = "fa fa-clock-o"
+style = {
+{
+  marginRight: 5
+}
+}
+/>
+{
+  moment(logsResult.when).format('YYYY-MM-DD, hh:mm a')
+}
+<
+/span>
 
-            <h3 className="timeline-header"><em>{logsResult.event.name}</em></h3>
+< h3
+className = "timeline-header" >
+  < em > {logsResult.event.name} < /em>
+  < /h3>
 
             <div className="timeline-body">
               <p>
                 <strong>{logsResult.madeBy}</strong> - {logsResult.comment}
               </p>
-              <br/>
+  < br / >
             </div>
           </div>
         </li>

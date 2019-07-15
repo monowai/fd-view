@@ -1,12 +1,8 @@
-import React from 'react';
 import PropTypes from 'prop-types';
 
-import {Col, Tabs, Tab} from 'react-bootstrap';
-import brace from 'brace';
+import {Col, Tab, Tabs} from 'react-bootstrap';
 import AceEditor from 'react-ace';
 import 'brace/theme/github';
-
-import JsonEditor from '../../components/jsoneditor.react';
 import JsonView from 'react-json-view';
 import JsonDiff from './jsondiff.react';
 
@@ -23,27 +19,80 @@ const EntityInfo = props => {
 
   return (
     <Col xs={12} sm={12} md={8} lg={8}>
-      <Tabs defaultActiveKey={src ? "code" : "tags"} className="nav-tabs-custom" id="entity-info">
-        {src ?
-          <Tab eventKey="code" title={<span><i className="fa fa-file-text"/> Source</span>}>
+    < Tabs
+  defaultActiveKey = {src ? 'code' : 'tags'}
+  className = "nav-tabs-custom"
+  id = "entity-info" >
+    {
+      src ? (
+        < Tab
+        eventKey = "code"
+      title = {
+      < span >
+      < i className = "fa fa-file-text" / > Source
+      < /span>
+    }
+    >
             <AceEditor
               readOnly={true}
               value={src}
               mode={type}
               width="100%"
               theme="github"
-              editorProps={{$blockScrolling: true}}
+  editorProps = {
+  {
+    $blockScrolling: true
+  }
+}
             />
-          </Tab> :
-          <Tab eventKey="details" title={<span><i className="fa fa-clock-o"/> Details</span>}>
-            <JsonView src={details}/>
+            < /Tab>
+) :
+  (
+  < Tab
+  eventKey = "details"
+  title = {
+    < span >
+    < i
+  className = "fa fa-clock-o" / > Details
+    < /span>
+}
+>
+<
+  JsonView
+  src = {details}
+  />
           </Tab>
-        }
-        <Tab eventKey="tags" title={<span><i className="fa fa-tags"/> Tags</span>}>
-          <EntityTags tags={tags}/>
+)
+}
+<
+  Tab
+  eventKey = "tags"
+  title = {
+    < span >
+    < i
+  className = "fa fa-tags" / > Tags
+    < /span>
+}
+>
+<
+  EntityTags
+  tags = {tags}
+  />
         </Tab>
-        <Tab eventKey="delta" title={<span><i className="fa fa-arrow-right"/> Delta</span>}>
-          <JsonDiff selected={details} delta={delta}/>
+  < Tab
+  eventKey = "delta"
+  title = {
+    < span >
+    < i
+  className = "fa fa-arrow-right" / > Delta
+    < /span>
+}
+>
+<
+  JsonDiff
+  selected = {details}
+  delta = {delta}
+  />
         </Tab>
       </Tabs>
     </Col>

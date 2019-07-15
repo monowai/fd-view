@@ -1,7 +1,6 @@
-import React from 'react';
 import {connect} from 'react-redux';
 
-import {Row, Col} from 'react-bootstrap';
+import {Col, Row} from 'react-bootstrap';
 import ResultsScroller from './results-scroller.react';
 import {getAngularService} from '../services/angular-react-helper';
 
@@ -12,7 +11,9 @@ const FdSearchResults = ({total}) => {
       <Row id="results">
         <Col md={12}>
           <div className="box-body">
-            <ResultsScroller store={store}/>
+      < ResultsScroller
+    store = {store}
+    />
           </div>
         </Col>
       </Row>

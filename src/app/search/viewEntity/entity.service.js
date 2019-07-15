@@ -19,13 +19,13 @@ export default class Entity {
 
   getJsonContentForLog(entityKey, logId) {
     const url = `${this._cfg.engineUrl()}/api/v1/entity/${entityKey}/log/${logId}/data`;
-  // This endpoint only ever returns JSON type data
+    // This endpoint only ever returns JSON type data
     return this._http.get(url).then(res => res.data);
   }
 
   getJsonAttachmentForLog(entityKey, logId) {
     const url = `${this._cfg.engineUrl()}/api/v1/entity/${entityKey}/log/${logId}/attachment`;
-  // Content for this EP is variable - PDF, XLS, PPT etc. Can be found from the Log
+    // Content for this EP is variable - PDF, XLS, PPT etc. Can be found from the Log
     return this._http.get(url).then(res => res.data);
   }
 

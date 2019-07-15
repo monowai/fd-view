@@ -4,7 +4,7 @@
 // Based on post by Hassan Khan - https://github.com/josdejong/jsoneditor/issues/274#issuecomment-263986071
 // Wrapper By Ian Grossberg - https://gist.github.com/yoiang/6f82874f4fd8fc1a37631dc9cad27172
 
-import React, {Component} from 'react';
+import {Component} from 'react';
 import PropTypes from 'prop-types';
 import JSONEditor from 'jsoneditor';
 
@@ -18,7 +18,6 @@ import 'jsoneditor/dist/jsoneditor.css';
 
 // TO DO: onChange, onEditable, onError
 export default class ReactJSONEditor extends Component {
-
   constructor(props) {
     super(props);
 
@@ -128,24 +127,25 @@ export default class ReactJSONEditor extends Component {
     const refGrabber = ref => {
       this.editorRef = ref;
     };
-    return (
-      <div
-        id = "jsonEditor"
-        className = {className}
-        ref={refGrabber}
-        style={ {height, width} }
-      />
-    );
+    return
+  <
+    div
+    id = "jsonEditor"
+    className = {className}
+    ref = {refGrabber}
+    style = {
+    {
+      height, width
+    }
+  }
+    />;
   }
 }
 
 ReactJSONEditor.propTypes = {
   className: PropTypes.string,
 
-  json: PropTypes.oneOfType([
-    PropTypes.array,
-    PropTypes.object
-  ]).isRequired,
+  json: PropTypes.oneOfType([PropTypes.array, PropTypes.object]).isRequired,
 
   height: PropTypes.number,
   width: PropTypes.number,
@@ -164,9 +164,7 @@ ReactJSONEditor.propTypes = {
 
   history: PropTypes.bool,
 
-  mode: PropTypes.oneOf([
-    'tree', 'view', 'form', 'code', 'text'
-  ]).isRequired,
+  mode: PropTypes.oneOf(['tree', 'view', 'form', 'code', 'text']).isRequired,
 
   name: PropTypes.string,
 
@@ -190,4 +188,3 @@ ReactJSONEditor.defaultProps = {
 
   indentation: 2
 };
-

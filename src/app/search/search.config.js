@@ -20,17 +20,16 @@
 
 /** @ngInject */
 function SearchConfig($stateProvider, USER_ROLES) {
-  $stateProvider
-    .state('search', {
-      url: '/search',
-      component: 'searchView',
-      params: {
-        filter: null
-      },
-      data: {
-        authorizedRoles: [USER_ROLES.user]
-      }
-    });
+  $stateProvider.state('search', {
+    url: '/search',
+    component: 'searchView',
+    params: {
+      filter: null
+    },
+    data: {
+      authorizedRoles: [USER_ROLES.user]
+    }
+  });
 }
 
 export default SearchConfig;

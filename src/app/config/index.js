@@ -21,9 +21,9 @@
 import Configuration from './configuration';
 import {ENGINE_URL, USER_ROLES} from './constants';
 
+/** @ngInject */
 export default angular
   .module('config', [])
   .provider('configuration', Configuration)
   .constant('engineUrl', ENGINE_URL)
-  .constant('USER_ROLES', USER_ROLES)
-  .name;
+  .constant('USER_ROLES', USER_ROLES).name;

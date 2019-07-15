@@ -17,16 +17,19 @@ export default class ModalService {
     const tempModalOptions = Object.assign({}, customModalOptions);
 
     if (!tempModalDefaults.controller) {
-      tempModalDefaults.controller = ['$scope', '$uibModalInstance', function ($scope, $uibModalInstance) {
-        $scope.modalOptions = tempModalOptions;
-        $scope.obj = $scope.modalOptions.obj;
+      tempModalDefaults.controller = [
+        '$scope',
+        '$uibModalInstance',
+        function ($scope, $uibModalInstance) {
+          $scope.modalOptions = tempModalOptions;
+          $scope.obj = $scope.modalOptions.obj;
 
-        $scope.ok = res => $uibModalInstance.close(res);
-        $scope.close = $uibModalInstance.dismiss;
-      }];
+          $scope.ok = res => $uibModalInstance.close(res);
+          $scope.close = $uibModalInstance.dismiss;
+        }
+      ];
     }
 
     return this._uibModal.open(tempModalDefaults).result;
   }
 }
-

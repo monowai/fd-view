@@ -1,10 +1,21 @@
 {
-  "presets": [
-    "react",
-    "env"
-  ],
   "plugins": [
-    "transform-object-rest-spread",
-    "transform-class-properties"
+    "@babel/proposal-class-properties",
+    [
+      "@babel/proposal-object-rest-spread",
+      {},
+      "blah"
+    ],
+    [
+      "angularjs-annotate",
+      {
+        "explicitOnly": false
+      }
+    ]
+  ],
+  "presets": [
+    "@babel/preset-env",
+    "@babel/preset-react",
+    "@babel/preset-typescript"
   ]
 }

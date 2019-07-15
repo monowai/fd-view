@@ -1,13 +1,22 @@
 import angular from 'angular';
-import {range, descending, ascending} from 'd3';
+import {ascending, descending, range} from 'd3';
 
 import {constructChordData} from './charts/chord.helpers';
-import template from './analyze.html';
+import template from './analyze.html'; // disabled for ElasticSearch query, re-enable on adding features
 
-/* eslint-disable */ // disabled for ElasticSearch query, re-enable on adding features
+/* eslint-disable */
 class AnalyzeCtrl {
   /** @ngInject */
-  constructor($scope, QueryService, MatrixRequest, SearchService, $window, $timeout, toastr, BiPartiteService) {
+  constructor(
+    $scope,
+    QueryService,
+    MatrixRequest,
+    SearchService,
+    $window,
+    $timeout,
+    toastr,
+    BiPartiteService
+  ) {
     this.graphData = MatrixRequest.lastMatrix().matrix;
     this.chartTypes = ['Chord', 'Matrix', 'BiPartite', 'TagCloud', 'Barchart'];
     this.chartType = MatrixRequest.chart || 'Chord';
@@ -21,8 +30,7 @@ class AnalyzeCtrl {
     this._toastr = toastr;
     this._bp = BiPartiteService;
 
-    angular.element($window)
-      .on('resize', () => $scope.$apply());
+    angular.element($window).on('resize', () => $scope.$apply());
   }
 
   $onInit() {
@@ -44,12 +52,17 @@ class AnalyzeCtrl {
 
   _checkOptions() {
     if (!_.isEmpty(this.graphData)) {
-      if (((this.chartType === 'Chord' || this.chartType === 'TagCloud') &&
-        (this._matrix.reciprocalExcluded() && !this._matrix.sharedChecked())) ||
+      if (
+        ((this.chartType === 'Chord' || this.chartType === 'TagCloud') &&
+          (this._matrix.reciprocalExcluded() && !this._matrix.sharedChecked())) ||
         ((this.chartType === 'Matrix' || this.chartType === 'BiPartite') &&
-        (!this._matrix.reciprocalExcluded() && this._matrix.sharedChecked()))) {
-        this._toastr.warning(`Search results are not optimal for ${this.chartType} diagram. You can change <strong>Search settings</strong> or chart type.`,
-          'Warning', {allowHtml: true});
+          (!this._matrix.reciprocalExcluded() && this._matrix.sharedChecked()))
+      ) {
+        this._toastr.warning(
+          `Search results are not optimal for ${this.chartType} diagram. You can change <strong>Search settings</strong> or chart type.`,
+          'Warning',
+          {allowHtml: true}
+        );
       }
     }
   }
@@ -66,7 +79,14 @@ class AnalyzeCtrl {
 
   search() {
     if (this.chartType === 'TagCloud') {
-      this._query.tagCloud(this._matrix.searchText, this._matrix.document, this._matrix.fortress, this._matrix.concept, this._matrix.fromRlx)
+      this._query
+        .tagCloud(
+          this._matrix.searchText,
+          this._matrix.document,
+          this._matrix.fortress,
+          this._matrix.concept,
+          this._matrix.fromRlx
+        )
         .then(data => {
           angular.element('[data-target="#view"]').tab('show');
           this.data = data.terms;
@@ -91,9 +111,15 @@ class AnalyzeCtrl {
         }
       };
 
-      terms.order[this._matrix.byMeasure ? '_term' :
-        (at === '_count') ? '_count' :
-          (at === 'percentiles') ? 'metric.50' : 'metric'] = this._matrix.order;
+      terms.order[
+        this._matrix.byMeasure
+          ? '_term'
+          : at === '_count'
+          ? '_count'
+          : at === 'percentiles'
+            ? 'metric.50'
+            : 'metric'
+        ] = this._matrix.order;
 
       if (at !== '_count') {
         if (this._matrix.metric) {
@@ -110,9 +136,9 @@ class AnalyzeCtrl {
       this._query.query('es', query).then(res => {
         this.aggData = res.aggregations.data.buckets.filter(b => {
           if (b.metric) {
-            return b.metric.hasOwnProperty('value') ?
-              b.metric.value :
-              b.metric.values['50.0'] !== 'NaN';
+            return b.metric.hasOwnProperty('value')
+              ? b.metric.value
+              : b.metric.values['50.0'] !== 'NaN';
           }
           return b;
         });
@@ -129,22 +155,21 @@ class AnalyzeCtrl {
         angular.element('[data-target="#view"]').tab('show');
       });
     } else {
-      this._matrix.matrixSearch()
-        .then(res => {
-          if (!res || !res.matrix.length) {
-            this._toastr.info('No data was found. Try altering your criteria');
-            return res;
-          }
-          angular.element('[data-target="#view"]').tab('show');
+      this._matrix.matrixSearch().then(res => {
+        if (!res || !res.matrix.length) {
+          this._toastr.info('No data was found. Try altering your criteria');
+          return res;
+        }
+        angular.element('[data-target="#view"]').tab('show');
 
-          this.graphData = res.matrix;
-          this.cdData = null;
-          this.coData = null;
-          this.bpData = null;
-          // this.coMgr = new ConstructCooccurrenceData(this.graphData);
+        this.graphData = res.matrix;
+        this.cdData = null;
+        this.coData = null;
+        this.bpData = null;
+        // this.coMgr = new ConstructCooccurrenceData(this.graphData);
 
-          this.switchChart();
-        });
+        this.switchChart();
+      });
     }
   }
 

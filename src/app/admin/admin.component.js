@@ -4,11 +4,10 @@ class AdminCtrl {
   /** @ngInject */
   constructor($http, configuration) {
     this.health = {title: 'Health'};
-    $http.get(`${configuration.engineUrl()}/api/v1/admin/health`)
-      .then(res => {
-        this.fdhealth = res.data;
-        this.health.state = res.data;
-      });
+    $http.get(`${configuration.engineUrl()}/api/v1/admin/health`).then(res => {
+      this.fdhealth = res.data;
+      this.health.state = res.data;
+    });
   }
 }
 

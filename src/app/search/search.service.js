@@ -12,7 +12,7 @@ function SearchService(EntityService) {
     if (termFilter) {
       query.match[termFilter.name] = {
         query: termFilter.value,
-        type: "phrase"
+        type: 'phrase'
       };
 
       this.termFilter = {bool: {must: [{query}]}};
@@ -24,7 +24,13 @@ function SearchService(EntityService) {
       return;
     }
     this.busy = true;
-    const data = await EntityService.search(this.searchText, this.fortress, this.typesToBeSend, this.index, this.termFilter);
+    const data = await EntityService.search(
+      this.searchText,
+      this.fortress,
+      this.typesToBeSend,
+      this.index,
+      this.termFilter
+    );
     _.forEach(data.results, d => {
       d.resources = [];
       let uniqueList = [];

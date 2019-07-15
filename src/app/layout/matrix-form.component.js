@@ -8,18 +8,16 @@ class MatrixFormCtrl {
   }
 
   $onInit() {
-    this._query.general('fortress')
-      .then(data => {
-        this.params.fortresses = data;
-      });
+    this._query.general('fortress').then(data => {
+      this.params.fortresses = data;
+    });
   }
 
   selectFortress(f) {
     this.params.fortress = f;
-    this._query.doc(f)
-      .then(data => {
-        this.params.documents = data;
-      });
+    this._query.doc(f).then(data => {
+      this.params.documents = data;
+    });
     this.params.concepts = [];
     this.params.fromRlxs = [];
     this.params.toRlxs = [];
@@ -47,17 +45,17 @@ class MatrixFormCtrl {
 
   selectConcept(concept) {
     this.params.concept = concept;
-    this._query.concept('/relationships', this.params.document)
-      .then(data => {
-        const conceptMap = _.filter(_.flatten(_.map(data, d => d.concepts)),
-          c => _.includes(concept, c.name));
+    this._query.concept('/relationships', this.params.document).then(data => {
+      const conceptMap = _.filter(_.flatten(_.map(data, d => d.concepts)), c =>
+        _.includes(concept, c.name)
+      );
 
-        const rlxMap = _.flatten(_.map(conceptMap, c => c.relationships));
-        const rlx = _.uniq(rlxMap, c => c.name);
+      const rlxMap = _.flatten(_.map(conceptMap, c => c.relationships));
+      const rlx = _.uniq(rlxMap, c => c.name);
 
-        this.params.fromRlxs = rlx;
-        this.params.toRlxs = rlx;
-      });
+      this.params.fromRlxs = rlx;
+      this.params.toRlxs = rlx;
+    });
   }
 }
 

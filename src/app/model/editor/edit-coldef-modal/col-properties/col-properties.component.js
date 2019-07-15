@@ -13,21 +13,23 @@ class ColPropertiesCtrl {
   }
 
   editProperty(properties, property) {
-    this._modal.show({
-      template: editPropertyTemplate,
-      controller: EditPropertyModalCtrl,
-      controllerAs: '$ctrl',
-      resolve: {
-        property: () => property,
-        col: () => this.column.name
-      }
-    }).then(res => {
-      if (property) {
-        angular.extend(property, res);
-      } else {
-        properties.push(res);
-      }
-    });
+    this._modal
+      .show({
+        template: editPropertyTemplate,
+        controller: EditPropertyModalCtrl,
+        controllerAs: '$ctrl',
+        resolve: {
+          property: () => property,
+          col: () => this.column.name
+        }
+      })
+      .then(res => {
+        if (property) {
+          angular.extend(property, res);
+        } else {
+          properties.push(res);
+        }
+      });
   }
 
   addProperty(col) {

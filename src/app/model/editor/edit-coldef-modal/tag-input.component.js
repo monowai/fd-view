@@ -5,10 +5,9 @@ class TagInputCtrl {
   }
 
   getTags() {
-    this._query.general('tag')
-      .then(data => {
-        this.tags = data;
-      });
+    this._query.general('tag').then(data => {
+      this.tags = data;
+    });
   }
 }
 

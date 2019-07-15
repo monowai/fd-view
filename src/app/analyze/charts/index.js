@@ -18,5 +18,4 @@ export default angular
   .component('bipartiteDiagram', bipartiteDiagram)
   .directive('cooccurrenceDiagram', cooccurrenceDiagram)
   .directive('tagCloud', tagCloud)
-  .directive('barChart', barChart)
-  .name;
+  .directive('barChart', barChart).name;

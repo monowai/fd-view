@@ -55,21 +55,18 @@ class ViewEntityCtrl {
   }
 
   openExplore() {
-    this._entity.getEntityPK(this.entityKey)
-      .then(id => {
-        const url = `${this._conf.exploreUrl()}graph.html?id=${id}`;
-        this._window.open(url);
-      }
-    );
+    this._entity.getEntityPK(this.entityKey).then(id => {
+      const url = `${this._conf.exploreUrl()}graph.html?id=${id}`;
+      this._window.open(url);
+    });
   }
 
   // openPopup , openDeltaPopup , selectLog must not be duplicated
   openPopup(logId) {
     this.logSelected = logId;
-    this._entity.getJsonContentForLog(this.entityKey, logId)
-      .then(data => {
-        this.log = data;
-      });
+    this._entity.getJsonContentForLog(this.entityKey, logId).then(data => {
+      this.log = data;
+    });
 
     // reset Logs DELTA
     this.log1 = {};
@@ -81,16 +78,14 @@ class ViewEntityCtrl {
     const logId2 = this.selectedLog[1];
 
     // Getting Log1
-    this._entity.getJsonContentForLog(this.entityKey, logId1)
-      .then(data => {
-        this.log1 = data;
-      });
+    this._entity.getJsonContentForLog(this.entityKey, logId1).then(data => {
+      this.log1 = data;
+    });
 
     // Getting Log2
-    this._entity.getJsonContentForLog(this.entityKey, logId2)
-      .then(data => {
-        this.log2 = data;
-      });
+    this._entity.getJsonContentForLog(this.entityKey, logId2).then(data => {
+      this.log2 = data;
+    });
   }
 }
 

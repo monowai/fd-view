@@ -15,8 +15,12 @@ export default class MatrixRequest {
     this.sumByCountChecked = true;
     this.devMode = configuration.devMode(); // 'true';
     this.aggTypes = {
-      _count: 'Count', avg: 'Average', sum: 'Sum',
-      percentiles: 'Median', min: 'Min', max: 'Max'
+      _count: 'Count',
+      avg: 'Average',
+      sum: 'Sum',
+      percentiles: 'Median',
+      min: 'Min',
+      max: 'Max'
     };
   }
 
@@ -44,22 +48,21 @@ export default class MatrixRequest {
     }
 
     this._lastMatrixQuery = angular.copy(dataParam);
-    return this._http.post(`${this._cfg.engineUrl()}/api/v1/query/matrix/`, dataParam)
-      .then(res => {
-        this._lastMatrixResult = angular.copy(res.data);
-        this._lastMatrixResult.matrix = _.map(this._lastMatrixResult.edges, edge => {
-          return {
-            count: edge.data.count,
-            source: _.find(this._lastMatrixResult.nodes, node => {
-              return node.data.id === edge.data.source;
-            }).data.name,
-            target: _.find(this._lastMatrixResult.nodes, node => {
-              return node.data.id === edge.data.target;
-            }).data.name
-          };
-        });
-        return this._lastMatrixResult;
+    return this._http.post(`${this._cfg.engineUrl()}/api/v1/query/matrix/`, dataParam).then(res => {
+      this._lastMatrixResult = angular.copy(res.data);
+      this._lastMatrixResult.matrix = _.map(this._lastMatrixResult.edges, edge => {
+        return {
+          count: edge.data.count,
+          source: _.find(this._lastMatrixResult.nodes, node => {
+            return node.data.id === edge.data.source;
+          }).data.name,
+          target: _.find(this._lastMatrixResult.nodes, node => {
+            return node.data.id === edge.data.target;
+          }).data.name
+        };
       });
+      return this._lastMatrixResult;
+    });
   }
 
   sharedChecked() {

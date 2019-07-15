@@ -105,9 +105,13 @@ export function chordRdr(matrix, mmap) {
       m.gdata = g[0].data;
       m.gvalue = d.value;
     }
-    m.mtotal = _.reduce(matrix, (m1, n1) => {
-      return m1 + _.reduce(n1, (m2, n2) => m2 + n2, 0);
-    }, 0);
+    m.mtotal = _.reduce(
+      matrix,
+      (m1, n1) => {
+        return m1 + _.reduce(n1, (m2, n2) => m2 + n2, 0);
+      },
+      0
+    );
     return m;
   };
 }
@@ -119,9 +123,10 @@ export function constructChordData(data) {
   if (data) {
     const mpr = new ChordMpr(data);
 
-    mpr.addValuesToMap('source')
+    mpr
+      .addValuesToMap('source')
       .addValuesToMap('target')
-      .setFilter((row, a, b) => (row.source === a.name && row.target === b.name))
+      .setFilter((row, a, b) => row.source === a.name && row.target === b.name)
       .setAccessor((recs, a, b) => {
         return recs[0] ? Number(recs[0].count) : 0;
       });

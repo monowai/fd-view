@@ -8,10 +8,9 @@ class StatsCtrl {
   }
 
   $onInit() {
-    this._query.general('fortress')
-      .then(data => {
-        this.fortresses = data;
-      });
+    this._query.general('fortress').then(data => {
+      this.fortresses = data;
+    });
   }
 
   search() {

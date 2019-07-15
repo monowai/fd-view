@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-import {SET_TERM, SEARCH_TERM, SEARCH_TERM_SUCCESS, SEARCH_TERM_FAIL} from './actions';
+import {SEARCH_TERM, SEARCH_TERM_FAIL, SEARCH_TERM_SUCCESS, SET_TERM} from './actions';
 
 const initialState = {
   term: '',

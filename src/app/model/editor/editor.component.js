@@ -22,7 +22,17 @@ import template from './editor.html';
 
 class EditModelCtrl {
   /** @ngInject */
-  constructor($scope, $stateParams, toastr, ContentModel, DataSample, $state, $timeout, modalService, $window) {
+  constructor(
+    $scope,
+    $stateParams,
+    toastr,
+    ContentModel,
+    DataSample,
+    $state,
+    $timeout,
+    modalService,
+    $window
+  ) {
     this.origin = {content: {}};
 
     // services
@@ -46,8 +56,8 @@ class EditModelCtrl {
       this.loadModel(this._stateParams.modelKey);
     }
     this.jsonOptions = {
-      mode: "tree",
-      modes: ["tree", "code", "form"],
+      mode: 'tree',
+      modes: ['tree', 'code', 'form'],
       expanded: true
     };
     const ctrl = this;
@@ -57,7 +67,7 @@ class EditModelCtrl {
 
     this._window.onbeforeunload = e => {
       e = e || this._window.event;
-      const msg = "Do you really want to leave this page?";
+      const msg = 'Do you really want to leave this page?';
       if (e) {
         e.returnValue = msg;
       }
@@ -87,13 +97,18 @@ class EditModelCtrl {
     if (this.isSaved()) {
       this._window.onbeforeunload = null;
     } else {
-      return this._modal.show({size: 'sm'}, {
-        title: 'Discard changes...',
-        text: 'Are you sure you want to cancel and discard your changes?'
-      }).then(() => {
-        this.model = this.origin;
-        this._cm.updateModel(this.origin);
-      });
+      return this._modal
+        .show(
+          {size: 'sm'},
+          {
+            title: 'Discard changes...',
+            text: 'Are you sure you want to cancel and discard your changes?'
+          }
+        )
+        .then(() => {
+          this.model = this.origin;
+          this._cm.updateModel(this.origin);
+        });
     }
   }
 
@@ -112,8 +127,8 @@ class EditModelCtrl {
     const model = this.json.get();
     this._cm.updateModel(model);
     if (this.canSave()) {
-      this._cm.saveModel()
-        .then(res => {
+      this._cm.saveModel().then(
+        res => {
           this._toastr.success(res.statusText, 'Success');
           angular.element('[data-target="#structure"]').tab('show');
           this.origin = angular.copy(model);
@@ -121,11 +136,16 @@ class EditModelCtrl {
           this._timeout(() => {
             this._scope.$broadcast('cytoscapeReset');
           }, 500);
-        }, res => {
+        },
+        res => {
           this._toastr.error(res.message, 'Error');
-        });
+        }
+      );
     } else {
-      this._toastr.warning('Model, cannot be saved. Please check your model configuration!', 'Error');
+      this._toastr.warning(
+        'Model, cannot be saved. Please check your model configuration!',
+        'Error'
+      );
       angular.element('[data-target="#settings"]').tab('show');
     }
   }

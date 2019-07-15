@@ -6,9 +6,9 @@ import LoginConfig from './login.config';
 
 import './auth.scss';
 
+/** @ngInject */
 export default angular
   .module('fd-view.auth', [])
   .component('loginView', loginView)
   .component('welcomeView', welcomeView)
-  .config(LoginConfig)
-  .name;
+  .config(LoginConfig).name;

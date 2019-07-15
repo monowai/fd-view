@@ -17,15 +17,12 @@ import {react2angular} from '../services/angular-react-helper';
 import FdSearchForm from '../search/fd-search-form.react';
 import FdSearchResults from './fd-search-results.react';
 
+/** @ngInject */
 export default angular
-  .module('fd-view.search', [
-    uiRouter, uiBootstrap,
-    config, services, components, viewEntity
-  ])
+  .module('fd-view.search', [uiRouter, uiBootstrap, config, services, components, viewEntity])
   .component('searchView', searchView)
   .component('fdSearchForm', react2angular(FdSearchForm))
   .component('fdSearchResults', react2angular(FdSearchResults))
   .factory('SearchService', SearchService)
   .filter('cleanCode', cleanCode)
-  .config(SearchConfig)
-  .name;
+  .config(SearchConfig).name;

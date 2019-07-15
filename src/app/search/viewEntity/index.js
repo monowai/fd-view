@@ -14,5 +14,4 @@ export default angular
   .component('viewEntity', viewEntityView)
   .component('entityView', react2angular(EntityView))
   .service('EntityService', EntityService)
-  .config(ViewEntityConfig)
-  .name;
+  .config(ViewEntityConfig).name;

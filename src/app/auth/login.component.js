@@ -15,11 +15,14 @@ class LoginCtrl {
         method: 'GET',
         url: `${this._cfg.engineUrl()}/api/ping/`,
         transformResponse: []
-      }).then(() => {
-        this.stopPing();
-      }, () => {
-        this.failed = true;
-      });
+      }).then(
+        () => {
+          this.stopPing();
+        },
+        () => {
+          this.failed = true;
+        }
+      );
     }, 5000);
   }
 
@@ -48,4 +51,3 @@ export const loginView = {
   template,
   controller: LoginCtrl
 };
-

@@ -10,10 +10,11 @@ import {fdMatrixForm} from './matrix-form.component';
 
 import './layout.scss';
 
-export default angular.module('fd-view.layout', [uiRouter, services])
+/** @ngInject */
+export default angular
+  .module('fd-view.layout', [uiRouter, services])
   .controller('RootCtrl', RootCtrl)
   .component('infoFooter', infoFooter)
   .component('navBar', navBar)
   .component('sideBar', sideBar)
-  .component('fdMatrixForm', fdMatrixForm)
-  .name;
+  .component('fdMatrixForm', fdMatrixForm).name;

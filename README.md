@@ -22,25 +22,20 @@ The -g flag indicates that the package should be installed globally (for all use
 
 ### Build tools
 ```
-npm install -g gulp-cli
+brew install yarn
 ``` 
 
 ## Building
 You'll need to run these commands when you pull the latest source to ensure your libraries are up-to-date as defined in ```package.json``` and ```bower.json``` 
 
 ```
-yarn 
+yarn install 
 ```
 
-## Testing
-Unit testing
-```
-gulp test
-```
 
 ## Starting
 The server can be started with 
-``` gulp serve```
+``` yarn dev```
 Where fd-view will be listening on ```http://localhost:9000``` by default. 
 
 If you can't connect to fd-engine, then click on settings, and set the fd-engine URL if necessary 
@@ -51,13 +46,13 @@ http://localhost:8080/
 ## Packaging
 To build a production version into the dist folder
 ```
-gulp
+yarn build
 ```
 
 ### Docker
 A Docker package can be built from the contents of the ```dist``` folder for deployment into a Docker Machine
 ```
 docker build -t flockdata/fd-view .
-# Run fd-view on port 80 in the docker-machine
-docker run -p 80:80 flockdata/fd-view
+# Run fd-view on port 80 and connect to fd-engine "somewhere"
+docker run -p 80:80 -e ENGINE_URL=http://localhost:14001 flockdata/fd-view
 ```

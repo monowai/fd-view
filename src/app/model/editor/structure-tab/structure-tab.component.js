@@ -32,44 +32,44 @@ class StructureTabCtrl {
       {
         selector: 'node',
         css: {
-          'content': 'data(id)',
+          content: 'data(id)',
           'font-size': '12pt',
           'min-zoomed-font-size': '9pt',
           'text-halign': 'center',
           'text-valign': 'center',
-          'color': '#222D32',
+          color: '#222D32',
           'background-color': '#499ef5',
-          'width': '120',
-          'height': '55',
-          'shape': 'roundrectangle'
+          width: '120',
+          height: '55',
+          shape: 'roundrectangle'
         }
       },
       {
         selector: 'node[type="tag"]',
         css: {
           'background-color': '#ff7701',
-          'content': 'data(label)',
-          'shape': 'ellipse',
-          'width': '110',
-          'height': '50'
+          content: 'data(label)',
+          shape: 'ellipse',
+          width: '110',
+          height: '50'
         }
       },
       {
         selector: 'node[type="alias"]',
         css: {
           'background-color': '#f7bf65',
-          'content': 'data(code)',
-          'shape': 'ellipse',
-          'width': '100',
-          'height': '45'
+          content: 'data(code)',
+          shape: 'ellipse',
+          width: '100',
+          height: '45'
         }
       },
       {
         selector: 'edge',
         css: {
-          'content': 'data(relationship)',
+          content: 'data(relationship)',
           'curve-style': 'bezier',
-          'width': 5,
+          width: 5,
           'target-arrow-color': '#ccc',
           'target-arrow-shape': 'triangle'
         }
@@ -106,13 +106,15 @@ class StructureTabCtrl {
         }
       }
     ];
-    this.layouts = [{name: 'circle'},
+    this.layouts = [
+      {name: 'circle'},
       {name: 'cose', randomize: true},
       {name: 'dagre'},
       {name: 'grid'},
       {name: 'concentric'},
       {name: 'random'},
-      {name: 'breadthfirst'}];
+      {name: 'breadthfirst'}
+    ];
     this.layout = this.layouts[0];
     this.nodes = [];
 
@@ -146,44 +148,57 @@ class StructureTabCtrl {
   createTag() {
     const canConnect = [{label: 'root', id: 0}].concat(this.tags);
     const tag = true;
-    let selected = this.nodes.length ?
-      canConnect.find(t => t.id === this.nodes[0]._private.data.id) :
-      canConnect[0];
+    let selected = this.nodes.length
+      ? canConnect.find(t => t.id === this.nodes[0]._private.data.id)
+      : canConnect[0];
 
-    this._modal.show({
-      template: require('./forms/create-tag.html')
-    }, {obj: {selected}, canConnect}).then(res => {
-      if (res.selected.id === 0) {
-        res.tag = true;
-        this.model.content[res.name] = res;
-      } else {
-        selected = this._cm.findTag(res.selected.id);
-        selected.targets = selected.targets || [];
-        selected.targets.push(res);
-      }
-      delete res.selected;
+    this._modal
+      .show(
+        {
+          template: require('./forms/create-tag.html')
+        },
+        {obj: {selected}, canConnect}
+      )
+      .then(res => {
+        if (res.selected.id === 0) {
+          res.tag = true;
+          this.model.content[res.name] = res;
+        } else {
+          selected = this._cm.findTag(res.selected.id);
+          selected.targets = selected.targets || [];
+          selected.targets.push(res);
+        }
+        delete res.selected;
 
-      this._cm.updateModel(this.model);
-      this.modelGraph = this._cm.graphModel();
-      this.tags = this._cm.getTags();
-    });
+        this._cm.updateModel(this.model);
+        this.modelGraph = this._cm.graphModel();
+        this.tags = this._cm.getTags();
+      });
   }
 
   createColumn() {
     const unique = name => !_.find(Object.keys(this.model.content), k => k === name);
 
-    this._modal.show({
-      template: require('./forms/create-column.html')
-    }, {unique})
+    this._modal
+      .show(
+        {
+          template: require('./forms/create-column.html')
+        },
+        {unique}
+      )
       .then(res => {
         this._cm.addCol(res);
       });
   }
 
   createEntitylink() {
-    this._modal.show({
-      template: require('./forms/create-entitylink.html')
-    }, {colDefs: Object.keys(this.model.content)})
+    this._modal
+      .show(
+        {
+          template: require('./forms/create-entitylink.html')
+        },
+        {colDefs: Object.keys(this.model.content)}
+      )
       .then(res => {
         this._cm.addEntitylink(res.col, _.omit(res, 'col'));
         this.modelGraph = this._cm.graphModel();
@@ -194,16 +209,18 @@ class StructureTabCtrl {
     const modalOptions = {
       tags: this.tags,
       obj: {
-        tag: this.nodes.length ?
-          this.tags[this.tags.indexOf(_.find(this.tags, t => t.id === this.nodes[0]._private.data.id))] : ''
+        tag: this.nodes.length
+          ? this.tags[
+            this.tags.indexOf(_.find(this.tags, t => t.id === this.nodes[0]._private.data.id))
+            ]
+          : ''
       }
     };
 
-    this._modal.show({template: require('./forms/create-alias.html')}, modalOptions)
-      .then(res => {
-        this._cm.addAlias(res.tag, _.omit(res, 'tag'));
-        this.modelGraph = this._cm.graphModel();
-      });
+    this._modal.show({template: require('./forms/create-alias.html')}, modalOptions).then(res => {
+      this._cm.addAlias(res.tag, _.omit(res, 'tag'));
+      this.modelGraph = this._cm.graphModel();
+    });
   }
 
   nodeLink(source, target) {
@@ -230,9 +247,13 @@ class StructureTabCtrl {
     };
 
     if (source.type === 'tag' && target.type === 'tag') {
-      this._modal.show({
-        template: require('./link-tags.html')
-      }, {disable: true, source, target})
+      this._modal
+        .show(
+          {
+            template: require('./link-tags.html')
+          },
+          {disable: true, source, target}
+        )
         .then(res => {
           const sourceTag = this._cm.findTag(source.id);
           const targetTag = angular.copy(this._cm.findTag(target.id));

@@ -12,27 +12,24 @@ class AggFormCtrl {
   }
 
   $onInit() {
-    this._query.general('fortress')
-      .then(data => {
-        this.params.fortresses = data;
-      });
+    this._query.general('fortress').then(data => {
+      this.params.fortresses = data;
+    });
   }
   selectFortress(f) {
     this.params.fortress = f;
-    this._query.doc(f)
-      .then(data => {
-        this.params.documents = data;
-      });
+    this._query.doc(f).then(data => {
+      this.params.documents = data;
+    });
   }
 
   selectDocument(d) {
     if (d.length) {
       this.params.document = d;
-      this._query.fields(this.params.fortress[0], d[0])
-        .then(res => {
-          this.params.fields = res.data.concat(res.links).concat(res.system);
-          this.numFields = this.params.fields.filter(f => f.type !== 'string');
-        });
+      this._query.fields(this.params.fortress[0], d[0]).then(res => {
+        this.params.fields = res.data.concat(res.links).concat(res.system);
+        this.numFields = this.params.fields.filter(f => f.type !== 'string');
+      });
     }
   }
 

@@ -21,12 +21,12 @@
 export default class ContentModelService {
   /** @ngInject */
   constructor($http, $q, configuration) {
-    this._cp = {};            // actual content model
-    this._cpGraph = {};       // latest graph visualization of the content model
+    this._cp = {}; // actual content model
+    this._cpGraph = {}; // latest graph visualization of the content model
     this._cpFortress = {};
-    this._cpType = {};        // fortress and doctype of the current content model
-    this._code = {};          // code for tag only model
-    this._tags = [];          // list of tags
+    this._cpType = {}; // fortress and doctype of the current content model
+    this._code = {}; // code for tag only model
+    this._tags = []; // list of tags
 
     // services
     this._http = $http;
@@ -93,16 +93,15 @@ export default class ContentModelService {
 
   getModel(modelKey) {
     if (modelKey) {
-      return this._http.get(`${this._cfg.engineUrl()}/api/v1/model/${modelKey}`)
-        .then(res => {
-          this._cp = res.data.contentModel;
-          if (!this._cp.tagModel) {
-            this._cpFortress = this._cp.fortress.name;
-            this._cpType = this._cp.documentType.name;
-          }
-          this._tags = [];
-          return this._cp;
-        });
+      return this._http.get(`${this._cfg.engineUrl()}/api/v1/model/${modelKey}`).then(res => {
+        this._cp = res.data.contentModel;
+        if (!this._cp.tagModel) {
+          this._cpFortress = this._cp.fortress.name;
+          this._cpType = this._cp.documentType.name;
+        }
+        this._tags = [];
+        return this._cp;
+      });
     }
     const deferred = this._q.defer();
     deferred.resolve(this._cp);
@@ -120,17 +119,17 @@ export default class ContentModelService {
   getDefault(data) {
     const payload = angular.extend({contentModel: this._cp}, data);
 
-    return this._http.post(`${this._cfg.engineUrl()}/api/v1/model/default`, payload)
-      .then(res => {
-        this._cp = Object.assign({}, res.data);
-        return this._cp;
-      });
+    return this._http.post(`${this._cfg.engineUrl()}/api/v1/model/default`, payload).then(res => {
+      this._cp = Object.assign({}, res.data);
+      return this._cp;
+    });
   }
 
   validate(data) {
     const payload = {contentModel: this._cp, rows: data};
 
-    return this._http.post(`${this._cfg.engineUrl()}/api/v1/model/validate`, payload)
+    return this._http
+      .post(`${this._cfg.engineUrl()}/api/v1/model/validate`, payload)
       .then(res => res);
   }
 
@@ -172,14 +171,18 @@ export default class ContentModelService {
 
       const hasAliases = obj => obj.aliases && obj.aliases.length;
 
-      const containsEdge = edge => { // to check if edge is already in the graph
+      const containsEdge = edge => {
+        // to check if edge is already in the graph
         return _.findIndex(graph.edges, o => _.isMatch(o.data, edge)) >= 0;
       };
 
       const containsTag = tag => {
-        const t = graph.nodes[_.findIndex(graph.nodes, o => {
-          return _.isMatch(o.data, {type: 'tag', label: tag.label, code: tag.code});
-        })];
+        const t =
+          graph.nodes[
+            _.findIndex(graph.nodes, o => {
+              return _.isMatch(o.data, {type: 'tag', label: tag.label, code: tag.code});
+            })
+            ];
         if (!t) {
           return false;
         }
@@ -196,7 +199,12 @@ export default class ContentModelService {
             t = createTag(target.$id || this.addTag(target), tgData);
             graph.nodes.push({data: t});
           }
-          connect(tag.$id, t.id, target.relationship, target.reverse);
+          connect(
+            tag.$id,
+            t.id,
+            target.relationship,
+            target.reverse
+          );
           if (hasTargets(target)) {
             createTargets(target);
           }
@@ -213,7 +221,7 @@ export default class ContentModelService {
 
       _.each(this._cp.content, (obj, key) => {
         if (isTag(obj)) {
-          const label = (obj.label || key);
+          const label = obj.label || key;
           let tag = containsTag(obj);
           if (tag) {
             obj.$id = tag.id;
@@ -225,7 +233,13 @@ export default class ContentModelService {
           if (!_.isEmpty(root)) {
             if (obj.entityTagLinks) {
               _.each(obj.entityTagLinks, link => {
-                connect(root.id, tag.id, link.relationshipName, link.reverse, link.geo ? 'geo' : undefined);
+                connect(
+                  root.id,
+                  tag.id,
+                  link.relationshipName,
+                  link.reverse,
+                  link.geo ? 'geo' : undefined
+                );
               });
             }
           }
@@ -243,7 +257,10 @@ export default class ContentModelService {
                 type: 'alias'
               };
               graph.nodes.push({data: a});
-              connect(tag.id, a.id);
+              connect(
+                tag.id,
+                a.id
+              );
             });
           }
         }
@@ -251,7 +268,12 @@ export default class ContentModelService {
           _.each(obj.entityLinks, entity => {
             const e = createEntity(entity.documentName);
             graph.nodes.push({data: e});
-            connect(root.id, e.id, entity.relationshipName, obj.reverse);
+            connect(
+              root.id,
+              e.id,
+              entity.relationshipName,
+              obj.reverse
+            );
           });
         }
       });

@@ -2,8 +2,16 @@ import thunk from 'redux-thunk';
 import {createLogger} from 'redux-logger';
 import reducer from './reducers';
 
-/** @ngIject */
-function appConfig($locationProvider, $urlRouterProvider, $compileProvider, $httpProvider, toastrConfig, $qProvider, $ngReduxProvider) {
+/** @ngInject */
+function appConfig(
+  $locationProvider,
+  $urlRouterProvider,
+  $compileProvider,
+  $httpProvider,
+  toastrConfig,
+  $qProvider,
+  $ngReduxProvider
+) {
   $locationProvider.html5Mode(true);
   $urlRouterProvider.otherwise('/');
   $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|mailto|tel|file|blob|data):/);
@@ -21,7 +29,9 @@ function appConfig($locationProvider, $urlRouterProvider, $compileProvider, $htt
   $qProvider.errorOnUnhandledRejections(false);
 
   // fix for the layout footer
-  setTimeout(() => {$.AdminLTE.layout.fix();}, 500); // eslint-disable-line
+  setTimeout(() => {
+    $.AdminLTE.layout.fix();
+  }, 500); // eslint-disable-line
 
   const logger = createLogger({
     level: 'info',

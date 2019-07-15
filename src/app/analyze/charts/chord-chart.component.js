@@ -1,15 +1,16 @@
 import {
+  arc as d3arc,
+  ascending,
+  chord as d3chord,
+  descending,
+  event as d3event,
+  format,
+  interpolate,
+  rgb,
+  ribbon as d3ribbon,
   scaleOrdinal,
   schemeCategory20,
-  descending, ascending,
-  rgb,
-  interpolate,
-  chord as d3chord,
-  arc as d3arc,
-  ribbon as d3ribbon,
-  select as d3select,
-  event as d3event,
-  format
+  select as d3select
 } from 'd3';
 
 import {chordRdr} from './chord.helpers';
@@ -41,27 +42,33 @@ class ChordDiagramCtrl {
       .innerRadius(r0)
       .outerRadius(r0 + 20);
 
-    d3select(el).select('svg').remove();
+    d3select(el)
+      .select('svg')
+      .remove();
 
-    const svgP = d3select(el).append('svg:svg')
+    const svgP = d3select(el)
+      .append('svg:svg')
       .attr('width', w)
       .attr('height', h)
       .attr('preserveAspectRatio', 'xMinYMin')
       .attr('viewBox', `0 0 ${w} ${h}`);
-    const tooltip = d3select(el).append('div')
+    const tooltip = d3select(el)
+      .append('div')
       .attr('id', 'tooltip');
-    const svg = svgP.append('svg:g')
+    const svg = svgP
+      .append('svg:g')
       .attr('id', 'circle')
       .attr('transform', `translate(${w / 2},${h / 2})`);
 
-    const circle = svg.append('circle')
-      .attr('r', r0 + 20);
+    const circle = svg.append('circle').attr('r', r0 + 20);
 
     const rdr = chordRdr(matrix, mmap);
     const chords = chord(matrix);
-    const g = svg.selectAll('g.group')
+    const g = svg
+      .selectAll('g.group')
       .data(chords.groups)
-      .enter().append('svg:g')
+      .enter()
+      .append('svg:g')
       .attr('class', 'group')
       .on('mouseover', mouseover)
       .on('mouseout', d => {
@@ -70,45 +77,55 @@ class ChordDiagramCtrl {
       });
 
     g.exit()
-      .transition().duration(1000)
+      .transition()
+      .duration(1000)
       .attr('opacity', 0)
       .remove();
 
-    const arcs = g.append('svg:path')
+    const arcs = g
+      .append('svg:path')
       .style('stroke', 'black')
       .style('fill', d => fill(d.index));
-      // .attr('d', arc);
+    // .attr('d', arc);
 
     g.select('path')
-      .transition().duration(1000)
+      .transition()
+      .duration(1000)
       .attr('opacity', 0.5)
       .attrTween('d', arcTween(lastLayout))
-      .transition().duration(100)
+      .transition()
+      .duration(100)
       .attr('opacity', 1);
 
-    const txtG = g.append('svg:text')
+    const txtG = g
+      .append('svg:text')
       .each(d => {
         d.angle = (d.startAngle + d.endAngle) / 2;
       })
       .attr('dy', '.35em')
       .style('font-family', 'helvetica, arial, sans-serif')
       .style('font-size', '9px')
-      .attr('text-anchor', d => d.angle > Math.PI ? 'end' : null)
+      .attr('text-anchor', d => (d.angle > Math.PI ? 'end' : null))
       .attr('transform', d => {
-        return `rotate(${d.angle * 180 / Math.PI - 90})` +
+        return (
+          `rotate(${(d.angle * 180) / Math.PI - 90})` +
           `translate(${r0 + 26})` +
-          `${(d.angle > Math.PI ? 'rotate(180)' : '')}`;
+          `${d.angle > Math.PI ? 'rotate(180)' : ''}`
+        );
       })
       .text(d => {
         // Trying to get the labels to look a little better when they are really looooonng.
         const maxLength = 20;
-        return rdr(d).gname.length > maxLength ?
-          `...${rdr(d).gname.substring(rdr(d).gname.length - maxLength)}` : rdr(d).gname;
+        return rdr(d).gname.length > maxLength
+          ? `...${rdr(d).gname.substring(rdr(d).gname.length - maxLength)}`
+          : rdr(d).gname;
       });
 
-    const chordPaths = svg.selectAll('path.chord')
+    const chordPaths = svg
+      .selectAll('path.chord')
       .data(chords)
-      .enter().append('svg:path')
+      .enter()
+      .append('svg:path')
       .attr('class', 'chord')
       .style('stroke', d => rgb(fill(d.target.index)).darker())
       .style('fill', d => fill(d.target.index))
@@ -125,17 +142,22 @@ class ChordDiagramCtrl {
       });
 
     // handle exiting paths:
-    chordPaths.exit().transition()
+    chordPaths
+      .exit()
+      .transition()
       .duration(1000)
       .attr('opacity', 0)
       .remove();
 
     // update the path shape
-    chordPaths.transition().duration(1000)
+    chordPaths
+      .transition()
+      .duration(1000)
       .attr('opacity', 0.5)
       .style('fill', d => fill(d.target.index))
       .attrTween('d', chordTween(lastLayout))
-      .transition().duration(100)
+      .transition()
+      .duration(100)
       .attr('opacity', 1);
 
     function arcTween(oldLayout) {
@@ -161,9 +183,9 @@ class ChordDiagramCtrl {
     }
 
     function chordKey(data) {
-      return (data.source.index < data.target.index) ?
-      `${data.source.index}-${data.target.index}` :
-      `${data.target.index}-${data.source.index}`;
+      return data.source.index < data.target.index
+        ? `${data.source.index}-${data.target.index}`
+        : `${data.target.index}-${data.source.index}`;
     }
 
     function chordTween(oldLayout) {
@@ -204,7 +226,9 @@ class ChordDiagramCtrl {
     function chordTip(d) {
       const p = format('.2%');
       // const q = format(',.3r');
-      return `${p(d.stotal === 0 ? 0 : d.svalue / d.stotal)} of ${d.sname}<br>-to-<br>${p(d.ttotal === 0 ? 0 : d.tvalue / d.ttotal)} of ${d.tname}`;
+      return `${p(d.stotal === 0 ? 0 : d.svalue / d.stotal)} of ${d.sname}<br>-to-<br>${p(
+        d.ttotal === 0 ? 0 : d.tvalue / d.ttotal
+      )} of ${d.tname}`;
       // + ' <br> values - ' +  q(d.stotal) + ' / ' + q(d.tvalue);
     }
 
@@ -226,21 +250,22 @@ class ChordDiagramCtrl {
 
     function dimChords(i) {
       chordPaths.style('opacity', p => {
-        return (p.source.index === i || p.target.index === i) ? 0.9 : 0.15;
+        return p.source.index === i || p.target.index === i ? 0.9 : 0.15;
       });
     }
 
     function resize() {
       if (r0 > 0) {
-        svgP.attr('width', w)
-          .attr('height', h);
+        svgP.attr('width', w).attr('height', h);
         svg.attr('transform', `translate(${w / 2},${h / 2})`);
         circle.attr('r', r0 + 20);
         arc.innerRadius(r0).outerRadius(r0 + 20);
         arcs.attr('d', arc);
         txtG.attr('transform', d => {
-          return `rotate(${d.angle * 180 / Math.PI - 90})` +
-            `translate(${r0 + 26}) ${d.angle > Math.PI ? 'rotate(180)' : ''}`;
+          return (
+            `rotate(${(d.angle * 180) / Math.PI - 90})` +
+            `translate(${r0 + 26}) ${d.angle > Math.PI ? 'rotate(180)' : ''}`
+          );
         });
         chordPaths.attr('d', d3ribbon().radius(r0));
       }
@@ -250,7 +275,7 @@ class ChordDiagramCtrl {
 
     this.resizeHandler = () => {
       w = el.clientWidth;
-      h = el.clientWidth * 2 / 3;
+      h = (el.clientWidth * 2) / 3;
       r1 = h / 2;
       r0 = r1 - 100;
       resize();

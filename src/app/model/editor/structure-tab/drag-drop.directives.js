@@ -9,20 +9,28 @@ export function draggable() {
     const el = element[0];
     el.draggable = true;
 
-    el.addEventListener('dragstart', e => {
-      // console.log(this);
+    el.addEventListener(
+      'dragstart',
+      e => {
+        // console.log(this);
 
-      e.dataTransfer.effectAllowed = 'move';
-      e.dataTransfer.setData('id', this.id);
-      this.classList.add('dragging');
-      return false;
-    }, false);
+        e.dataTransfer.effectAllowed = 'move';
+        e.dataTransfer.setData('id', this.id);
+        this.classList.add('dragging');
+        return false;
+      },
+      false
+    );
 
-    el.addEventListener('dragend', () => {
-      this.classList.remove('dragging');
+    el.addEventListener(
+      'dragend',
+      () => {
+        this.classList.remove('dragging');
 
-      return false;
-    }, false);
+        return false;
+      },
+      false
+    );
   };
 }
 
@@ -34,32 +42,40 @@ export function droppable() {
     link: (scope, element) => {
       const el = element[0];
 
-      el.addEventListener('dragover', e => {
-        e.dataTransfer.dropEffect = 'move';
+      el.addEventListener(
+        'dragover',
+        e => {
+          e.dataTransfer.dropEffect = 'move';
 
-        if (e.preventDefault) {
-          e.preventDefault();
-        }
+          if (e.preventDefault) {
+            e.preventDefault();
+          }
 
-        return false;
-      }, false);
+          return false;
+        },
+        false
+      );
 
-      el.addEventListener('drop', e => {
-        // Stops some browsers from redirecting.
-        if (e.stopPropagation) {
-          e.stopPropagation();
-        }
+      el.addEventListener(
+        'drop',
+        e => {
+          // Stops some browsers from redirecting.
+          if (e.stopPropagation) {
+            e.stopPropagation();
+          }
 
-        const elementDropped = angular.element(e.dataTransfer.getData('id'));
-        const dropMethod = scope.droppable;
+          const elementDropped = angular.element(e.dataTransfer.getData('id'));
+          const dropMethod = scope.droppable;
 
-        // call the drop passed drop function
-        if (angular.isFunction(dropMethod)) {
-          scope.droppable(elementDropped, element[0], e);
-        }
+          // call the drop passed drop function
+          if (angular.isFunction(dropMethod)) {
+            scope.droppable(elementDropped, element[0], e);
+          }
 
-        return false;
-      }, false);
+          return false;
+        },
+        false
+      );
     }
   };
 }

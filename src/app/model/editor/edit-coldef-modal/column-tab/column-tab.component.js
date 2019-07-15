@@ -20,7 +20,8 @@ class ColumnTabCtrl {
     if (this.column.dataType === 'date') {
       this.column.dateFormat = this.column.dateFormat || 'Automatic';
     }
-    if (this.column.dataType !== 'date' && this.column.dateFormat) { // Clean up on change
+    if (this.column.dataType !== 'date' && this.column.dateFormat) {
+      // Clean up on change
       delete this.column.dateFormat;
       delete this.column.customDate;
     }

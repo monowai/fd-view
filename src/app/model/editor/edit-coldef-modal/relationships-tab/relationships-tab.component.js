@@ -21,20 +21,22 @@ class RelationshipsTabCtrl {
   }
 
   editProperty(properties, property) {
-    this._modal.show({
-      templateUrl: 'app/model/editor/edit-coldef-modal/col-properties/edit-property.html',
-      controller: 'EditPropertyModalCtrl as $ctrl',
-      resolve: {
-        property: () => property,
-        col: () => this.tag.$name
-      }
-    }).then(res => {
-      if (property) {
-        angular.extend(property, res);
-      } else {
-        properties.push(res);
-      }
-    });
+    this._modal
+      .show({
+        templateUrl: 'app/model/editor/edit-coldef-modal/col-properties/edit-property.html',
+        controller: 'EditPropertyModalCtrl as $ctrl',
+        resolve: {
+          property: () => property,
+          col: () => this.tag.$name
+        }
+      })
+      .then(res => {
+        if (property) {
+          angular.extend(property, res);
+        } else {
+          properties.push(res);
+        }
+      });
   }
 
   addProperty(col) {

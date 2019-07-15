@@ -1,6 +1,6 @@
-import React, {Component} from 'react';
+import {Component} from 'react';
 import JsonDiff from 'jsondiffpatch-for-react';
-import {Form, Checkbox} from 'react-bootstrap';
+import {Checkbox, Form} from 'react-bootstrap';
 import {isEqual} from 'lodash';
 
 import CompareSelect from './compare-select.react';
@@ -19,22 +19,30 @@ export default class JsonDiffForm extends Component {
     const {delta, selected} = this.props;
     return (
       <Form inline>
-        <CompareSelect store={store}/>
+    < CompareSelect
+    store = {store}
+    />
 
-        {delta && !isEqual(delta, selected) &&
+    {
+      delta && !isEqual(delta, selected) && (
           <div className="widget-body smart-form">
-            <Checkbox
-              checked={this.state.showUnchanged}
-              onChange={this.handleChange}
-            > Show unchanged values
+      < Checkbox
+      checked = {this.state.showUnchanged}
+      onChange = {this.handleChange} >
+        {' '}
+      Show
+      unchanged
+      values
             </Checkbox>
-            <JsonDiff
-              name="diff"
-              left={selected}
-              right={delta}
-              show={this.state.showUnchanged}
-            />
-          </div>}
+      < JsonDiff
+      name = "diff"
+      left = {selected}
+      right = {delta}
+      show = {this.state.showUnchanged}
+      />
+      < /div>
+    )
+    }
       </Form>
     );
   }

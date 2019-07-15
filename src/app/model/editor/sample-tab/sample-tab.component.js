@@ -42,23 +42,28 @@ class SampleTabCtrl {
     this.sample.data.totalImport = data.length;
     this.gridOptions = {
       columnDefs: _.map(data.columns, k => {
-        return {field: k, headerName: k, editable: true, headerClass: () => {
-          const column = this.model.content[k];
-          if (column) {
-            if (column.tag) {
-              return 'tag';
-            }
-            if (column.$alias) {
-              return 'alias';
-            }
-            if (column.callerRef) {
-              return 'bg-green';
-            }
-            if (!column.persistent) {
-              return 'dim';
+        return {
+          field: k,
+          headerName: k,
+          editable: true,
+          headerClass: () => {
+            const column = this.model.content[k];
+            if (column) {
+              if (column.tag) {
+                return 'tag';
+              }
+              if (column.$alias) {
+                return 'alias';
+              }
+              if (column.callerRef) {
+                return 'bg-green';
+              }
+              if (!column.persistent) {
+                return 'dim';
+              }
             }
           }
-        }};
+        };
       }),
       rowData: this.sample.data,
       enableColResize: true,
@@ -76,20 +81,23 @@ class SampleTabCtrl {
     };
 
     this._cm.updateModel(this.model);
-    this._cm.getDefault({rows: this.sample.data})
-      .then(res => {
+    this._cm.getDefault({rows: this.sample.data}).then(
+      res => {
         this._toastr.success('Data is loaded', 'Success');
         this.model = {};
         this.model = res;
         this.modelGraph = this._cm.graphModel();
         this.tags = this._cm.getTags();
         this.dataStats = this.sample.buildStats(data, res.content);
-      }, res => {
+      },
+      res => {
         this._toastr.error(res, 'Error');
-      });
+      }
+    );
   }
 
-  previouslyLoaded() { // to fix
+  previouslyLoaded() {
+    // to fix
     return false;
     // this.model && Object.keys(this.model.content).length &&
     //   this._window.localStorage.hasOwnProperty('import-data') &&
@@ -136,7 +144,8 @@ class SampleTabCtrl {
           if (model[k] && model[k].dataType === 'string') {
             return;
           }
-          if (/^\s*-?(\d*\.?\d+|\d+\.?\d*)(e[-+]?\d+)?\s*$/i.test(v)) {// /^(\-|\+)?([0-9]+(\.[0-9]+)?|Infinity)$/
+          if (/^\s*-?(\d*\.?\d+|\d+\.?\d*)(e[-+]?\d+)?\s*$/i.test(v)) {
+            // /^(\-|\+)?([0-9]+(\.[0-9]+)?|Infinity)$/
             d[k] = Number(v);
           }
         });
@@ -146,12 +155,14 @@ class SampleTabCtrl {
       let lastProvider = {};
       if (this.model.tagModel) {
         lastProvider = {
-          provider: 'Tag', code: this.model.code
+          provider: 'Tag',
+          code: this.model.code
         };
       } else {
         lastProvider = {
           provider: this.model.fortress.name,
-          type: this.model.documentType.name};
+          type: this.model.documentType.name
+        };
       }
 
       this._setGrid(data);

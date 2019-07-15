@@ -16,21 +16,23 @@ class TagTabCtrl {
   addTarget(scope) {
     const tag = scope.$modelValue || scope;
 
-    this._modal.show({
-      template: require('./create-target.html'),
-      controller: CreateTargetCtrl,
-      controllerAs: '$ctrl',
-      resolve: {
-        active: () => tag,
-        tags: () => this._cm.getTags()
-      }
-    }).then(res => {
-      if (!tag.targets) {
-        tag.targets = [];
-      }
-      const target = res.target.id ? this._cm.findTag(res.target.id) : res.target;
-      tag.targets.push(angular.extend(target, res.relationship));
-    });
+    this._modal
+      .show({
+        template: require('./create-target.html'),
+        controller: CreateTargetCtrl,
+        controllerAs: '$ctrl',
+        resolve: {
+          active: () => tag,
+          tags: () => this._cm.getTags()
+        }
+      })
+      .then(res => {
+        if (!tag.targets) {
+          tag.targets = [];
+        }
+        const target = res.target.id ? this._cm.findTag(res.target.id) : res.target;
+        tag.targets.push(angular.extend(target, res.relationship));
+      });
   }
 }
 

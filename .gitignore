@@ -1,10 +1,12 @@
 node_modules
 dist
 .tmp
+.cache
 .sass-cache
 bower_components
 coverage/
 
+*.log
 .DS_Store
 .DS_Store?
 ._*

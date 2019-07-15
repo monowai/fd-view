@@ -20,10 +20,10 @@ import fileBox from './sample-tab/file-box.component';
 import {sampleTab} from './sample-tab/sample-tab.component';
 import {statsTab} from './stats-tab/stats-tab.component';
 import {validateTab} from './validate-tab/validate-tab.component';
-
-agGrid.initialiseAgGridWithAngular1(angular);
 import 'ag-grid/dist/styles/ag-grid.css';
 import 'ag-grid/dist/styles/theme-blue.css';
+
+agGrid.initialiseAgGridWithAngular1(angular);
 
 export default angular
   .module('fd-view.cmeditor', [
@@ -46,5 +46,4 @@ export default angular
   .component('sampleTab', sampleTab)
   .component('statsTab', statsTab)
   .component('validateTab', validateTab)
-  .config(ModelEditorConfig)
-  .name;
+  .config(ModelEditorConfig).name;

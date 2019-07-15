@@ -25,10 +25,9 @@ class SettingsCtrl {
     this.setting = {};
     this._cfg = configuration;
     this.authenticated = () => User.authenticated;
-    $http.get(`${this._cfg.engineUrl()}/api/v1/admin/health`)
-      .then(res => {
-        this.fdVersion = res.data['fd.version'];
-      });
+    $http.get(`${this._cfg.engineUrl()}/api/v1/admin/health`).then(res => {
+      this.fdVersion = res.data['fd.version'];
+    });
   }
 
   apply() {

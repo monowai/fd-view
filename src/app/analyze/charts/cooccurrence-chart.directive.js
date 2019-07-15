@@ -1,9 +1,9 @@
 import {
-  scaleOrdinal,
-  schemeCategory10,
+  range,
   scaleBand,
   scaleLinear,
-  range,
+  scaleOrdinal,
+  schemeCategory10,
   select as d3select,
   selectAll as d3selectAll
 } from 'd3';
@@ -32,13 +32,16 @@ class CooccurrenceDiagram {
 
     const x = scaleBand().range([0, width]);
     const y = scaleBand().range([height, 0]);
-    const z = scaleLinear().domain([0, 4]).clamp(true);
+    const z = scaleLinear()
+      .domain([0, 4])
+      .clamp(true);
     const c = scaleOrdinal(schemeCategory10).domain(range(10));
     const graphID = ele.parent()[0].id;
 
     d3select(`#${graphID} svg`).remove();
 
-    const svg = d3select(el).append('svg')
+    const svg = d3select(el)
+      .append('svg')
       .attr('width', width + margin.left + margin.right)
       .attr('height', height + margin.top + margin.bottom)
       .style('float', 'left')
@@ -46,41 +49,46 @@ class CooccurrenceDiagram {
       .attr('transform', `translate(${margin.left},${margin.top})`);
 
     // The default sort order.
-    y.domain(fromOrders);// DONE: Get axis labels
-    x.domain(toOrders);// DONE: Get axis labels
+    y.domain(fromOrders); // DONE: Get axis labels
+    x.domain(toOrders); // DONE: Get axis labels
 
-    const rect = svg.append('rect')
+    const rect = svg
+      .append('rect')
       .attr('class', 'background')
       .attr('width', width)
       .attr('height', height);
 
-    const row = svg.selectAll('.row')
+    const row = svg
+      .selectAll('.row')
       .data(matrix)
-      .enter().append('g')
+      .enter()
+      .append('g')
       .attr('class', 'row')
       .attr('transform', (d, i) => `translate(0,${y(i)})`)
       .each(drawRow);
 
-    row.append('line')
-      .attr('x2', width);
+    row.append('line').attr('x2', width);
 
-    row.append('text')
+    row
+      .append('text')
       .attr('x', -6)
       .attr('y', x.step() / 2)
       .attr('dy', '.32em')
       .attr('text-anchor', 'end')
       .text((d, i) => fromNodes[i].name); // DONE: get node name which is axis' name
 
-    const column = svg.selectAll('.column')
+    const column = svg
+      .selectAll('.column')
       .data(toNodes)
-      .enter().append('g')
+      .enter()
+      .append('g')
       .attr('class', 'column')
       .attr('transform', (d, i) => `translate(${x(i)})rotate(-90)`);
 
-    column.append('line')
-      .attr('x1', -width);
+    column.append('line').attr('x1', -width);
 
-    column.append('text')
+    column
+      .append('text')
       .attr('x', 6)
       .attr('y', x.step() / 2)
       .attr('dy', '.32em')
@@ -88,9 +96,11 @@ class CooccurrenceDiagram {
       .text((d, i) => toNodes[i].name);
 
     function drawRow(row) {
-      const cell = d3select(this).selectAll('.cell')
+      const cell = d3select(this)
+        .selectAll('.cell')
         .data(row.filter(d => d.z))
-        .enter().append('rect')
+        .enter()
+        .append('rect')
         .attr('class', 'cell')
         .attr('x', d => x(d.x))
         .attr('width', x.step())
@@ -103,10 +113,8 @@ class CooccurrenceDiagram {
     }
 
     function mouseover(p) {
-      d3selectAll('.row text')
-        .classed('active', (d, i) => i === p.y);
-      d3selectAll('.column text')
-        .classed('active', (d, i) => d.index === p.x);
+      d3selectAll('.row text').classed('active', (d, i) => i === p.y);
+      d3selectAll('.column text').classed('active', (d, i) => d.index === p.x);
     }
 
     function mouseout() {
@@ -123,28 +131,28 @@ class CooccurrenceDiagram {
     //  d3.select('#order').property('selectedIndex', 2).node().focus();
     // }, 5000);
 
-//        scope.$watch(function () {
-//            return el.clientWidth * el.clientHeight;
-//        }, function () {
-//            w = el.clientWidth;
-//            h = el.clientWidth * 2/3;
-//            r1 = h / 2, r0 = r1 - 100
-//            resize();
-//        })
-//        function resize() {
-//            svg.attr({width: w+ margin.left + margin.right, height: h + margin.top + margin.bottom});
-//            rect.attr({width:w, height:h});
-//            circle.attr('r', r0 + 20);
-//            arc.innerRadius(r0).outerRadius(r0 + 20);
-//            arcs.attr('d', arc);
-//            txtG.attr('transform', function(d) {
-//                return 'rotate(' + (d.angle * 180 / Math.PI - 90) + ')'
-//                    + 'translate(' + (r0 + 26) + ')'
-//                    + (d.angle > Math.PI ? 'rotate(180)' : '');
-//            })
-//            chordPaths.attr('d', d3.svg.chord().radius(r0))
-//
-//        }
+    //        scope.$watch(function () {
+    //            return el.clientWidth * el.clientHeight;
+    //        }, function () {
+    //            w = el.clientWidth;
+    //            h = el.clientWidth * 2/3;
+    //            r1 = h / 2, r0 = r1 - 100
+    //            resize();
+    //        })
+    //        function resize() {
+    //            svg.attr({width: w+ margin.left + margin.right, height: h + margin.top + margin.bottom});
+    //            rect.attr({width:w, height:h});
+    //            circle.attr('r', r0 + 20);
+    //            arc.innerRadius(r0).outerRadius(r0 + 20);
+    //            arcs.attr('d', arc);
+    //            txtG.attr('transform', function(d) {
+    //                return 'rotate(' + (d.angle * 180 / Math.PI - 90) + ')'
+    //                    + 'translate(' + (r0 + 26) + ')'
+    //                    + (d.angle > Math.PI ? 'rotate(180)' : '');
+    //            })
+    //            chordPaths.attr('d', d3.svg.chord().radius(r0))
+    //
+    //        }
 
     function order(orderedNodes) {
       x.domain(orderedNodes);
@@ -170,7 +178,14 @@ class CooccurrenceDiagram {
     let painter;
     scope.$watch('data', data => {
       if (data && data.matrix.length) {
-        painter = this.drawCooccurrence(ele, data.matrix, data.fromNodes, data.toNodes, data.fromOrders, data.toOrders); // DONE: What shall we do
+        painter = this.drawCooccurrence(
+          ele,
+          data.matrix,
+          data.fromNodes,
+          data.toNodes,
+          data.fromOrders,
+          data.toOrders
+        ); // DONE: What shall we do
       }
     });
     scope.$watch('orderedNodes', orderedNodes => {

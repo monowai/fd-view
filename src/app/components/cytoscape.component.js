@@ -63,7 +63,9 @@ class CytoscapeController {
             .pon('layoutstop')
             .then(event => {
               layout.maxSimulationTime = 2000;
-              cy.elements().makeLayout(layout).run(); // eslint-disable-line angular/module-getter
+              cy.elements()
+                .makeLayout(layout)
+                .run(); // eslint-disable-line angular/module-getter
             })
             .run();
         }
@@ -94,8 +96,7 @@ class CytoscapeController {
 
         complete: (sourceNode, targetNode, addedEntities) => {
           // fired when edgehandles is done and entities are added
-          ctrl.onEdge({source: sourceNode[0]._private.data,
-            target: targetNode[0]._private.data});
+          ctrl.onEdge({source: sourceNode[0]._private.data, target: targetNode[0]._private.data});
         }
       };
 
@@ -145,7 +146,9 @@ class CytoscapeController {
         const target = event.cyTarget;
         if (target !== event.cy) {
           target.addClass('mouseover');
-          target.neighborhood().edges()
+          target
+            .neighborhood()
+            .edges()
             .addClass('edge-related');
         }
       });
@@ -198,7 +201,9 @@ class CytoscapeController {
         if (name && name.length) {
           const cleanName = name.toLowerCase().trim();
           const doHighlight = (i, node) => {
-            const currentName = node.data().name.toLowerCase()
+            const currentName = node
+              .data()
+              .name.toLowerCase()
               .trim();
             if (currentName.includes(cleanName)) {
               node.removeClass('searched');

@@ -11,8 +11,8 @@ import ExploreConfig from './explore.config';
 
 import './explore.scss';
 
+/** @ngInject */
 export default angular
   .module('fd-view.explore', [uiRouter, toastr, services, config, layout])
   .component('exploreView', exploreView)
-  .config(ExploreConfig)
-  .name;
+  .config(ExploreConfig).name;

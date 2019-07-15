@@ -8,13 +8,9 @@ import {modelView} from './model.component';
 import ContentModelService from './content-model.service';
 import ModelConfig from './model.config';
 
+/** @ngInject */
 export default angular
-  .module('fd-view.modeler', [
-    uiRouter,
-    config,
-    services,
-    modelEditor
-  ])
+  .module('fd-view.modeler', [uiRouter, config, services, modelEditor])
 
   .component('modelView', modelView)
   .service('ContentModel', ContentModelService)
@@ -22,5 +18,4 @@ export default angular
   .run(() => {
     /* agGrid module initialized */
     // agGrid.initialiseAgGridWithAngular1(angular);
-  })
-  .name;
+  }).name;

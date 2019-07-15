@@ -11,7 +11,6 @@ import 'babel-polyfill';
 
 import angular from 'angular';
 import ngCookies from 'angular-cookies';
-// import ngResource from 'angular-resource';
 import ngSanitize from 'angular-sanitize';
 import uiRouter from 'angular-ui-router';
 import toastr from 'angular-toastr';
@@ -34,6 +33,7 @@ import adminView from './app/admin';
 import appConfig from './app/config/fd-view.config';
 import appRun from './app/config/fd-view.run';
 
+/** @ngInject */
 angular
   .module('fd-view', [
     ngCookies,
@@ -60,4 +60,3 @@ angular
   ])
   .config(appConfig)
   .run(appRun);
-

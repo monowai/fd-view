@@ -7,10 +7,10 @@ import StatsConfig from './statistics.config';
 
 import './statistics.scss';
 
+/** @ngInject */
 export default angular
   .module('fd-view.statistics', [])
   .component('statsView', statsView)
   .component('fortStat', fortStat)
   .directive('statsChart', statsChart)
-  .config(StatsConfig)
-  .name;
+  .config(StatsConfig).name;

@@ -1,4 +1,3 @@
-import React from 'react';
 import {connect} from 'react-redux';
 
 import {fetchEntity, selectLog} from './actions';
@@ -9,12 +8,16 @@ import EntityLog from './entity-log.react';
 
 const EntityView = ({selected, changes, ...props}) => (
   <Row>
-    <EntityLog
-      changes={changes}
-      logSelected={selected}
-      onClick={props.selectLog}
-    />
-    <EntityInfo {...props}/>
+  < EntityLog
+changes = {changes}
+logSelected = {selected}
+onClick = {props.selectLog}
+/>
+< EntityInfo
+{...
+  props
+}
+/>
   </Row>
 );
 
@@ -40,4 +43,7 @@ const mapDispatchToProps = dispatch => ({
   }
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(EntityView);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(EntityView);

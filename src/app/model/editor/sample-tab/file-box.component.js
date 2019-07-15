@@ -1,5 +1,6 @@
 import template from './file-box.html';
 import './file-box.scss';
+
 /** @ngInject */
 export default function fileBox($parse) {
   return {

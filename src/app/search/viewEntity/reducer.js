@@ -1,4 +1,4 @@
-import {LOAD_ENTITY, LOAD_ENTITY_SUCCESS, LOAD_ENTITY_FAIL, SELECT_LOG_SUCCESS} from './actions';
+import {LOAD_ENTITY, LOAD_ENTITY_FAIL, LOAD_ENTITY_SUCCESS, SELECT_LOG_SUCCESS} from './actions';
 
 const initialState = {
   entityKey: null,

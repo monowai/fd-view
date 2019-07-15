@@ -22,28 +22,30 @@ export default class ConceptModalCtrl {
   constructor($uibModalInstance, $http, configuration, fortress) {
     const ctrl = this;
     ctrl.title = fortress.name;
-    ctrl.layouts = [{name: 'dagre'},
+    ctrl.layouts = [
+      {name: 'dagre'},
       {name: 'circle'},
       {name: 'cose', randomize: true},
       {name: 'grid'},
       {name: 'concentric'},
       {name: 'random'},
-      {name: 'breadthfirst'}];
+      {name: 'breadthfirst'}
+    ];
     ctrl.layout = ctrl.layouts[0];
 
     ctrl.styles = [
       {
         selector: 'node',
         css: {
-          'content': 'data(name)',
+          content: 'data(name)',
           // 'font-size': '12pt',
           'min-zoomed-font-size': '9pt',
           'text-halign': 'center',
           'text-valign': 'center',
-          'color': '#222D32',
+          color: '#222D32',
           'background-color': '#499ef5',
-          'width': '120',
-          'height': '55'
+          width: '120',
+          height: '55'
         }
       },
       {
@@ -56,9 +58,9 @@ export default class ConceptModalCtrl {
         selector: 'edge',
         css: {
           'curve-style': 'bezier',
-          'content': 'data(relationship)',
-          'width': 2,
-          'color': '#fff',
+          content: 'data(relationship)',
+          width: 2,
+          color: '#fff',
           'line-color': '#888',
           'target-arrow-color': '#888',
           'target-arrow-shape': 'triangle',
@@ -92,7 +94,8 @@ export default class ConceptModalCtrl {
   }
 
   $onInit() {
-    this._http.get(`${this._cfg.engineUrl()}/api/v1/concept/${this._fortress.name}/structure/`)
+    this._http
+      .get(`${this._cfg.engineUrl()}/api/v1/concept/${this._fortress.name}/structure/`)
       .then(res => {
         this.conceptGraph = res.data;
       });

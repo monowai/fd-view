@@ -12,15 +12,18 @@ export default class AuthenticationSharedService {
   login(username, password) {
     const userData = {username, password};
     const url = `${this._cfg.engineUrl()}/api/login`;
-    return this._http.post(url, userData).then(res => {
-      this._session.create(res.data);
-      this._user.account = this._session;
-      this._authService.loginConfirmed(res.data);
-      return res.data;
-    }, () => {
-      // this._rootScope.authenticationError = true;
-      this._session.invalidate();
-    });
+    return this._http.post(url, userData).then(
+      res => {
+        this._session.create(res.data);
+        this._user.account = this._session;
+        this._authService.loginConfirmed(res.data);
+        return res.data;
+      },
+      () => {
+        // this._rootScope.authenticationError = true;
+        this._session.invalidate();
+      }
+    );
   }
 
   valid(authorizedRoles) {
@@ -48,7 +51,7 @@ export default class AuthenticationSharedService {
 
     let isAuthorized = false;
     authorizedRoles.forEach(authorizedRole => {
-      const authorized = (this.authenticated && this.account.userRoles.includes(authorizedRole)); // originally Session.login, this assigned to UserService
+      const authorized = this.authenticated && this.account.userRoles.includes(authorizedRole); // originally Session.login, this assigned to UserService
 
       if (authorized || authorizedRole === '*') {
         isAuthorized = true;
@@ -59,12 +62,14 @@ export default class AuthenticationSharedService {
   }
 
   getMyProfile() {
-    return this._http.get(`${this._cfg.engineUrl()}/api/account`)
-      .then(response => {
+    return this._http.get(`${this._cfg.engineUrl()}/api/account`).then(
+      response => {
         return response.data;
-      }, response => {
+      },
+      response => {
         this._rootScope.$broadcast('event:auth-loginRequired', response);
-      });
+      }
+    );
   }
 
   logout() {
@@ -77,4 +82,3 @@ export default class AuthenticationSharedService {
     this._authService.loginCancelled();
   }
 }
-

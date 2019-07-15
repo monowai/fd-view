@@ -11,15 +11,14 @@ MAINTAINER Mike Holdsworth "https://github.com/monowai"
 # docker build -t flockdata/fd-view .
 # docker run -p 80:80 flockdata/fd-view
 
-ENV ENGINE_URL http://fd-engine:8081
+ENV ENGINE_URL http://fd-engine:15001
 
 WORKDIR /etc/nginx
 
 #RUN chown -R www-data:www-data /var/lib/nginx
 
 RUN rm -f /etc/nginx/conf.d/default.conf
-ADD package/fdconfig.conf /etc/nginx/conf.d/
-ADD package/nginx.conf /etc/nginx/
+ADD package/nginx.fd.conf /etc/nginx/conf.d/
 ADD package/fdview.sh /opt/flockdata/bin/
 RUN ln -s /opt/flockdata/bin/fdview.sh /usr/local/bin/fdview
 RUN chmod +x  /opt/flockdata/bin/*

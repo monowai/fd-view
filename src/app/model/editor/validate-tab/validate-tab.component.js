@@ -6,19 +6,25 @@ class ValidateTabCtrl {
   }
 
   showResult(rowIndex) {
-    this._modal.show({
-      template: require('./valid-res-modal.html')
-    }, {
-      entry: this.result.rows[rowIndex]._entry
-    });
+    this._modal.show(
+      {
+        template: require('./valid-res-modal.html')
+      },
+      {
+        entry: this.result.rows[rowIndex]._entry
+      }
+    );
   }
 
   showValidMsg(rowIndex) {
-    this._modal.show({
-      template: require('./valid-msg-modal.html')
-    }, {
-      msgs: this.result.rows[rowIndex]._messages
-    });
+    this._modal.show(
+      {
+        template: require('./valid-msg-modal.html')
+      },
+      {
+        msgs: this.result.rows[rowIndex]._messages
+      }
+    );
   }
 
   showColDef(key, options) {

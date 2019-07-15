@@ -3,7 +3,17 @@ import './model.scss';
 
 class ModelCtrl {
   /** @ngInject */
-  constructor($filter, $rootScope, modalService, QueryService, ContentModel, $state, $window, $document, User) {
+  constructor(
+    $filter,
+    $rootScope,
+    modalService,
+    QueryService,
+    ContentModel,
+    $state,
+    $window,
+    $document,
+    User
+  ) {
     this.selected = [];
     this.profile = User.account;
 
@@ -43,7 +53,7 @@ class ModelCtrl {
 
   selectAll() {
     const filtered = this._filter('filter')(this.cplist, this.fortress);
-    const listToSelect = (filtered && filtered.length) ? filtered : this.cplist;
+    const listToSelect = filtered && filtered.length ? filtered : this.cplist;
     if (this.selected.length === listToSelect.length) {
       this.selected = [];
       this.allSelected = false;
@@ -69,8 +79,23 @@ class ModelCtrl {
           a.download = filename;
           a.href = this._window.URL.createObjectURL(blob);
           a.dataset.downloadurl = ['text/json', a.download, a.href].join(':');
-          e.initEvent('click', true, false, this._window,
-            0, 0, 0, 0, 0, false, false, false, false, 0, null);
+          e.initEvent(
+            'click',
+            true,
+            false,
+            this._window,
+            0,
+            0,
+            0,
+            0,
+            0,
+            false,
+            false,
+            false,
+            false,
+            0,
+            null
+          );
           a.dispatchEvent(e);
         }
       });
@@ -79,19 +104,24 @@ class ModelCtrl {
 
   deleteModel(keys) {
     if (keys && keys.length) {
-      this._modal.show({
-        size: 'sm'
-      }, {
-        title: 'Delete...',
-        text: 'Warning! You are about to delete the Content Model(s). Do you want to proceed?'
-      }).then(() => {
-        _.each(keys, key => {
-          this._content.deleteModel(key).then(() => {
-            this.cplist = _.reject(this.cplist, m => m.key === key);
+      this._modal
+        .show(
+          {
+            size: 'sm'
+          },
+          {
+            title: 'Delete...',
+            text: 'Warning! You are about to delete the Content Model(s). Do you want to proceed?'
+          }
+        )
+        .then(() => {
+          _.each(keys, key => {
+            this._content.deleteModel(key).then(() => {
+              this.cplist = _.reject(this.cplist, m => m.key === key);
+            });
           });
+          this._root.$broadcast('event:status-ok', 'Done!');
         });
-        this._root.$broadcast('event:status-ok', 'Done!');
-      });
     }
     this.selected = [];
   }

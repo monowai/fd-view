@@ -32,12 +32,14 @@ export const fetchProviders = () => {
     dispatch(requestProviders());
     const QueryService = getAngularService(document, 'QueryService');
 
-    return QueryService.general('fortress').then(fortresses => {
-      // need to test with 0 fortresses
-      dispatch(receiveProviders(fortresses.length ? fortresses : {name: 'None'}));
-    }).catch(error => {
-      dispatch(requestProvidersFail(error));
-    });
+    return QueryService.general('fortress')
+      .then(fortresses => {
+        // need to test with 0 fortresses
+        dispatch(receiveProviders(fortresses.length ? fortresses : {name: 'None'}));
+      })
+      .catch(error => {
+        dispatch(requestProvidersFail(error));
+      });
   };
 };
 
@@ -75,11 +77,13 @@ export const fetchTypes = fortress => {
     dispatch(requestTypes());
     const QueryService = getAngularService(document, 'QueryService');
 
-    return QueryService.doc(fortress.code || fortress).then(types => {
-      dispatch(receiveTypes(types));
-    }).catch(error => {
-      dispatch(requestTypesFail(error));
-    });
+    return QueryService.doc(fortress.code || fortress)
+      .then(types => {
+        dispatch(receiveTypes(types));
+      })
+      .catch(error => {
+        dispatch(requestTypesFail(error));
+      });
   };
 };
 

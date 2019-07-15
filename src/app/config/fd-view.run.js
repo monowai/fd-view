@@ -1,5 +1,14 @@
 /** @ngInject */
-function appRun($transitions, $rootScope, $state, AuthenticationSharedService, User, Session, toastr, USER_ROLES) {
+function appRun(
+  $transitions,
+  $rootScope,
+  $state,
+  AuthenticationSharedService,
+  User,
+  Session,
+  toastr,
+  USER_ROLES
+) {
   $transitions.onStart({}, trans => {
     User.isAuthorized = AuthenticationSharedService.isAuthorized;
     User.userRoles = USER_ROLES;
@@ -13,7 +22,9 @@ function appRun($transitions, $rootScope, $state, AuthenticationSharedService, U
       $state.go('admin.user');
     } else if ($state.is('login')) {
       $state.go('welcome');
-      setTimeout(() => {$.AdminLTE.layout.fix();}, 500); // eslint-disable-line
+      setTimeout(() => {
+        $.AdminLTE.layout.fix();
+      }, 500); // eslint-disable-line
     }
   });
 
@@ -38,8 +49,9 @@ function appRun($transitions, $rootScope, $state, AuthenticationSharedService, U
   // Call when the 404 response is returned by the server
   const notFound = $rootScope.$on('event:not-found', () => {
     $rootScope.errorMessage = 'errors.404';
-    toastr.warning('Please, check your <a ui-sref="settings">Settings</a>', 'Resource not found!',
-      {allowHtml: true});
+    toastr.warning('Please, check your <a ui-sref="settings">Settings</a>', 'Resource not found!', {
+      allowHtml: true
+    });
   });
 
   // Call when the 500 response is returned by the server

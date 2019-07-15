@@ -7,12 +7,6 @@ machine:
       NODE_ENV: test
       PATH: "${PATH}:${HOME}/${CIRCLE_PROJECT_REPONAME}/node_modules/.bin"
 
-dependencies:
-  override:
-    - yarn
-  pre:
-    - npm install -g gulp-cli
-
 test:
   # override:
   #  - gulp default:
@@ -26,7 +20,7 @@ deployment:
   hub:
     branch: /release.*/
     commands:
-      - gulp
+      - yarn build
       - docker build -t flockdata/fd-view .
 #      -e is deprecated but CCI requires it otherwise time outs occur
       - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS

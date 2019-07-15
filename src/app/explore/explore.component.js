@@ -20,7 +20,7 @@
 
 import template from './explore.html';
 
-import {scaleOrdinal, schemeCategory20, max as d3max} from 'd3';
+import {max as d3max, scaleOrdinal, schemeCategory20} from 'd3';
 
 class ExploreCtrl {
   /** @ngInject */
@@ -34,7 +34,8 @@ class ExploreCtrl {
       {name: 'grid'},
       {name: 'circle'},
       {name: 'breadthfirst'},
-      {name: 'dagre'}];
+      {name: 'dagre'}
+    ];
     this.layout = this.layouts[0];
 
     const nodeColor = scaleOrdinal(schemeCategory20);
@@ -43,12 +44,12 @@ class ExploreCtrl {
       {
         selector: 'node',
         css: {
-          'content': 'data(name)',
+          content: 'data(name)',
           'font-size': '15pt',
           'min-zoomed-font-size': '9pt',
           'text-valign': 'bottom',
           'text-halign': 'right',
-          'color': 'white',
+          color: 'white',
           'background-color': ele => nodeColor(ele.data().label)
           // 'text-outline-width': 2,
           // 'text-outline-color': '#888',
@@ -95,8 +96,11 @@ class ExploreCtrl {
     } else {
       this.graphData = this.matrix;
       if (!this._matrix.reciprocalExcluded() && this._matrix.sharedChecked()) {
-        this._toastr.warning('Search results are not optimal for the graph. You can change <strong>Search settings</strong>.', 'Warning',
-          {allowHtml: true});
+        this._toastr.warning(
+          'Search results are not optimal for the graph. You can change <strong>Search settings</strong>.',
+          'Warning',
+          {allowHtml: true}
+        );
         this._matrix.sharedRlxChecked = false;
         this._matrix.reciprocalExcludedChecked = true;
       }
@@ -108,14 +112,20 @@ class ExploreCtrl {
     if (this.group() === 'nodes') {
       const label = this.data().label;
       const name = this.data().name;
-      let tooltipContent = `<strong>${this.data('id')}</strong>&nbsp;<a ui-sref="search({filter:{name: '${label}', value: '${name}'}})">${name}</a><br><strong>${label}</strong>`;
+      let tooltipContent = `<strong>${this.data(
+        'id'
+      )}</strong>&nbsp;<a ui-sref="search({filter:{name: '${label}', value: '${name}'}})">${name}</a><br><strong>${label}</strong>`;
       const context = angular.element('ui-view');
-      angular.element(context).injector().invoke([
-        '$compile', $compile => {
-          const scope = angular.element(context).scope();
-          tooltipContent = $compile(tooltipContent)(scope);
-        }
-      ]);
+      angular
+        .element(context)
+        .injector()
+        .invoke([
+          '$compile',
+          $compile => {
+            const scope = angular.element(context).scope();
+            tooltipContent = $compile(tooltipContent)(scope);
+          }
+        ]);
       return tooltipContent;
     }
     return `<strong>Count: </strong>${this.data().count}`;
@@ -146,7 +156,7 @@ class ExploreCtrl {
     this.styles.push({
       selector: 'edge',
       css: {
-        'width': `mapData(count,${minCount}, ${maxCount}, 1,${maxCount < 15 ? maxCount : 15})`, // function(ele) {return edgeWidth(ele.data('count'))},
+        width: `mapData(count,${minCount}, ${maxCount}, 1,${maxCount < 15 ? maxCount : 15})`, // function(ele) {return edgeWidth(ele.data('count'))},
         'line-color': '#067B7B',
         'target-arrow-color': '#067B7B',
         'target-arrow-shape': 'triangle'

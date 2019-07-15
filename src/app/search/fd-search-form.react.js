@@ -1,13 +1,12 @@
-import React from 'react';
 import {connect} from 'react-redux';
 
-import {Row, Col} from 'react-bootstrap';
+import {Col, Row} from 'react-bootstrap';
 
 import SearchInput from '../components/search-input.react';
 import FortressInput from '../components/fortress-input.react';
-import TypesInput from "../components/types-input.react";
+import TypesInput from '../components/types-input.react';
 
-import {setTerm, runTermSearch} from './actions';
+import {runTermSearch, setTerm} from './actions';
 
 import {getAngularService} from '../services/angular-react-helper';
 
@@ -48,15 +47,21 @@ const mergeProps = (stateProps, dispatchProps) => {
   return {
     onSearch(term) {
       dispatch(setTerm(term));
-      dispatch(runTermSearch({
-        searchText: term || '*',
-        fortress: fortress.length ? fortress[0].name : null,
-        types: types.map(t => t.name),
-        from,
-        filter: Object.keys(filter).length ? filter : null
-      }));
+      dispatch(
+        runTermSearch({
+          searchText: term || '*',
+          fortress: fortress.length ? fortress[0].name : null,
+          types: types.map(t => t.name),
+          from,
+          filter: Object.keys(filter).length ? filter : null
+        })
+      );
     }
   };
 };
 
-export default connect(mapStateToProps, null, mergeProps)(FdSearchForm);
+export default connect(
+  mapStateToProps,
+  null,
+  mergeProps
+)(FdSearchForm);

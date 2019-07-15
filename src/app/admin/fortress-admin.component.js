@@ -5,7 +5,16 @@ import './fortress-admin.scss';
 
 class AdminFortress {
   /** @ngInject */
-  constructor($rootScope, QueryService, User, $http, modalService, ConceptModal, configuration, USER_ROLES) {
+  constructor(
+    $rootScope,
+    QueryService,
+    User,
+    $http,
+    modalService,
+    ConceptModal,
+    configuration,
+    USER_ROLES
+  ) {
     this._root = $rootScope;
     this._query = QueryService;
     this._user = User;
@@ -29,10 +38,9 @@ class AdminFortress {
   selectFortress(f) {
     this.typeOpen = true;
     this.fortress = f;
-    this._query.doc(f.name)
-      .then(data => {
-        this.documents = data;
-      });
+    this._query.doc(f.name).then(data => {
+      this.documents = data;
+    });
   }
 
   openConcept(fortress) {
@@ -59,7 +67,8 @@ class AdminFortress {
       entity: 'Data Provider',
       obj: f
     };
-    this._http.get(`${this._conf.engineUrl()}/api/v1/fortress/timezones`)
+    this._http
+      .get(`${this._conf.engineUrl()}/api/v1/fortress/timezones`)
       .then(res => {
         modalOptions.timezones = res.data;
         return this._modal.show(modalDefaults, modalOptions);
@@ -81,7 +90,8 @@ class AdminFortress {
       title: 'Delete...',
       text: `Warning! You are about to delete the Data Provider - "${f.name}" and all associated data. Do you want to proceed?`
     };
-    this._modal.show(modalDefaults, modalOptions)
+    this._modal
+      .show(modalDefaults, modalOptions)
       .then(res => this._http.delete(`${this._conf.engineUrl()}/api/v1/admin/${res.code}`))
       .then(res => {
         this._root.$broadcast('event:status-ok', res.statusText);
@@ -91,17 +101,20 @@ class AdminFortress {
   }
 
   rebuildFortress(f) {
-    this._http.post(`${this._conf.engineUrl()}/api/v1/admin/${f.code}/rebuild`)
+    this._http
+      .post(`${this._conf.engineUrl()}/api/v1/admin/${f.code}/rebuild`)
       .then(res => this._root.$broadcast('event:status-ok', res.statusText));
   }
 
   rebuildFortressDoc(f, d) {
-    this._http.post(`${this._conf.engineUrl()}/api/v1/admin/${f.code}/${d.name}/rebuild`)
+    this._http
+      .post(`${this._conf.engineUrl()}/api/v1/admin/${f.code}/${d.name}/rebuild`)
       .then(res => this._root.$broadcast('event:status-ok', res.statusText));
   }
 
   selectDocType(d) {
-    this._http.get(`${this._conf.engineUrl()}/api/v1/fortress/${this.fortress.code}/${d.name}/segments`)
+    this._http
+      .get(`${this._conf.engineUrl()}/api/v1/fortress/${this.fortress.code}/${d.name}/segments`)
       .then(res => {
         this.segments = res.data[0].segments;
       });
@@ -117,14 +130,17 @@ class AdminFortress {
       disable: true
     };
 
-    this._modal.show(modalDefaults, modalOptions)
-      .then(res => this._http({
-        method: 'PUT',
-        url: `${this._conf.engineUrl()}/api/v1/fortress/${this.fortress.code}/${res.name}`,
-        dataType: 'raw',
-        headers: {'Content-Type': 'application/json'},
-        data: ''
-      }))
+    this._modal
+      .show(modalDefaults, modalOptions)
+      .then(res =>
+        this._http({
+          method: 'PUT',
+          url: `${this._conf.engineUrl()}/api/v1/fortress/${this.fortress.code}/${res.name}`,
+          dataType: 'raw',
+          headers: {'Content-Type': 'application/json'},
+          data: ''
+        })
+      )
       .then(res => {
         this._root.$broadcast('event:status-ok', res.statusText);
         this.documents.push(res.data);
@@ -141,13 +157,16 @@ class AdminFortress {
       title: 'Delete...',
       text: `Warning! You are about to delete the Document Type - "${dt.name}" and all associated data. Do you want to proceed?`
     };
-    this._modal.show(modalDefaults, modalOptions)
-      .then(res => this._http({
-        method: 'DELETE',
-        url: `${this._conf.engineUrl()}/api/v1/admin/${f.code}/${res.name}`,
-        dataType: 'raw',
-        headers: {'Content-Type': 'application/json'}
-      }))
+    this._modal
+      .show(modalDefaults, modalOptions)
+      .then(res =>
+        this._http({
+          method: 'DELETE',
+          url: `${this._conf.engineUrl()}/api/v1/admin/${f.code}/${res.name}`,
+          dataType: 'raw',
+          headers: {'Content-Type': 'application/json'}
+        })
+      )
       .then(res => {
         this._root.$broadcast('event:status-ok', res.message);
         // this.documents.splice(this.documents.indexOf(dt), 1);
@@ -165,15 +184,18 @@ class AdminFortress {
       title: 'Delete segment...',
       text: `Warning! You are about to delete the Document Segment - "${s}" and all associated data. Do you want to proceed?`
     };
-    this._modal.show(modalDefaults, modalOptions)
-      .then(res => this._http({
-        method: 'DELETE',
-        url: `${this._conf.engineUrl()}/api/v1/admin/${f.code}/${dt.name}/${res.name}`,
-        dataType: 'raw',
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      }))
+    this._modal
+      .show(modalDefaults, modalOptions)
+      .then(res =>
+        this._http({
+          method: 'DELETE',
+          url: `${this._conf.engineUrl()}/api/v1/admin/${f.code}/${dt.name}/${res.name}`,
+          dataType: 'raw',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        })
+      )
       .then(res => {
         this._root.$broadcast('event:status-ok', res.message);
         this.segments.splice(this.segments.indexOf(s), 1);

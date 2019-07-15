@@ -29,24 +29,29 @@ export default class EditColdefCtrl {
     if (angular.equals(_.omit(this.cd, '$name'), this._coldef[this.cd.$name])) {
       this._uibmi.dismiss();
     } else {
-      this._modal.show({size: 'sm'}, {
-        title: 'Discard changes...',
-        text: 'Are you sure you want to cancel and discard your changes?'
-      }).then(() => {
-        this._uibmi.dismiss();
-      });
+      this._modal
+        .show(
+          {size: 'sm'},
+          {
+            title: 'Discard changes...',
+            text: 'Are you sure you want to cancel and discard your changes?'
+          }
+        )
+        .then(() => {
+          this._uibmi.dismiss();
+        });
     }
   }
 
   ok(data) {
     if (data.dataType === 'date') {
-      data.dateFormat = (data.dateFormat === 'custom' ? data.customDate : data.dateFormat);
+      data.dateFormat = data.dateFormat === 'custom' ? data.customDate : data.dateFormat;
       if (data.customDate) {
         delete data.customDate;
       }
     }
 
-    if (data.name === "") {
+    if (data.name === '') {
       delete data.name;
     }
 
