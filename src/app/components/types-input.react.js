@@ -1,3 +1,4 @@
+import React from 'react';
 import {connect} from 'react-redux';
 import {selectTypes} from '../config/actions';
 import {Typeahead} from 'react-bootstrap-typeahead';

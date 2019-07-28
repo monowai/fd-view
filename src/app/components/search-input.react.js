@@ -1,6 +1,8 @@
-import {Button, FormControl, InputGroup} from 'react-bootstrap';
+import React from 'react';
 
-const SearchInput = ({ term }) => {
+import {InputGroup, FormControl, Button} from 'react-bootstrap';
+
+const SearchInput = ({term}) => {
   return (
     <InputGroup>
       <FormControl
@@ -10,8 +12,7 @@ const SearchInput = ({ term }) => {
         placeholder="Text to search for ..."
         size="100"
         autoComplete="on"
-        autoFocus
-      />
+        autoFocus />
       <InputGroup.Button>
         <Button type="submit" bsStyle="primary">
           <i className="fa fa-search" />
