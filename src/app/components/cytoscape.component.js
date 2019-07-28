@@ -96,7 +96,7 @@ class CytoscapeController {
 
         complete: (sourceNode, targetNode, addedEntities) => {
           // fired when edgehandles is done and entities are added
-          ctrl.onEdge({source: sourceNode[0]._private.data, target: targetNode[0]._private.data});
+          ctrl.onEdge({ source: sourceNode[0]._private.data, target: targetNode[0]._private.data });
         }
       };
 

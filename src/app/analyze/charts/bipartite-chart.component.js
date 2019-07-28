@@ -13,7 +13,7 @@ class BipartiteDiagramCtrl {
   drawBipartite(ele, data) {
     const width = 1400;
     const height = max([data[0].dataLength * 10 + 40, 600]);
-    const margin = {b: 0, t: 40, l: 170, r: 50};
+    const margin = { b: 0, t: 40, l: 170, r: 50 };
     const el = ele[0];
 
     d3select(el)

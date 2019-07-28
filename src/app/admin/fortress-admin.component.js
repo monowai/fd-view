@@ -59,7 +59,7 @@ class AdminFortress {
     this.selectFortress(f);
   }
 
-  editFortress(f = {searchEnabled: true, timeZone: moment.tz.guess()}) {
+  editFortress(f = { searchEnabled: true, timeZone: moment.tz.guess() }) {
     const modalDefaults = {
       template: configModalTemplate
     };
@@ -137,7 +137,7 @@ class AdminFortress {
           method: 'PUT',
           url: `${this._conf.engineUrl()}/api/v1/fortress/${this.fortress.code}/${res.name}`,
           dataType: 'raw',
-          headers: {'Content-Type': 'application/json'},
+          headers: { 'Content-Type': 'application/json' },
           data: ''
         })
       )
@@ -164,7 +164,7 @@ class AdminFortress {
           method: 'DELETE',
           url: `${this._conf.engineUrl()}/api/v1/admin/${f.code}/${res.name}`,
           dataType: 'raw',
-          headers: {'Content-Type': 'application/json'}
+          headers: { 'Content-Type': 'application/json' }
         })
       )
       .then(res => {
@@ -180,7 +180,7 @@ class AdminFortress {
     };
 
     const modalOptions = {
-      obj: {name: s},
+      obj: { name: s },
       title: 'Delete segment...',
       text: `Warning! You are about to delete the Document Segment - "${s}" and all associated data. Do you want to proceed?`
     };

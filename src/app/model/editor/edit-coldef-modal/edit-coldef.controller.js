@@ -31,7 +31,7 @@ export default class EditColdefCtrl {
     } else {
       this._modal
         .show(
-          {size: 'sm'},
+          { size: 'sm' },
           {
             title: 'Discard changes...',
             text: 'Are you sure you want to cancel and discard your changes?'

@@ -45,16 +45,16 @@ export default class ReactJSONEditor extends Component {
       return;
     }
 
-    const {editorCreated} = this.state;
+    const { editorCreated } = this.state;
 
     if (editorCreated) {
       return;
     }
 
-    const {onChange, onEditable, onError, onModeChange} = this.props;
-    const {escapeUnicode, sortObjectKeys, history} = this.props;
-    const {mode} = this.props;
-    const {name, schema, search, indentation, theme} = this.props;
+    const { onChange, onEditable, onError, onModeChange } = this.props;
+    const { escapeUnicode, sortObjectKeys, history } = this.props;
+    const { mode } = this.props;
+    const { name, schema, search, indentation, theme } = this.props;
 
     let onChangeWrapper;
     if (onChange) {
@@ -106,7 +106,7 @@ export default class ReactJSONEditor extends Component {
   }
 
   componentWillUnmount() {
-    const {editorCreated} = this.state;
+    const { editorCreated } = this.state;
     if (editorCreated) {
       this.editor.destroy();
 
@@ -123,21 +123,19 @@ export default class ReactJSONEditor extends Component {
   }
 
   render() {
-    const {className, height, width} = this.props;
+    const { className, height, width } = this.props;
     const refGrabber = ref => {
       this.editorRef = ref;
     };
-    return
-  <
-    div
-    id = "jsonEditor"
-    className = {className}
-    ref = {refGrabber}
-    style = {
-    {
-      height, width
-    }
-  }
+    return;
+    <div
+      id="jsonEditor"
+      className={className}
+      ref={refGrabber}
+      style={{
+        height,
+        width
+      }}
     />;
   }
 }

@@ -5,18 +5,15 @@ import {ControlLabel, FormControl, FormGroup} from 'react-bootstrap';
 
 import {selectDelta} from './actions';
 
-const CompareSelect = ({changes, selected, selectDelta}) => (
+const CompareSelect = ({ changes, selected, selectDelta }) => (
   <FormGroup>
-  < ControlLabel
-style = {
-{
-  marginRight: 10
-}
-}>
-Compare
-with:
-<
-/ControlLabel>
+    <ControlLabel
+      style={{
+        marginRight: 10
+      }}
+    >
+      Compare with:
+    </ControlLabel>
     <FormControl
       componentClass="select"
       className="input-sm"
@@ -30,19 +27,17 @@ with:
             {logsResult.event.name} |&nbsp;
             {logsResult.madeBy} |&nbsp;
             {moment(logsResult.when).format('YYYY-MM-DD, hh:mm a')}
-        <
-          /option>
-        )
-          ;
+          </option>
+        );
       })}
     </FormControl>
   </FormGroup>
 );
 
 const mapStateToProps = state => {
-  const {changes, selected} = state.reducer.entity;
+  const { changes, selected } = state.reducer.entity;
 
-  return {changes, selected};
+  return { changes, selected };
 };
 
 const mapDispatchToProps = dispatch => ({

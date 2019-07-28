@@ -97,7 +97,7 @@ export default class DataSampleService {
       this.validationResult = res.data;
       const entry = model.tagModel ? res.data.tags : res.data.entity;
       this.rows = _.map(res.data.results, (r, i) => {
-        const row = entry[i] ? _.clone(entry[i].content.data) : {code: i};
+        const row = entry[i] ? _.clone(entry[i].content.data) : { code: i };
         row._entry = entry[i];
         return Object.assign(row, {
           _messages: _(r)

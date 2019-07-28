@@ -1,7 +1,7 @@
 import angular from 'angular';
 
-import {fortStat} from './fort-stat.component';
-import {statsView} from './statistics.component';
+import { fortStat } from './fort-stat.component';
+import { statsView } from './statistics.component';
 import statsChart from './stat-chart.directive';
 import StatsConfig from './statistics.config';
 

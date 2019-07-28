@@ -46,7 +46,7 @@ class SettingsTabCtrl {
   getAllModels() {
     return this._cm.getAll().then(res => {
       this.allModels = res.data;
-      this.tagModels = _.filter(res.data, {documentType: 'TagModel'});
+      this.tagModels = _.filter(res.data, { documentType: 'TagModel' });
     });
   }
 

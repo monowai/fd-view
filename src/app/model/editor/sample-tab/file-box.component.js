@@ -29,7 +29,7 @@ export default function fileBox($parse) {
             reader.fileName = e.originalEvent.dataTransfer.files[0].name;
             reader.onload = onLoadEvent => {
               scope.$apply(() => {
-                fn(scope, {$fileContent: onLoadEvent.target.result, $fileName: reader.fileName});
+                fn(scope, { $fileContent: onLoadEvent.target.result, $fileName: reader.fileName });
               });
               element.addClass('is-success');
             };
@@ -42,7 +42,7 @@ export default function fileBox($parse) {
         reader.fileName = onChangeEvent.target.files[0].name;
         reader.onload = onLoadEvent => {
           scope.$apply(() => {
-            fn(scope, {$fileContent: onLoadEvent.target.result, $fileName: reader.fileName});
+            fn(scope, { $fileContent: onLoadEvent.target.result, $fileName: reader.fileName });
           });
           element.addClass('is-success');
         };

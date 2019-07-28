@@ -26,7 +26,7 @@ class CooccurrenceDiagram {
   drawCooccurrence(ele, matrix, fromNodes, toNodes, fromOrders, toOrders) {
     const el = ele[0];
 
-    const margin = {top: 60, right: 0, bottom: 0, left: 60};
+    const margin = { top: 60, right: 0, bottom: 0, left: 60 };
     const width = 580;
     const height = 580;
 
@@ -171,7 +171,7 @@ class CooccurrenceDiagram {
         .attr('transform', (d, i) => `translate(${x(i)})rotate(-90)`);
     }
 
-    return {orderFn: order};
+    return { orderFn: order };
   }
 
   link(scope, ele, attr) {

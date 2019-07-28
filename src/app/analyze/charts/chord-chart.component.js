@@ -174,7 +174,7 @@ class ChordDiagramCtrl {
         if (old) {
           tween = interpolate(old, d);
         } else {
-          const emptyArc = {startAngle: d.startAngle, endAngle: d.startAngle};
+          const emptyArc = { startAngle: d.startAngle, endAngle: d.startAngle };
           tween = interpolate(emptyArc, d);
         }
 
@@ -211,8 +211,8 @@ class ChordDiagramCtrl {
           tween = interpolate(old, d);
         } else {
           const emptyChord = {
-            source: {startAngle: d.source.startAngle, endAngle: d.source.startAngle},
-            target: {startAngle: d.target.startAngle, endAngle: d.target.startAngle}
+            source: { startAngle: d.source.startAngle, endAngle: d.source.startAngle },
+            target: { startAngle: d.target.startAngle, endAngle: d.target.startAngle }
           };
           tween = interpolate(emptyChord, d);
         }

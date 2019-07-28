@@ -30,7 +30,7 @@ export const fetchEntity = entityKey => {
       const details =
         log.changes[0] && (await EntityService.getJsonContentForLog(entityKey, log.changes[0].id));
       // const tags = await EntityService.getTagsForEntity(entityKey);
-      dispatch(loadEntitySuccess({...log, details, entityKey}));
+      dispatch(loadEntitySuccess({ ...log, details, entityKey }));
     } catch (e) {
       dispatch(loadEntityFail(e));
     }
@@ -46,10 +46,10 @@ export const selectLog = id => {
   return async (dispatch, getState) => {
     dispatch(loadEntity());
     try {
-      const {entityKey} = getState().reducer.entity;
+      const { entityKey } = getState().reducer.entity;
       const EntityService = getAngularService(document, 'EntityService');
       const details = await EntityService.getJsonContentForLog(entityKey, id);
-      dispatch(selectLogSuccess({details, selected: id}));
+      dispatch(selectLogSuccess({ details, selected: id }));
     } catch (e) {
       dispatch(loadEntityFail(e));
     }
@@ -60,10 +60,10 @@ export const selectDelta = id => {
   return async (dispatch, getState) => {
     dispatch(loadEntity());
     try {
-      const {entityKey} = getState().reducer.entity;
+      const { entityKey } = getState().reducer.entity;
       const EntityService = getAngularService(document, 'EntityService');
       const delta = await EntityService.getJsonContentForLog(entityKey, id);
-      dispatch(selectLogSuccess({delta}));
+      dispatch(selectLogSuccess({ delta }));
     } catch (e) {
       dispatch(loadEntityFail(e));
     }

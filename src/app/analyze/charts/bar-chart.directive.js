@@ -22,7 +22,7 @@ class BarChart {
   }
 
   draw(svg, data, width, height, agg) {
-    const margin = {top: 20, right: 20, bottom: 40, left: 40};
+    const margin = { top: 20, right: 20, bottom: 40, left: 40 };
     const color = scaleOrdinal(schemeCategory20);
 
     width = width - margin.left - margin.right;

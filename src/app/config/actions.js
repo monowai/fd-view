@@ -35,7 +35,7 @@ export const fetchProviders = () => {
     return QueryService.general('fortress')
       .then(fortresses => {
         // need to test with 0 fortresses
-        dispatch(receiveProviders(fortresses.length ? fortresses : {name: 'None'}));
+        dispatch(receiveProviders(fortresses.length ? fortresses : { name: 'None' }));
       })
       .catch(error => {
         dispatch(requestProvidersFail(error));

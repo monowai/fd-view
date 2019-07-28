@@ -1,6 +1,5 @@
 import {connect} from 'react-redux';
 import {selectTypes} from '../config/actions';
-
 import {Typeahead} from 'react-bootstrap-typeahead';
 import 'react-bootstrap-typeahead/css/Typeahead.css';
 import 'react-bootstrap-typeahead/css/Token.css';

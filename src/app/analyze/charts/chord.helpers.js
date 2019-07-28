@@ -66,7 +66,7 @@ export class ChordMpr {
 
   addToMap(value, info) {
     if (!this.mmap[value]) {
-      this.mmap[value] = {name: value, id: this.n++, data: info};
+      this.mmap[value] = { name: value, id: this.n++, data: info };
     }
   }
 
@@ -74,7 +74,7 @@ export class ChordMpr {
     const values = _.uniq(_.map(this.data, varName));
     _.map(values, v => {
       if (!this.mmap[v]) {
-        this.mmap[v] = {name: v, id: this.n++, data: info};
+        this.mmap[v] = { name: v, id: this.n++, data: info };
       }
     });
     return this;
@@ -89,8 +89,8 @@ export function chordRdr(matrix, mmap) {
     if (d.source) {
       const i = d.source.index;
       const j = d.target.index;
-      const s = _.where(mmap, {id: i});
-      const t = _.where(mmap, {id: j});
+      const s = _.where(mmap, { id: i });
+      const t = _.where(mmap, { id: j });
       m.sname = s[0].name;
       m.sdata = d.source.value;
       m.svalue = Number(d.source.value);
@@ -100,7 +100,7 @@ export function chordRdr(matrix, mmap) {
       m.tvalue = Number(d.target.value);
       m.ttotal = _.reduce(matrix[j], (k, n) => k + n, 0);
     } else {
-      const g = _.where(mmap, {id: d.index});
+      const g = _.where(mmap, { id: d.index });
       m.gname = g[0].name;
       m.gdata = g[0].data;
       m.gvalue = d.value;
@@ -130,6 +130,6 @@ export function constructChordData(data) {
       .setAccessor((recs, a, b) => {
         return recs[0] ? Number(recs[0].count) : 0;
       });
-    return {matrix: mpr.getMatrix(), mmap: mpr.getMap()};
+    return { matrix: mpr.getMatrix(), mmap: mpr.getMap() };
   }
 }

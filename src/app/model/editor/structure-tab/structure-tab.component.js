@@ -107,13 +107,13 @@ class StructureTabCtrl {
       }
     ];
     this.layouts = [
-      {name: 'circle'},
-      {name: 'cose', randomize: true},
-      {name: 'dagre'},
-      {name: 'grid'},
-      {name: 'concentric'},
-      {name: 'random'},
-      {name: 'breadthfirst'}
+      { name: 'circle' },
+      { name: 'cose', randomize: true },
+      { name: 'dagre' },
+      { name: 'grid' },
+      { name: 'concentric' },
+      { name: 'random' },
+      { name: 'breadthfirst' }
     ];
     this.layout = this.layouts[0];
     this.nodes = [];
@@ -146,7 +146,7 @@ class StructureTabCtrl {
   }
 
   createTag() {
-    const canConnect = [{label: 'root', id: 0}].concat(this.tags);
+    const canConnect = [{ label: 'root', id: 0 }].concat(this.tags);
     const tag = true;
     let selected = this.nodes.length
       ? canConnect.find(t => t.id === this.nodes[0]._private.data.id)
@@ -157,7 +157,7 @@ class StructureTabCtrl {
         {
           template: require('./forms/create-tag.html')
         },
-        {obj: {selected}, canConnect}
+        { obj: { selected }, canConnect }
       )
       .then(res => {
         if (res.selected.id === 0) {
@@ -184,7 +184,7 @@ class StructureTabCtrl {
         {
           template: require('./forms/create-column.html')
         },
-        {unique}
+        { unique }
       )
       .then(res => {
         this._cm.addCol(res);
@@ -197,7 +197,7 @@ class StructureTabCtrl {
         {
           template: require('./forms/create-entitylink.html')
         },
-        {colDefs: Object.keys(this.model.content)}
+        { colDefs: Object.keys(this.model.content) }
       )
       .then(res => {
         this._cm.addEntitylink(res.col, _.omit(res, 'col'));
@@ -211,13 +211,13 @@ class StructureTabCtrl {
       obj: {
         tag: this.nodes.length
           ? this.tags[
-            this.tags.indexOf(_.find(this.tags, t => t.id === this.nodes[0]._private.data.id))
+              this.tags.indexOf(_.find(this.tags, t => t.id === this.nodes[0]._private.data.id))
             ]
           : ''
       }
     };
 
-    this._modal.show({template: require('./forms/create-alias.html')}, modalOptions).then(res => {
+    this._modal.show({ template: require('./forms/create-alias.html') }, modalOptions).then(res => {
       this._cm.addAlias(res.tag, _.omit(res, 'tag'));
       this.modelGraph = this._cm.graphModel();
     });
@@ -252,7 +252,7 @@ class StructureTabCtrl {
           {
             template: require('./link-tags.html')
           },
-          {disable: true, source, target}
+          { disable: true, source, target }
         )
         .then(res => {
           const sourceTag = this._cm.findTag(source.id);
@@ -264,7 +264,7 @@ class StructureTabCtrl {
           this.modelGraph = this._cm.graphModel();
         });
     } else if (source.type === 'entity' && target.type === 'tag') {
-      this.showColDef(target.id, {openAsTag: true, link: source});
+      this.showColDef(target.id, { openAsTag: true, link: source });
     } else {
       this.modelGraph = this._cm.graphModel();
     }

@@ -10,7 +10,7 @@ export default class AuthenticationSharedService {
   }
 
   login(username, password) {
-    const userData = {username, password};
+    const userData = { username, password };
     const url = `${this._cfg.engineUrl()}/api/login`;
     return this._http.post(url, userData).then(
       res => {

@@ -6,10 +6,10 @@ export default class Entity {
   }
 
   async search(searchText, fortress, types, from, filter) {
-    const dataParam = {searchText, fortress, types, from, filter};
+    const dataParam = { searchText, fortress, types, from, filter };
     const url = `${this._cfg.engineUrl()}/api/v1/query/`;
-    const {data} = await this._http.post(url, dataParam);
-    return {results: data.results, total: data.totalHits};
+    const { data } = await this._http.post(url, dataParam);
+    return { results: data.results, total: data.totalHits };
   }
 
   getLogsForEntity(entityKey) {

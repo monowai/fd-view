@@ -39,7 +39,7 @@ class ModelCtrl {
   }
 
   createModel() {
-    this._state.go('editModel', {modelKey: 'new'});
+    this._state.go('editModel', { modelKey: 'new' });
   }
 
   selectModel(key) {
@@ -68,7 +68,7 @@ class ModelCtrl {
     if (keys) {
       this._content.downloadModel(keys).then(res => {
         const data = angular.toJson(res.data);
-        const blob = new Blob([data], {type: 'text/json'});
+        const blob = new Blob([data], { type: 'text/json' });
         const filename = `${keys[0]}.json`;
         if (this._window.navigator && this._window.navigator.msSaveOrOpenBlob) {
           this._window.navigator.msSaveOrOpenBlob(blob, filename);
@@ -134,7 +134,7 @@ class ModelCtrl {
       this._content.uploadModel(models).then(res => {
         this._root.$broadcast('event:status-ok', res.statusText);
         if (models.length === 1) {
-          this._state.go('editModel', {modelKey: res.data[0].key});
+          this._state.go('editModel', { modelKey: res.data[0].key });
         } else {
           this.cplist = this.cplist.concat(res.data);
         }

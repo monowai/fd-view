@@ -1,6 +1,5 @@
 import {connect} from 'react-redux';
 import {fetchProviders, fetchTypes, selectProvider} from '../config/actions';
-
 import {Typeahead} from 'react-bootstrap-typeahead';
 
 const FortressInput = props => {

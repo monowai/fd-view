@@ -1,6 +1,6 @@
 import angular from 'angular';
 
-import {settingsView} from './settings.component';
+import { settingsView } from './settings.component';
 import SettingsConfig from './settings.config';
 
 /** @ngInject */

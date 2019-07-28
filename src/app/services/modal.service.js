@@ -20,7 +20,7 @@ export default class ModalService {
       tempModalDefaults.controller = [
         '$scope',
         '$uibModalInstance',
-        function ($scope, $uibModalInstance) {
+        function($scope, $uibModalInstance) {
           $scope.modalOptions = tempModalOptions;
           $scope.obj = $scope.modalOptions.obj;
 

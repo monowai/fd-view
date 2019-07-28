@@ -28,13 +28,13 @@ class ExploreCtrl {
     this.matrix = MatrixRequest.lastMatrix();
 
     this.layouts = [
-      {name: 'cose', randomize: true},
-      {name: 'concentric'},
-      {name: 'cola'},
-      {name: 'grid'},
-      {name: 'circle'},
-      {name: 'breadthfirst'},
-      {name: 'dagre'}
+      { name: 'cose', randomize: true },
+      { name: 'concentric' },
+      { name: 'cola' },
+      { name: 'grid' },
+      { name: 'circle' },
+      { name: 'breadthfirst' },
+      { name: 'dagre' }
     ];
     this.layout = this.layouts[0];
 
@@ -99,7 +99,7 @@ class ExploreCtrl {
         this._toastr.warning(
           'Search results are not optimal for the graph. You can change <strong>Search settings</strong>.',
           'Warning',
-          {allowHtml: true}
+          { allowHtml: true }
         );
         this._matrix.sharedRlxChecked = false;
         this._matrix.reciprocalExcludedChecked = true;

@@ -17,7 +17,7 @@ export const searchTerm = () => ({
 
 export const searchTermSuccess = results => ({
   type: SEARCH_TERM_SUCCESS,
-  data: {...results} // {results, total} returned from service
+  data: { ...results } // {results, total} returned from service
 });
 
 export const searchTermFail = error => ({
@@ -26,7 +26,7 @@ export const searchTermFail = error => ({
 });
 
 export const runTermSearch = searchConfig => {
-  const {searchText, fortress, types, from, filter} = searchConfig;
+  const { searchText, fortress, types, from, filter } = searchConfig;
   return dispatch => {
     dispatch(searchTerm());
     const EntityService = getAngularService(document, 'EntityService');

@@ -28,11 +28,11 @@ export function megaNum() {
     const isNegative = number < 0;
     let key = '';
     const powers = [
-      {key: 'Q', value: Math.pow(10, 15)},
-      {key: 'T', value: Math.pow(10, 12)},
-      {key: 'B', value: Math.pow(10, 9)},
-      {key: 'M', value: Math.pow(10, 6)},
-      {key: 'k', value: 1000}
+      { key: 'Q', value: Math.pow(10, 15) },
+      { key: 'T', value: Math.pow(10, 12) },
+      { key: 'B', value: Math.pow(10, 9) },
+      { key: 'M', value: Math.pow(10, 6) },
+      { key: 'k', value: 1000 }
     ];
 
     for (let i = 0; i < powers.length; i++) {

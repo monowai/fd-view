@@ -17,7 +17,7 @@ class RelationshipsTabCtrl {
     if (!this.tag.entityTagLinks) {
       this.tag.entityTagLinks = [];
     }
-    this.tag.entityTagLinks.push({relationshipName: 'Undefined'});
+    this.tag.entityTagLinks.push({ relationshipName: 'Undefined' });
   }
 
   editProperty(properties, property) {

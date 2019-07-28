@@ -10,7 +10,7 @@ export default class EditColdefModal {
     this._sample = DataSample;
   }
 
-  display(key, options = {openAsTag: false}) {
+  display(key, options = { openAsTag: false }) {
     const model = this._cm.getCurrent().content;
     let col = {};
     const dataType = col.dataType;

@@ -20,7 +20,7 @@ export default class CreateTargetCtrl {
   ok(isValid) {
     if (isValid) {
       const target = this.elem || this.target;
-      this._uibmi.close({target, relationship: this.rel});
+      this._uibmi.close({ target, relationship: this.rel });
     }
   }
 }

@@ -1,7 +1,6 @@
 import template from './welcome.html';
 
-class WelcomeCtrl {
-}
+class WelcomeCtrl {}
 
 export const welcomeView = {
   template,

@@ -8,12 +8,12 @@ import config from '../config';
 import services from '../services';
 import components from '../components';
 import viewEntity from './viewEntity';
-import {searchView} from './search.component';
+import { searchView } from './search.component';
 import SearchService from './search.service';
 import cleanCode from './clean-code.filter';
 import SearchConfig from './search.config';
 
-import {react2angular} from '../services/angular-react-helper';
+import { react2angular } from '../services/angular-react-helper';
 import FdSearchForm from '../search/fd-search-form.react';
 import FdSearchResults from './fd-search-results.react';
 

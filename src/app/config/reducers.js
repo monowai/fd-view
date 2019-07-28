@@ -24,9 +24,9 @@ function providerReducer(state = initialState, action) {
           isLoading: false
         };
       } else if (action.status === 'error') {
-        return {...state, isLoading: false, error: action.error};
+        return { ...state, isLoading: false, error: action.error };
       }
-      return {...state, isLoading: true};
+      return { ...state, isLoading: true };
 
     case SELECT_PPOVIDER: {
       let fortress = action.data;
@@ -34,17 +34,17 @@ function providerReducer(state = initialState, action) {
         // eslint-disable-line angular/typecheck-string
         fortress = [state.fortresses.find(f => f.name === fortress)];
       }
-      return {...state, fortress};
+      return { ...state, fortress };
     }
     case LOAD_TYPES:
       if (action.status === 'success') {
-        return {...state, types: action.data, isLoading: false};
+        return { ...state, types: action.data, isLoading: false };
       } else if (action.state === 'error') {
-        return {...state, isLoading: false, error: action.error};
+        return { ...state, isLoading: false, error: action.error };
       }
-      return {...state, isLoading: true};
+      return { ...state, isLoading: true };
     case SELECT_TYPES:
-      return {...state, typesSelected: action.data};
+      return { ...state, typesSelected: action.data };
     default:
       return state;
   }

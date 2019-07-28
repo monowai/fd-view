@@ -43,7 +43,7 @@ class ColumnTabCtrl {
 
   toggleAlias(alias) {
     if (alias) {
-      this.column.$alias = {code: this.column.$name};
+      this.column.$alias = { code: this.column.$name };
     } else {
       delete this.column.$alias;
     }

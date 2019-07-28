@@ -103,12 +103,12 @@ export default function biPartite() {
         return a.key1 < b.key1
           ? -1
           : a.key1 > b.key1
-            ? 1
-            : a.key2 < b.key2
-              ? -1
-              : a.key2 > b.key2
-                ? 1
-                : 0;
+          ? 1
+          : a.key2 < b.key2
+          ? -1
+          : a.key2 > b.key2
+          ? 1
+          : 0;
       });
     });
 
@@ -226,7 +226,7 @@ export default function biPartite() {
       .attr('points', edgePolygon)
       .style('fill', d => colors(d.key1))
       .style('opacity', 0.5)
-      .each(function (d) {
+      .each(function(d) {
         this._current = d;
       });
   }
@@ -389,7 +389,7 @@ export default function biPartite() {
 
   bP.selectSegment = (data, m, s) => {
     data.forEach(k => {
-      const newdata = {keys: [], data: []};
+      const newdata = { keys: [], data: [] };
 
       newdata.keys = k.data.keys;
 

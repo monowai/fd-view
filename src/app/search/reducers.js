@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-import {SEARCH_TERM, SEARCH_TERM_FAIL, SEARCH_TERM_SUCCESS, SET_TERM} from './actions';
+import { SEARCH_TERM, SEARCH_TERM_FAIL, SEARCH_TERM_SUCCESS, SET_TERM } from './actions';
 
 const initialState = {
   term: '',
@@ -13,23 +13,23 @@ const initialState = {
 };
 
 export default function searchReducer(state = initialState, action) {
-  const {type, data} = action;
+  const { type, data } = action;
   switch (type) {
     case SET_TERM:
-      return {...initialState, term: data};
+      return { ...initialState, term: data };
 
     case SEARCH_TERM:
-      return {...state, isLoading: true};
+      return { ...state, isLoading: true };
 
     case SEARCH_TERM_SUCCESS: {
-      const {results, total} = data;
+      const { results, total } = data;
       _.forEach(results, d => {
         d.resources = [];
         let uniqueList = [];
         _.find(d.fragments, (ele, k) => {
           const uniqueEle = _.difference(_.uniq(ele), uniqueList);
           if (uniqueEle.length > 0) {
-            d.resources.push({key: k, value: uniqueEle});
+            d.resources.push({ key: k, value: uniqueEle });
             uniqueList = _.union(uniqueEle, uniqueList);
           }
         });
@@ -46,7 +46,7 @@ export default function searchReducer(state = initialState, action) {
     }
 
     case SEARCH_TERM_FAIL:
-      return {...state, error: action.error, isLoading: false};
+      return { ...state, error: action.error, isLoading: false };
 
     default:
       return state;

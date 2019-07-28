@@ -21,9 +21,9 @@ class AdminUserCtrl {
 
   editProfile(profile) {
     this._modal
-      .show({template}, {obj: profile, disable: true})
+      .show({ template }, { obj: profile, disable: true })
       .then(res => {
-        const {login, name, companyName, email} = res;
+        const { login, name, companyName, email } = res;
         return this._http.post(`${this._cfg.engineUrl()}/api/v1/profiles/`, {
           login,
           name,

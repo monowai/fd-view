@@ -62,7 +62,7 @@ export default class ContentModelService {
 
   addCol(col) {
     const column = {};
-    column[col.name] = {dataType: col.dataType, persistent: true, value: col.value};
+    column[col.name] = { dataType: col.dataType, persistent: true, value: col.value };
     _.extend(this._cp.content, column);
   }
 
@@ -77,7 +77,7 @@ export default class ContentModelService {
 
   addTag(tag) {
     tag.$id = tag.$id || _.uniqueId('tag_');
-    this._tags.push({label: tag.label || tag.code, id: tag.$id});
+    this._tags.push({ label: tag.label || tag.code, id: tag.$id });
     return tag.$id;
   }
 
@@ -117,7 +117,7 @@ export default class ContentModelService {
   }
 
   getDefault(data) {
-    const payload = angular.extend({contentModel: this._cp}, data);
+    const payload = angular.extend({ contentModel: this._cp }, data);
 
     return this._http.post(`${this._cfg.engineUrl()}/api/v1/model/default`, payload).then(res => {
       this._cp = Object.assign({}, res.data);
@@ -126,7 +126,7 @@ export default class ContentModelService {
   }
 
   validate(data) {
-    const payload = {contentModel: this._cp, rows: data};
+    const payload = { contentModel: this._cp, rows: data };
 
     return this._http
       .post(`${this._cfg.engineUrl()}/api/v1/model/validate`, payload)
@@ -135,10 +135,10 @@ export default class ContentModelService {
 
   graphModel() {
     if (!_.isEmpty(this._cp)) {
-      const graph = {nodes: [], edges: []};
+      const graph = { nodes: [], edges: [] };
 
       const createEntity = (name, data) => {
-        const entity = {id: name, name, type: 'entity'};
+        const entity = { id: name, name, type: 'entity' };
         _.extend(entity, data);
         return entity;
       };
@@ -148,7 +148,7 @@ export default class ContentModelService {
       const isTag = o => Boolean(o.tag) === true;
 
       const createTag = (id, data) => {
-        const tag = {id, name: id, type: 'tag'};
+        const tag = { id, name: id, type: 'tag' };
         _.extend(tag, data);
         return tag;
       };
@@ -156,12 +156,12 @@ export default class ContentModelService {
       const connect = (source, target, rel, reverse, type) => {
         let edge = {};
         if (reverse) {
-          edge = {source: target, target: source, relationship: rel, type};
+          edge = { source: target, target: source, relationship: rel, type };
         } else {
-          edge = {source, target, relationship: rel, type};
+          edge = { source, target, relationship: rel, type };
         }
         if (!containsEdge(edge)) {
-          graph.edges.push({data: edge});
+          graph.edges.push({ data: edge });
         }
       };
 
@@ -180,9 +180,9 @@ export default class ContentModelService {
         const t =
           graph.nodes[
             _.findIndex(graph.nodes, o => {
-              return _.isMatch(o.data, {type: 'tag', label: tag.label, code: tag.code});
+              return _.isMatch(o.data, { type: 'tag', label: tag.label, code: tag.code });
             })
-            ];
+          ];
         if (!t) {
           return false;
         }
@@ -191,13 +191,13 @@ export default class ContentModelService {
 
       const createTargets = tag => {
         _.each(tag.targets, target => {
-          const tgData = {label: target.label, code: target.code};
+          const tgData = { label: target.label, code: target.code };
           let t = containsTag(tgData);
           if (t) {
             target.$id = t.id;
           } else {
             t = createTag(target.$id || this.addTag(target), tgData);
-            graph.nodes.push({data: t});
+            graph.nodes.push({ data: t });
           }
           connect(
             tag.$id,
@@ -216,7 +216,7 @@ export default class ContentModelService {
       if (!isTagModel(this._cp)) {
         const entityName = this._cp.documentType ? this._cp.documentType.name : 'Name Missing!';
         root = createEntity(this._cp.documentName || entityName);
-        graph.nodes.push({data: root});
+        graph.nodes.push({ data: root });
       }
 
       _.each(this._cp.content, (obj, key) => {
@@ -227,8 +227,8 @@ export default class ContentModelService {
             obj.$id = tag.id;
           } else {
             obj.code = obj.code || key;
-            tag = createTag(obj.$id || this.addTag(obj), {label, code: obj.code});
-            graph.nodes.push({data: tag});
+            tag = createTag(obj.$id || this.addTag(obj), { label, code: obj.code });
+            graph.nodes.push({ data: tag });
           }
           if (!_.isEmpty(root)) {
             if (obj.entityTagLinks) {
@@ -256,7 +256,7 @@ export default class ContentModelService {
                 description: alias.description,
                 type: 'alias'
               };
-              graph.nodes.push({data: a});
+              graph.nodes.push({ data: a });
               connect(
                 tag.id,
                 a.id
@@ -267,7 +267,7 @@ export default class ContentModelService {
         if (hasEntityLinks(obj)) {
           _.each(obj.entityLinks, entity => {
             const e = createEntity(entity.documentName);
-            graph.nodes.push({data: e});
+            graph.nodes.push({ data: e });
             connect(
               root.id,
               e.id,

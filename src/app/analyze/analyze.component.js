@@ -61,7 +61,7 @@ class AnalyzeCtrl {
         this._toastr.warning(
           `Search results are not optimal for ${this.chartType} diagram. You can change <strong>Search settings</strong> or chart type.`,
           'Warning',
-          {allowHtml: true}
+          { allowHtml: true }
         );
       }
     }
@@ -103,7 +103,7 @@ class AnalyzeCtrl {
         size: 0,
         fortress: this._matrix.fortress[0],
         _type: this._matrix.document[0],
-        query: {query_string: {query: this._matrix.searchText || '*'}},
+        query: { query_string: { query: this._matrix.searchText || '*' } },
         aggs: {
           data: {
             terms
@@ -117,16 +117,16 @@ class AnalyzeCtrl {
           : at === '_count'
           ? '_count'
           : at === 'percentiles'
-            ? 'metric.50'
-            : 'metric'
-        ] = this._matrix.order;
+          ? 'metric.50'
+          : 'metric'
+      ] = this._matrix.order;
 
       if (at !== '_count') {
         if (this._matrix.metric) {
-          query.aggs.data.aggs = {metric: {}};
-          query.aggs.data.aggs.metric[at] = {field: this._matrix.metric.name};
+          query.aggs.data.aggs = { metric: {} };
+          query.aggs.data.aggs.metric[at] = { field: this._matrix.metric.name };
           if (at === 'percentiles') {
-            _.extend(query.aggs.data.aggs.metric[at], {percents: [50]});
+            _.extend(query.aggs.data.aggs.metric[at], { percents: [50] });
           }
         } else {
           return;
@@ -216,7 +216,7 @@ class AnalyzeCtrl {
       node.count = 0;
       node.name = name;
       self[i] = node;
-      matrix[i] = range(n).map(j => ({x: j, y: i, z: 0}));
+      matrix[i] = range(n).map(j => ({ x: j, y: i, z: 0 }));
     });
     toNodes.forEach((name, i, self) => {
       const node = {};

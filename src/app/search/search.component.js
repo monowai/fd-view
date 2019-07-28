@@ -54,8 +54,8 @@ class MetaHeaderCtrl {
     this.fortress = SearchService.fortress ? SearchService.fortress[0] : '';
     this.types = SearchService.types
       ? SearchService.types.map(t => {
-        return {name: t};
-      })
+          return { name: t };
+        })
       : [];
 
     this.tf = SearchService.term;
@@ -95,7 +95,7 @@ class MetaHeaderCtrl {
       this.fortress = fortress;
     }
     if (type && !this.types.filter(name => type).length) {
-      this.types.push({name: type});
+      this.types.push({ name: type });
     }
   }
 
@@ -149,7 +149,7 @@ class MetaHeaderCtrl {
       '$uibModalInstance',
       'log1',
       'log2',
-      function ($uibModalInstance, log1, log2) {
+      function($uibModalInstance, log1, log2) {
         this.log1 = log1;
         this.log2 = log2;
         this.showUnchangedFlag = false;

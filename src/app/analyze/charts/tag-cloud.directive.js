@@ -37,12 +37,12 @@ class TagCloud {
     scope.$watch('terms', newVal => {
       if (scope.terms) {
         const terms = _.map(scope.terms, (val, key) => {
-          return {occur: val, term: key};
+          return { occur: val, term: key };
         });
 
         cloud()
           .size([600, 600])
-          .words(terms.map(d => ({text: d.term, size: d.occur})))
+          .words(terms.map(d => ({ text: d.term, size: d.occur })))
           .padding(2)
           .rotate(() => 0) // return (~~(Math.random() * 6) - 3) * 30;
           .font('Impact')

@@ -9,10 +9,10 @@ const initialState = {
   isLoading: false
 };
 
-export default function (state = initialState, action) {
+export default function(state = initialState, action) {
   switch (action.type) {
     case LOAD_ENTITY:
-      return {...state, isLoading: true};
+      return { ...state, isLoading: true };
 
     case LOAD_ENTITY_SUCCESS:
       return {

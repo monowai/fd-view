@@ -28,7 +28,7 @@ class FortStatCtrl {
     }
     if (change.search.currentValue) {
       this.show = false;
-      this.payload.query = {query_string: {query: this.search}};
+      this.payload.query = { query_string: { query: this.search } };
     }
     this._query.query('es', this.payload).then(data => {
       if (data.hits.total > 0) {

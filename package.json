@@ -10,7 +10,8 @@
     "lint-fix": "eslint --fix src/.",
     "docker": "docker build -t flockdata/fd-view .",
     "build": "webpack --config conf/webpack-prod-config.js ",
-    "dev": "webpack-dev-server --config conf/webpack-dev-config.js --port 9000 --disable-host-check --hot",
+    "prettier": "prettier --write 'src/**/*.js*'",
+    "start": "webpack-dev-server --config conf/webpack-dev-config.js --port 9000 --disable-host-check --hot",
     "prod": "webpack-dev-server --config conf/webpack-prod-config.js --port 9000 --disable-host-check",
     "precommit": "lint-staged",
     "formatAll": "find ./src/ -name '*.js*' | xargs prettier --write --config ./.prettierrc --config-precedence file-override"

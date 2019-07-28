@@ -1,14 +1,14 @@
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 
-import {Col, Row} from 'react-bootstrap';
-
+import { Col, Row } from 'react-bootstrap';
+import React from 'react';
 import SearchInput from '../components/search-input.react';
 import FortressInput from '../components/fortress-input.react';
 import TypesInput from '../components/types-input.react';
 
-import {runTermSearch, setTerm} from './actions';
+import { runTermSearch, setTerm } from './actions';
 
-import {getAngularService} from '../services/angular-react-helper';
+import { getAngularService } from '../services/angular-react-helper';
 
 const FdSearchForm = props => {
   const store = getAngularService(document, '$ngRedux');
@@ -41,8 +41,8 @@ const mapStateToProps = state => ({
 });
 
 const mergeProps = (stateProps, dispatchProps) => {
-  const {fortress, types, from, filter} = stateProps;
-  const {dispatch} = dispatchProps;
+  const { fortress, types, from, filter } = stateProps;
+  const { dispatch } = dispatchProps;
 
   return {
     onSearch(term) {

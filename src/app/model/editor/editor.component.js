@@ -33,7 +33,7 @@ class EditModelCtrl {
     modalService,
     $window
   ) {
-    this.origin = {content: {}};
+    this.origin = { content: {} };
 
     // services
     this._stateParams = $stateParams;
@@ -99,7 +99,7 @@ class EditModelCtrl {
     } else {
       return this._modal
         .show(
-          {size: 'sm'},
+          { size: 'sm' },
           {
             title: 'Discard changes...',
             text: 'Are you sure you want to cancel and discard your changes?'

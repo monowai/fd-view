@@ -37,7 +37,7 @@ class ViewEntityCtrl {
     this.ngRedux = $ngRedux;
 
     this.disconnect = $ngRedux.connect(
-      state => ({onLoading: state.onLoading}),
+      state => ({ onLoading: state.onLoading }),
       dispatch => ({
         loadEntity(key) {
           dispatch(fetchEntity(key));

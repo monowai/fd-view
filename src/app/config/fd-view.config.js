@@ -38,7 +38,7 @@ function appConfig(
     collapsed: true
   });
 
-  $ngReduxProvider.createStoreWith({reducer}, [thunk, logger]);
+  $ngReduxProvider.createStoreWith({ reducer }, [thunk, logger]);
 }
 
 export default appConfig;

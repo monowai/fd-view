@@ -4,7 +4,7 @@ import './entity-links.scss';
 class EntityLinksTabCtrl {
   addLink() {
     this.column.entityLinks = this.column.entityLinks || [];
-    this.column.entityLinks.push({missingAction: 'IGNORE'});
+    this.column.entityLinks.push({ missingAction: 'IGNORE' });
   }
 
   deleteLink(entity) {

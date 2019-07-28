@@ -1,4 +1,12 @@
-import {arc as d3arc, entries, interpolate, pie as d3pie, scaleOrdinal, schemeCategory20, select} from 'd3';
+import {
+  arc as d3arc,
+  entries,
+  interpolate,
+  pie as d3pie,
+  scaleOrdinal,
+  schemeCategory20,
+  select
+} from 'd3';
 
 class StatsChart {
   constructor($filter) {

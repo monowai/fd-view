@@ -8,14 +8,14 @@ function SearchService(EntityService) {
     this.searchText = searchText;
     this.fortress = fortress;
     this.typesToBeSend = typesToBeSend;
-    const query = {match: {}};
+    const query = { match: {} };
     if (termFilter) {
       query.match[termFilter.name] = {
         query: termFilter.value,
         type: 'phrase'
       };
 
-      this.termFilter = {bool: {must: [{query}]}};
+      this.termFilter = { bool: { must: [{ query }] } };
     }
   }
 
@@ -37,7 +37,7 @@ function SearchService(EntityService) {
       _.find(d.fragments, (ele, k) => {
         const uniqueEle = _.difference(_.uniq(ele), uniqueList);
         if (uniqueEle.length > 0) {
-          d.resources.push({key: k, value: uniqueEle});
+          d.resources.push({ key: k, value: uniqueEle });
           uniqueList = _.union(uniqueEle, uniqueList);
         }
       });

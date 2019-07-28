@@ -81,7 +81,7 @@ class SampleTabCtrl {
     };
 
     this._cm.updateModel(this.model);
-    this._cm.getDefault({rows: this.sample.data}).then(
+    this._cm.getDefault({ rows: this.sample.data }).then(
       res => {
         this._toastr.success('Data is loaded', 'Success');
         this.model = {};
