@@ -1,0 +1,15 @@
+version: 2
+jobs:
+  checkout-code:
+    machine:
+      enabled: true
+    working_directory: '~/fd-view'
+    steps:
+      - checkout
+      - save_cache:
+          key: org-flockdata-src-repo-{{ .Environment.CIRCLE_SHA1 }}
+          paths:
+            - ~/org.flockdata
+
+
+
