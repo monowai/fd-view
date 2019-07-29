@@ -16,7 +16,7 @@ export default class QueryService {
 
   concept(route, params) {
     return this._http
-      .post(`${this._cfg.engineUrl()}/api/v1/concept/${route}`, params)
+      .post(`${this._cfg.engineUrl()}/api/v1/concept${route}`, params)
       .then(res => res.data);
   }
 
